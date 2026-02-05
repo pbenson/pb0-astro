@@ -1,0 +1,190 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Home">
+  <div class="home">
+    <h1>pete's notebook</h1>
+    <p class="tagline">Interactive explorations in math, puzzles, and visualizations</p>
+
+    <section class="section">
+      <h2>Puzzles</h2>
+      <div class="card-grid">
+        <a href="/puzzles/nessies" class="card">
+          <h3>Nessies</h3>
+          <p>A whimsical monotile tiling puzzle with water-like shapes</p>
+        </a>
+        <a href="/puzzles/cipra-loops" class="card">
+          <h3>Cipra Loops</h3>
+          <p>Barry Cipra's loop-tracing tile puzzle on a torus</p>
+        </a>
+        <a href="/puzzles/celtic-knots" class="card">
+          <h3>Celtic Knots</h3>
+          <p>Build Celtic knot patterns by placing tiles on a grid</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Math</h2>
+      <div class="card-grid">
+        <a href="/math/spectres" class="card">
+          <h3>Spectre Monotile</h3>
+          <p>Explore the aperiodic monotile discovered in 2023</p>
+        </a>
+        <a href="/math/fern" class="card">
+          <h3>Barnsley Fern</h3>
+          <p>Fractal fern using iterated function systems</p>
+        </a>
+        <a href="/math/multiplication-circle" class="card">
+          <h3>Multiplication Circle</h3>
+          <p>Cardioid patterns from modular multiplication</p>
+        </a>
+        <a href="/math/spiral-circles" class="card">
+          <h3>Spiral Circles</h3>
+          <p>Tangent circles in spiral arrangements</p>
+        </a>
+        <a href="/math/flw-circles" class="card">
+          <h3>FLW Circles</h3>
+          <p>Nested rings inspired by Frank Lloyd Wright</p>
+        </a>
+        <a href="/math/bresenham" class="card">
+          <h3>Bresenham Algorithm</h3>
+          <p>Line drawing on a pixel grid</p>
+        </a>
+        <a href="/math/izzy-triangles" class="card">
+          <h3>Izzy Triangles</h3>
+          <p>Hexagon colorings and rotational symmetry</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Games</h2>
+      <div class="card-grid">
+        <a href="/games/space-rocks" class="card">
+          <h3>Space Rocks</h3>
+          <p>Classic asteroid-style game</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Animations</h2>
+      <div class="card-grid">
+        <a href="/animations/eyes" class="card">
+          <h3>Eyes</h3>
+          <p>SVG eyes that follow your cursor</p>
+        </a>
+        <a href="/animations/lissajous" class="card">
+          <h3>Lissajous Curves</h3>
+          <p>Parametric curves from sinusoidal motion</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Craft</h2>
+      <div class="card-grid">
+        <a href="/craft/amman-beenker" class="card">
+          <h3>Ammann-Beenker</h3>
+          <p>Aperiodic tiling with squares and rhombi</p>
+        </a>
+        <a href="/craft/celtic-knots" class="card">
+          <h3>Celtic Knots</h3>
+          <p>Creating intricate Celtic knot patterns</p>
+        </a>
+        <a href="/craft/cipra-city" class="card">
+          <h3>Cipra City</h3>
+          <p>Line tiles forming continuous roads</p>
+        </a>
+        <a href="/craft/cipra-loops" class="card">
+          <h3>Cipra Loops</h3>
+          <p>Tiles with path connections on edges</p>
+        </a>
+        <a href="/craft/corona" class="card">
+          <h3>Corona Tiles</h3>
+          <p>Exploring Heesch numbers and tessellation</p>
+        </a>
+        <a href="/craft/ferns" class="card">
+          <h3>Ferns</h3>
+          <p>Barnsley fern crafts and theater sets</p>
+        </a>
+        <a href="/craft/nessie" class="card">
+          <h3>Nessie</h3>
+          <p>Parallelogram-based tiles with fluid shapes</p>
+        </a>
+        <a href="/craft/stomachion" class="card">
+          <h3>Stomachion</h3>
+          <p>Archimedes' ancient dissection puzzle</p>
+        </a>
+        <a href="/craft/tricurve" class="card">
+          <h3>Tricurve</h3>
+          <p>Tim Lexen's curved-edge tile</p>
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .home {
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .tagline {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  .section {
+    margin-bottom: 3rem;
+    text-align: left;
+  }
+
+  .section h2 {
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    display: block;
+    padding: 1.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--nav-bg);
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .card h3 {
+    color: var(--text-color);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+  }
+
+  .card p {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+</style>

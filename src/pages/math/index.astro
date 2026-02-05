@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Math">
+  <h1>Math</h1>
+  <p class="description">Mathematical visualizations and explorations</p>
+
+  <div class="card-grid">
+    <a href="/math/spectres" class="card">
+      <h3>Spectre Monotile</h3>
+      <p>Explore the aperiodic monotile discovered in 2023</p>
+    </a>
+    <a href="/math/fern" class="card">
+      <h3>Barnsley Fern</h3>
+      <p>Fractal fern using iterated function systems</p>
+    </a>
+    <a href="/math/multiplication-circle" class="card">
+      <h3>Multiplication Circle</h3>
+      <p>Cardioid patterns from modular multiplication</p>
+    </a>
+    <a href="/math/spiral-circles" class="card">
+      <h3>Spiral Circles</h3>
+      <p>Tangent circles in spiral arrangements</p>
+    </a>
+    <a href="/math/flw-circles" class="card">
+      <h3>FLW Circles</h3>
+      <p>Nested rings inspired by Frank Lloyd Wright</p>
+    </a>
+    <a href="/math/bresenham" class="card">
+      <h3>Bresenham Algorithm</h3>
+      <p>Line drawing on a pixel grid</p>
+    </a>
+    <a href="/math/izzy-triangles" class="card">
+      <h3>Izzy Triangles</h3>
+      <p>Hexagon colorings and rotational symmetry</p>
+    </a>
+  </div>
+</BaseLayout>
+
+<style>
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .description {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    display: block;
+    padding: 1.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--nav-bg);
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .card h3 {
+    color: var(--text-color);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+  }
+
+  .card p {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+</style>

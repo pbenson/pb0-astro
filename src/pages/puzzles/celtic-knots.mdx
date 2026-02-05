@@ -1,0 +1,18 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Celtic Knots
+---
+import CelticKnotsPuzzle from '../../components/puzzles/CelticKnotsPuzzle.tsx'
+
+# Celtic Knots
+
+Build Celtic knot patterns by placing tiles on a grid. Each tile connects points on its edges, and tiles must match where they meet.
+
+## How to Play
+
+- Green cells show where tiles can be placed
+- Click a green cell to see available tiles
+- Click a tile in the popup to place it
+- Corner tiles are pre-placed and fixed
+
+<CelticKnotsPuzzle client:load />

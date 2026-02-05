@@ -1,0 +1,17 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Eyes
+---
+import Eyes from '../../components/animations/Eyes.tsx'
+
+# Eyes
+
+Move your mouse over the face to watch the eyes follow.
+
+<Eyes client:load />
+
+## With Masking
+
+The pupils stay within the eye boundaries using SVG masking.
+
+<Eyes client:load masking={true} />

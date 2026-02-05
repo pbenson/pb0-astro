@@ -1,0 +1,22 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Spectre Monotile
+---
+import SpectreSvg from '../../components/math/SpectreSvg.tsx'
+
+# The Spectre Monotile
+
+The Spectre is an aperiodic monotile discovered in 2023. It can tile the plane, but only non-periodically - no translation will map the tiling onto itself.
+
+## Interactive Shape Designer
+
+Drag the red and blue control points to curve the edges. The same curve is applied to all 14 edges, alternating between the curve and its reflection.
+
+<SpectreSvg client:load />
+
+## Properties
+
+- 14 equal-length edges
+- All edge curves are congruent (same shape, some reflected)
+- Can tile the plane without gaps or overlaps
+- The tiling is necessarily aperiodic

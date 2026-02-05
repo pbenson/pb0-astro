@@ -1,0 +1,151 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Pete's interactive notebook of math, puzzles, and visualizations" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title} | pete's notebook</title>
+    <link rel="stylesheet" href="/styles/global.css" />
+    <script is:inline>
+      // Prevent flash of wrong theme
+      const saved = localStorage.getItem('theme');
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && systemDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <nav class="main-nav">
+      <a href="/" class="nav-brand">pete's notebook</a>
+      <div class="nav-links">
+        <a href="/puzzles">Puzzles</a>
+        <a href="/math">Math</a>
+        <a href="/games">Games</a>
+        <a href="/animations">Animations</a>
+        <a href="/craft">Craft</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+          <span class="sun-icon">☀️</span>
+          <span class="moon-icon">🌙</span>
+        </button>
+      </div>
+    </nav>
+    <script>
+      const toggle = document.getElementById('theme-toggle');
+      const root = document.documentElement;
+
+      // Check for saved preference or system preference
+      const savedTheme = localStorage.getItem('theme');
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = savedTheme ? savedTheme === 'dark' : systemDark;
+
+      if (isDark) {
+        root.classList.add('dark');
+      }
+
+      toggle?.addEventListener('click', () => {
+        const nowDark = root.classList.toggle('dark');
+        localStorage.setItem('theme', nowDark ? 'dark' : 'light');
+      });
+    </script>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style>
+  .main-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--nav-bg);
+  }
+
+  .nav-brand {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--text-color);
+    text-decoration: none;
+  }
+
+  .nav-brand:hover {
+    color: var(--accent-color);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.15s ease;
+  }
+
+  .nav-links a:hover {
+    color: var(--accent-color);
+  }
+
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .theme-toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.25rem;
+    line-height: 1;
+  }
+
+  .sun-icon {
+    display: none;
+  }
+
+  .moon-icon {
+    display: inline;
+  }
+
+  :global(html.dark) .sun-icon {
+    display: inline;
+  }
+
+  :global(html.dark) .moon-icon {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .main-nav {
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .nav-links {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    main {
+      padding: 1rem;
+    }
+  }
+</style>

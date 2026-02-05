@@ -1,0 +1,52 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Corona Tiles
+---
+
+# Corona Tiles
+
+A tiling of the plane with shapes that completely fills the plane is a _tessellation_. We could allow a variety of tile shapes, but we will limit ourselves here to tiling with a single tile shape.
+
+A square obviously tessellates. In fact, so does, a rectangle, a parallelogram, and indeed, _any_ [quadrilateral](https://eschermath.org/wiki/Tessellations_by_Squares,_Rectangles_and_other_Polygons.html#Tessellations_by_Quadrilaterals). A [regular pentagon](https://en.wikipedia.org/wiki/Pentagon#Regular_pentagons), on the other hand, does not tessellate. However, there are [15 types of pentagons](https://en.wikipedia.org/wiki/Pentagonal_tiling#Mann/McLoud/Von_Derau_(2015)_Type_15) which do tessellate. The 15th type was discovered in 2015 by Casey Mann and others.
+
+It's clear that some shapes tesselate, and some don't. Are there shapes that almost tesselate? How would we define such an idea? [Heinrich Heesch](https://en.wikipedia.org/wiki/Heinrich_Heesch) provided an answer.
+
+In 1968, Heesch gave an example of a tile that appears like it might tesselate. He combined a square, an equilateral triangle, and a 30-60-90 triangle:
+
+<img src="/img/craft/corona/heesch1968-1.webp" alt="Heesch's square, equilateral triangle, 30-60-90 triangle" width="200" style="max-width: 100%;" />
+
+to create an irregular pentagon:
+
+<img src="/img/craft/corona/heesch1968-2.webp" alt="Heesch's tile" width="200" style="max-width: 100%;" />
+
+If it is possible to tesselate, we can begin with a single tile, and place tiles all around it until all of its edges are covered. Then we go around again, covering all exposed edges. For tiles that tesselate, you can do this infinitely many times. For tiles that clearly don't tesselate such as a circle, you can't even cover the edges of the first circle placed.
+
+Let's see what happens with Heesch's tile. We will start with a black tile. You can tile all the way around the black tile without gaps.
+
+<img src="/img/craft/corona/heesch1968-3.webp" alt="Heesch's tile with a single corona" width="400" style="max-width: 100%;" />
+
+The tiles that go around the center form a **corona**. However, you cannot create another corona around these tiles. Heesch suggested assigning the number 1 to this tile shape, indicating you could create only one corona.
+
+##### Higher Heesch Numbers
+
+Others became interested in this concept. There are tiles with Heesch numbers 2, 3, 4, 5, and 6. Robert Ammann, an amateur mathematician who made significant contributions to the study of aperiodic tiles, also worked on these problems. Casey Mann, who discovered the 15th and last pentagon shape that tesselates, also found a tile with Heesch number 3.
+
+<img src="/img/craft/corona/Casey-Mann.webp" alt="Casey Mann's tile with Heesch number 3" width="150" style="max-width: 100%;" />
+
+We made a set of tiles with Mann's shape, partly because when you're done finding how to create 3 coronas (no easy feat without the picture below), you can make creative packings that have negative spaces:
+
+<img src="/img/craft/corona/ourTiles.webp" alt="The Corona Tiles we made at Cherry Arbor Design" width="200" style="max-width: 100%;" />
+
+Here are the tiles we made on a magnetic board, with three coronas.
+
+<img src="/img/craft/corona/tilesOnMagneticBoard.webp" alt="our tiles demonstrating Heesch 3" width="400" style="max-width: 100%;" />
+
+---
+
+### References and Further Reading
+
+- Heinrich Heesch's original 1968 work on finite tile arrangements
+- Colin Adams' contributions to tessellation theory
+- Casey Mann et al.'s discovery of the 15th pentagon type (2015)
+- Michaël Rao's proof of completeness (2017)
+- Robert Ammann's work on aperiodic tiles

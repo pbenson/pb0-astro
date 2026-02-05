@@ -1,0 +1,18 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Cipra Loops
+---
+import CipraLoopsPuzzle from '../../components/puzzles/CipraLoopsPuzzle.tsx'
+
+# Cipra Loops
+
+A puzzle based on Barry Cipra's loop-tracing tiles. Each tile has 4 curved paths connecting 8 endpoints on its edges. When tiles are arranged in a 4×4 grid on a torus (edges wrap around), the paths form closed loops.
+
+## How to Play
+
+- Click a tile to select it, then click another to swap them
+- Click "Shuffle" to randomize all tiles
+- Click a loop number to highlight that loop
+- Try to minimize the number of loops!
+
+<CipraLoopsPuzzle client:load />

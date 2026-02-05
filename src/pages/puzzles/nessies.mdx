@@ -1,0 +1,24 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Nessies
+---
+import NessiesPuzzle from '../../components/puzzles/NessiesPuzzle.tsx'
+
+# Nessies
+
+A whimsical tiling puzzle inspired by Loch Ness. The "Nessie" is a monotile - a single tile shape that can tile the plane aperiodically.
+
+## The Tile Shape
+
+The Nessie tile is a parallelogram with:
+- 2:1 side ratio (long edge is twice the short edge)
+- 60° and 120° interior angles
+- 6 edge segments labeled alternating A and B
+
+## The Rules
+
+Tiles connect when an **A** segment meets a **B** segment. The edges must align perfectly - matching segment types is not enough.
+
+Click an edge segment to see possible tile placements, use **arrow keys** to cycle through options, and press **Enter** to place. Click **Edit Shape** to customize the tile's curves.
+
+<NessiesPuzzle client:load />

@@ -1,0 +1,252 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.svgContainer {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: transparent;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.svgContainer:active {
+  cursor: grabbing;
+}
+
+.tile {
+  stroke: #2d5a4a;
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.tile:hover {
+  filter: brightness(1.15);
+}
+
+.segmentHitArea {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 12;
+  cursor: pointer;
+}
+
+.segmentHitArea:hover {
+  stroke: rgba(255, 255, 255, 0.3);
+}
+
+.segmentMarker {
+  pointer-events: none;
+}
+
+.segmentA {
+  fill: var(--segment-a);
+}
+
+.segmentB {
+  fill: var(--segment-b);
+}
+
+.attachmentPreview {
+  fill: rgba(100, 255, 150, 0.3);
+  stroke: rgba(100, 255, 150, 0.8);
+  stroke-width: 2;
+  stroke-dasharray: 5 3;
+  pointer-events: none;
+  cursor: pointer;
+}
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.button {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--button-border);
+  border-radius: 4px;
+  background: var(--button-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.15s ease;
+}
+
+.button:hover {
+  background: var(--button-hover);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.info {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+  align-items: center;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.legendDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legendDotA {
+  background: var(--segment-a);
+}
+
+.legendDotB {
+  background: var(--segment-b);
+}
+
+/* Main layout */
+.panelContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  position: relative;
+}
+
+.puzzlePanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Modal Overlay - works properly in Astro without Docusaurus interference */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(2px);
+}
+
+.modalContent {
+  position: relative;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modalClose {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+  z-index: 1;
+}
+
+.modalClose:hover {
+  background: var(--button-hover);
+}
+
+/* Shape Design Panel */
+.designPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-color);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.designHeader {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.designSvg {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-color);
+}
+
+.designControls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.designInfo {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Edit Shape button */
+.editShapeButton {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent-color);
+  border-radius: 4px;
+  background: var(--accent-color);
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.editShapeButton:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}

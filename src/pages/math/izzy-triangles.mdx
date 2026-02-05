@@ -1,0 +1,11 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Izzy Triangles
+---
+import IzzyTriangles from '../../components/math/IzzyTriangles.tsx'
+
+# Izzy Triangles
+
+Exploring the 64 possible colorings of a hexagon divided into 6 triangular segments. Each triangle can be black or white, but due to rotational symmetry, only 14 patterns are unique.
+
+<IzzyTriangles client:load showUniqueCount={true} />

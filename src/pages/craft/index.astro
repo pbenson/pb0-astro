@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Craft">
+  <h1>Craft</h1>
+  <p class="description">Physical craft projects with mathematical themes</p>
+
+  <div class="card-grid">
+    <a href="/craft/amman-beenker" class="card">
+      <h3>Ammann-Beenker</h3>
+      <p>Aperiodic tiling with squares and rhombi</p>
+    </a>
+    <a href="/craft/celtic-knots" class="card">
+      <h3>Celtic Knots</h3>
+      <p>Creating intricate Celtic knot patterns</p>
+    </a>
+    <a href="/craft/cipra-city" class="card">
+      <h3>Cipra City</h3>
+      <p>Line tiles forming continuous roads</p>
+    </a>
+    <a href="/craft/cipra-loops" class="card">
+      <h3>Cipra Loops</h3>
+      <p>Tiles with path connections on edges</p>
+    </a>
+    <a href="/craft/corona" class="card">
+      <h3>Corona Tiles</h3>
+      <p>Exploring Heesch numbers and tessellation</p>
+    </a>
+    <a href="/craft/ferns" class="card">
+      <h3>Ferns</h3>
+      <p>Barnsley fern crafts and theater sets</p>
+    </a>
+    <a href="/craft/nessie" class="card">
+      <h3>Nessie</h3>
+      <p>Parallelogram-based tiles with fluid shapes</p>
+    </a>
+    <a href="/craft/stomachion" class="card">
+      <h3>Stomachion</h3>
+      <p>Archimedes' ancient dissection puzzle</p>
+    </a>
+    <a href="/craft/tricurve" class="card">
+      <h3>Tricurve</h3>
+      <p>Tim Lexen's curved-edge tile</p>
+    </a>
+  </div>
+</BaseLayout>
+
+<style>
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .description {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    display: block;
+    padding: 1.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--nav-bg);
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .card h3 {
+    color: var(--text-color);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+  }
+
+  .card p {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+</style>
