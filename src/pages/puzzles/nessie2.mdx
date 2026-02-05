@@ -1,0 +1,22 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Nessie 2
+---
+import Nessie2Puzzle from '../../components/puzzles/nessie2/Nessie2Puzzle.tsx'
+
+# Nessie 2
+
+A generalized tiling puzzle with different polygon shapes. Each shape is defined by a turn sequence (multiples of 60°).
+
+## How It Works
+
+Choose a polygon shape to start. Each shape has edges labeled alternating **A** and **B**. Tiles connect when an **A** segment meets a **B** segment.
+
+## Controls
+
+- Click an edge to see possible tile placements
+- Use **arrow keys** to cycle through placement options
+- Press **Enter** to place the tile
+- Click **Edit Shape** to customize the tile's curves
+
+<Nessie2Puzzle client:load />

@@ -16,10 +16,9 @@ const { title, description = "Pete's interactive notebook of math, puzzles, and 
     <title>{title} | pete's notebook</title>
     <link rel="stylesheet" href="/styles/global.css" />
     <script is:inline>
-      // Prevent flash of wrong theme
+      // Prevent flash of wrong theme - dark mode is default
       const saved = localStorage.getItem('theme');
-      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (saved === 'dark' || (!saved && systemDark)) {
+      if (saved !== 'light') {
         document.documentElement.classList.add('dark');
       }
     </script>
@@ -43,12 +42,9 @@ const { title, description = "Pete's interactive notebook of math, puzzles, and 
       const toggle = document.getElementById('theme-toggle');
       const root = document.documentElement;
 
-      // Check for saved preference or system preference
+      // Dark mode is default
       const savedTheme = localStorage.getItem('theme');
-      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const isDark = savedTheme ? savedTheme === 'dark' : systemDark;
-
-      if (isDark) {
+      if (savedTheme !== 'light') {
         root.classList.add('dark');
       }
 

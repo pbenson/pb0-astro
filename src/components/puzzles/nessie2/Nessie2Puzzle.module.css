@@ -1,0 +1,295 @@
+/* Shape Selection Screen */
+.selectionContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.selectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.selectionSubtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 0;
+  text-align: center;
+}
+
+.shapeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-width: 320px;
+}
+
+@media (max-width: 400px) {
+  .shapeGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.shapeCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--button-bg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.shapeCard:hover {
+  border-color: var(--accent-color);
+  background: var(--button-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.shapeCardSvg {
+  border-radius: 8px;
+  background: transparent;
+}
+
+.shapeCardLabel {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.shapeCardInfo {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Puzzle Container */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.svgContainer {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: transparent;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.svgContainer:active {
+  cursor: grabbing;
+}
+
+.tile {
+  stroke: #2d5a4a;
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.tile:hover {
+  filter: brightness(1.15);
+}
+
+.segmentHitArea {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 12;
+  cursor: pointer;
+}
+
+.segmentHitArea:hover {
+  stroke: rgba(255, 255, 255, 0.3);
+}
+
+.segmentMarker {
+  pointer-events: none;
+}
+
+.segmentA {
+  fill: var(--segment-a, rgba(255, 200, 100, 0.8));
+}
+
+.segmentB {
+  fill: var(--segment-b, rgba(100, 200, 255, 0.8));
+}
+
+.attachmentPreview {
+  fill: rgba(100, 255, 150, 0.3);
+  stroke: rgba(100, 255, 150, 0.8);
+  stroke-width: 2;
+  stroke-dasharray: 5 3;
+  pointer-events: none;
+}
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.button {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--button-border);
+  border-radius: 4px;
+  background: var(--button-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.15s ease;
+}
+
+.button:hover {
+  background: var(--button-hover);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.info {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+  align-items: center;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.legendDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legendDotA {
+  background: var(--segment-a, rgba(255, 200, 100, 0.8));
+}
+
+.legendDotB {
+  background: var(--segment-b, rgba(100, 200, 255, 0.8));
+}
+
+/* Main layout */
+.panelContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  position: relative;
+}
+
+.puzzlePanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Shape Design Panel */
+.designPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-color);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.designHeader {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.designSvg {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-color);
+}
+
+.designControls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.designInfo {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Edit Shape button */
+.editShapeButton {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent-color);
+  border-radius: 4px;
+  background: var(--accent-color);
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.editShapeButton:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+/* Back button */
+.backButton {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--button-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.15s ease;
+}
+
+.backButton:hover {
+  background: var(--button-hover);
+}
+
+/* Shape name display in puzzle mode */
+.shapeName {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
