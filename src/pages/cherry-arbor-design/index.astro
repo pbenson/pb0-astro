@@ -1,0 +1,276 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allProducts = await getCollection('cad-products');
+const blogPosts = await getCollection('cad-blog');
+
+// Product groupings by slug
+const groups = [
+  {
+    name: 'Tiling Puzzles',
+    description: 'Shapes that fit together endlessly in new ways',
+    slugs: [
+      'penrose-p2', 'penrose-p3', 'nessie-tiles', 'celtic-knot-tiles',
+      'triknots', 'pentiles', 'corona-tiles', 'roundabouts',
+      'cipra-city', 'cipra-loops', 'tricurves',
+    ],
+  },
+  {
+    name: 'Aperiodic Wonders',
+    description: 'Tiles that cover the plane without ever repeating',
+    slugs: [
+      'ammann-beenker-aperiodic-tiles', 'socolar-taylor-aperiodic-tiles',
+      'cherry-arbor-ellipse-necklace', 'jacks-spectre-tiling',
+      'einstein-turtle-tiles',
+    ],
+  },
+  {
+    name: 'Fractal Explorations',
+    description: 'Self-similar patterns from mathematics',
+    slugs: [
+      'koch-snowflakes', 'dragon-fractal', 'twin-dragon-fractal-tiles',
+      'fractal-penrose-tiles', 'golden-b',
+    ],
+  },
+  {
+    name: 'Felt & Wearable',
+    description: 'German wool felt — jewelry, coasters, and art pieces',
+    slugs: [
+      'pi-necklace', 'copy-of-corona-tiles', 'barnsley-fern-in-felt',
+      'fern-filz', 'pi-coaster-in-felt', 'rhombus-coaster-in-felt',
+      'terdragon-in-felt',
+    ],
+  },
+  {
+    name: 'Singular Pieces',
+    description: 'One-of-a-kind objects and ancient puzzles',
+    slugs: [
+      'the-road-not-taken', 'bookmarks', 'arbor-ornament',
+      'obeirnes-cube', 'stomachion',
+    ],
+  },
+];
+
+// Build a slug→product map
+const productMap = new Map(allProducts.map(p => [p.data.slug, p]));
+
+// Resolve groups
+const resolvedGroups = groups.map(g => ({
+  ...g,
+  products: g.slugs.map(s => productMap.get(s)).filter(Boolean),
+}));
+
+// Sort blog posts by date descending
+blogPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+---
+
+<BaseLayout title="Cherry Arbor Design" description="Handcrafted mathematical art and puzzle tiles from Cherry Arbor Design">
+  <div class="cad-header">
+    <h1>Cherry Arbor Design</h1>
+    <p class="tagline">Handcrafted mathematical art and puzzle tiles</p>
+    <div class="about">
+      <p>
+        We create pieces that integrate math and art, drawing people in to actively
+        engage, create, and think about the mathematical ideas underlying our work.
+      </p>
+      <p class="materials">
+        Wood, felt, paper, acrylic — made in our Michigan workshop.
+      </p>
+    </div>
+  </div>
+
+  {resolvedGroups.map((group) => (
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>{group.name}</h2>
+          <p class="section-desc">{group.description}</p>
+        </div>
+      </div>
+
+      <div class={`product-grid ${group.products.every(p => !p.data.featuredImage) ? 'text-only' : ''}`}>
+        {group.products.map((product) => (
+          <a href={`/cherry-arbor-design/products/${product.data.slug}`} class={`product-card ${!product.data.featuredImage ? 'no-image' : ''}`}>
+            {product.data.featuredImage && (
+              <img src={product.data.featuredImage} alt={product.data.title} class="product-image" loading="lazy" />
+            )}
+            <div class="product-info">
+              <h3>{product.data.title}</h3>
+              <span class="price">
+                {product.data.priceRange || `$${product.data.price}`}
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <h2>Articles</h2>
+        <p class="section-desc">The mathematics behind the work</p>
+      </div>
+    </div>
+
+    <div class="blog-list">
+      {blogPosts.map((post) => (
+        <a href={`/cherry-arbor-design/blog/${post.data.slug}`} class="blog-item">
+          <h3>{post.data.title}</h3>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Header */
+  .cad-header {
+    margin-bottom: var(--space-12);
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .cad-header h1 {
+    margin-bottom: var(--space-1);
+  }
+
+  .tagline {
+    color: var(--ink-secondary);
+    font-size: 1.1rem;
+    margin-bottom: var(--space-6);
+  }
+
+  .about {
+    max-width: 560px;
+  }
+
+  .about p {
+    color: var(--ink-secondary);
+    line-height: 1.65;
+    margin-bottom: var(--space-2);
+  }
+
+  .materials {
+    color: var(--ink-tertiary);
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: var(--space-12);
+  }
+
+  .section-header {
+    margin-bottom: var(--space-4);
+  }
+
+  .section-header h2 {
+    margin: 0;
+  }
+
+  .section-desc {
+    color: var(--ink-tertiary);
+    font-size: 0.85rem;
+    margin: var(--space-1) 0 0 0;
+  }
+
+  /* Product grid — cards with images */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .product-card {
+    display: block;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    background: var(--paper-raised);
+    text-decoration: none;
+    overflow: hidden;
+    transition: border-color 0.15s ease;
+  }
+
+  .product-card:hover {
+    border-color: var(--rule-emphasis);
+  }
+
+  .product-image {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+  }
+
+  .product-info {
+    padding: var(--space-3);
+  }
+
+  .product-info h3 {
+    color: var(--ink);
+    margin: 0 0 var(--space-1) 0;
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+
+  .price {
+    color: var(--ink-tertiary);
+    font-size: 0.8rem;
+  }
+
+  /* Text-only cards — no image, compact */
+  .product-card.no-image {
+    display: flex;
+    align-items: center;
+  }
+
+  .product-card.no-image .product-info {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  /* When all cards in a group lack images, use a tighter list-like grid */
+  .product-grid.text-only {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-2);
+  }
+
+  /* Blog list — compact, no cards */
+  .blog-list {
+    columns: 2;
+    column-gap: var(--space-8);
+  }
+
+  .blog-item {
+    display: block;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    break-inside: avoid;
+  }
+
+  .blog-item:hover h3 {
+    color: var(--grid-teal);
+  }
+
+  .blog-item h3 {
+    color: var(--ink);
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 400;
+    transition: color 0.15s ease;
+  }
+
+  @media (max-width: 768px) {
+    .product-grid {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .blog-list {
+      columns: 1;
+    }
+  }
+</style>

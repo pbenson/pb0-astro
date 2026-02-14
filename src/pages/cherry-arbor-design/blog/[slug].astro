@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('cad-blog');
+  return posts.map((post) => ({
+    params: { slug: post.data.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+// Get related products
+const allProducts = await getCollection('cad-products');
+const relatedProducts = allProducts.filter((product) =>
+  post.data.relatedProductSlugs.includes(product.data.slug)
+);
+---
+
+<BaseLayout title={post.data.title} description={`Cherry Arbor Design — ${post.data.title}`}>
+  <article class="blog-post">
+    <a href="/cherry-arbor-design" class="back-link">&larr; Cherry Arbor Design</a>
+
+    <header>
+      <h1>{post.data.title}</h1>
+      <time datetime={post.data.date}>
+        {new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+      </time>
+    </header>
+
+    <div class="content">
+      <Content />
+    </div>
+
+    {relatedProducts.length > 0 && (
+      <section class="related">
+        <h2>Related Products</h2>
+        <div class="related-grid">
+          {relatedProducts.map((product) => (
+            <a href={`/cherry-arbor-design/products/${product.data.slug}`} class="related-card">
+              {product.data.featuredImage && (
+                <img src={product.data.featuredImage} alt={product.data.title} loading="lazy" />
+              )}
+              <div class="related-info">
+                <h3>{product.data.title}</h3>
+                <span class="price">{product.data.priceRange || `$${product.data.price}`}</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .blog-post {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .back-link {
+    display: inline-block;
+    color: var(--ink-tertiary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: var(--space-6);
+  }
+
+  .back-link:hover {
+    color: var(--grid-teal);
+  }
+
+  header {
+    margin-bottom: var(--space-8);
+  }
+
+  header h1 {
+    margin-bottom: var(--space-2);
+  }
+
+  header time {
+    color: var(--ink-tertiary);
+    font-size: 0.85rem;
+  }
+
+  .content {
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  .content :global(p) {
+    margin-bottom: var(--space-4);
+  }
+
+  .content :global(h2) {
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+  }
+
+  .content :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--rule);
+    margin: var(--space-4) 0;
+  }
+
+  .content :global(a) {
+    color: var(--grid-teal);
+  }
+
+  .content :global(a:hover) {
+    color: var(--grid-teal-hover);
+  }
+
+  .related {
+    border-top: 1px solid var(--rule);
+    padding-top: var(--space-6);
+    margin-top: var(--space-8);
+  }
+
+  .related h2 {
+    margin-bottom: var(--space-4);
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .related-card {
+    display: block;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .related-card:hover {
+    border-color: var(--rule-emphasis);
+  }
+
+  .related-card img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+  }
+
+  .related-info {
+    padding: var(--space-3);
+  }
+
+  .related-info h3 {
+    color: var(--ink);
+    margin: 0 0 var(--space-1) 0;
+    font-size: 0.9rem;
+  }
+
+  .price {
+    color: var(--ink-secondary);
+    font-size: 0.8rem;
+  }
+</style>

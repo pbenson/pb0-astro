@@ -1,0 +1,15 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: MakeCode Foray
+---
+import BouncingBalls from '../../components/physics/BouncingBalls.tsx'
+
+# MakeCode Foray
+
+A friend of mine's son is interested in coding, and we recently sat down to chat about it. Benjamin showed me some cool stuff he'd been doing with [MakeCode](https://arcade.makecode.com/). I hadn't known much about MakeCode, but the visual coding paradigm is a riff on [Scratch](/games/space-rocks).
+
+MakeCode has provided features that make it easier to get some basic physics working. Acceleration and velocity settings are provided, and they evidently have baked in [conservation of energy](https://en.wikipedia.org/wiki/Conservation_of_energy) as a default. My recollections of doing the same in Scratch were that without tweaking your velocity to maintain CoE, errors would accumulate, and bouncing objects might eventually come to a stop. Or maybe they gradually went faster and faster. If you watch this program for awhile, you will notice the particles hold the same energy, reaching the same [apoapsis*](https://en.wikipedia.org/wiki/Apsis) after every bounce. However, they do gradually lose their initial synchronization.
+
+*I was going to use the term _apogee_, but when I retrieved the Wikipedia link, I found that apogee refers to the furthest point from _Earth_. Since these balls are in orbits around some hypothetical gravity source (interrupted occasionally by hitting surfaces), the more general term _apoapsis_ applies. Who knew. I guess people that write for Wikipedia, bless their hearts.
+
+<BouncingBalls client:load />

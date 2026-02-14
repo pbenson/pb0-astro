@@ -1,0 +1,41 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Slow Sort
+---
+import SlowSort from '../../components/games/SlowSort.tsx'
+
+# Slow Sort
+
+## It's not [Quicksort…](https://en.wikipedia.org/wiki/Quicksort)
+
+Barry Cipra introduced us to another deceptively simple idea that gives rise to challenging questions.
+
+You have cards numbered from 1 to _n_. The cards are shuffled, and laid out left to right. Sort them by clicking a card that is not in the correct position. The card will move to its correct position. Continue clicking until all the cards are in the right place.
+
+Below is an example with 5 cards.
+
+<SlowSort client:load numCards={5} initialConfiguration="3,5,4,1,2" showConfiguration={false} />
+
+## Maximizing the number of moves
+
+Perhaps you tried to see how few moves it took for you to get the cards back in order. What is the greatest number of moves possible to sort the cards?
+
+## Changing the configuration
+
+Let's add the ability to change the starting configuration. Assuming that you are taking as many moves as possible for a given configuration, what configuration requires the most moves?
+
+Enter a list numbers 1…*n*, where *n* is at most 8. As long as the list contains exactly the numbers 1…*n* in any order, it will display your cards in that order.
+
+<SlowSort client:load numCards={5} initialConfiguration="4 5 3 2 1" showConfiguration={true} />
+
+## Changing the number of cards
+
+Sometimes it helps to reason about a problem by working with a smaller example. What can you conclude from starting with just 2 cards? 3? 4? Can you generalize?
+
+## Is it possible to create a cycle?
+
+Is it possible to find a starting configuration that after some number of moves, you find yourself back in the starting position? It turns out that is not possible, no matter how many cards you use. Can you prove that?
+
+## Read more about it…
+
+[Sergi Elizalde](https://math.dartmouth.edu/~sergi/) and [Peter Winkler](https://math.dartmouth.edu/~pw/) unpack this problem in their arxiv article, [Sorting by Placement and Shift](https://arxiv.org/pdf/0809.2957.pdf).

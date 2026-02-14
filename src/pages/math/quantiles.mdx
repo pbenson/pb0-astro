@@ -1,0 +1,35 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Quantiles
+---
+import QuantileExplorer from '../../components/math/QuantileExplorer.tsx'
+
+# Quantiles
+
+Most things that we observe vary. We don't pay attention to things that don't change. When we measure those _variables_, we often use statistics like _average_ or _median_ to summarize. But those statistics don't describe the variability of the distribution. _Standard deviation_ works well if the distribution is a bell curve, aka normally distributed. But many things we observe are not normally distributed. Yet we want a concise summary. One way to summarize is using _quantiles_, which involves dividing our observations into more-or-less equal size buckets of non-overlapping ranges of values. Common examples of quantiles are _quartiles_, with four buckets, and _deciles_, with ten buckets.
+
+## Rank and relative rank
+
+Statistics such as average, median, and standard deviation have consensus methods of calculation. Quantiles, remarkably, do not. In many situations, the differences between the various methods are likely to be non-material. This is especially true if there are a large number of observations with few duplicate values.
+
+In fact, there are even several ways to define the rank of sorted observations. My interest here is to describe a way of defining quantiles that is based on a consistent way of defining rank, is consistently applied regardless of the number of buckets, and neatly handles duplicate values.
+
+## When all the data is different
+
+If all the data is different, we can sort the data, and rank from 1 to _n_, where _n_ is the number of data. We can also normalize this rank so that it falls between 0 and 1, with 0.5 representing the median value.
+
+Below you can specify how many data you have, and see how those points are distributed along the number line from 0 to 1. Note that when sort and rank the data like this, the difference between adjacent observations is discarded--we only know that the two values are different.
+
+<QuantileExplorer client:load showNumberOfData={true} />
+
+If a data point lands on a bucket edge, then it belongs to the bucket immediately left of the tick mark.
+
+We distributed the points uniformly on the interval [0, 1]. We needed to make a choice about whether to assign the smallest datum to zero, and the largest to 1. We choose not to. While this point could be argued, it comes down to how we choose to define it. We do have our justifications however. If there is only one point, would you assign it to zero or one? We think it makes more sense to assign it to the midpoint, 0.5. In fact, if we are sampling from a distribution where we expect all data to be different, then the expected [order statistics](https://en.wikipedia.org/wiki/Order_statistic) will be distributed the way we are showing here.
+
+## When there is duplicate data
+
+If data is duplicated, we still sort it. We still rank it, but there is a post-processing step now: if there are _k_ duplicate values, we replace the rank of those values with the average rank of the _k_ values. That average is the same as the average of the first rank and the last rank. So, for example, if the values with rank 2, 3, and 4 are the same, then they all get assigned the average rank 3.
+
+Below we have data that includes duplicates. Adjacent dots of the same color have the same value, and so go in the same quantile bucket.
+
+<QuantileExplorer client:load observations="50, 100,100,100,300,300" showNumberOfData={false} />
