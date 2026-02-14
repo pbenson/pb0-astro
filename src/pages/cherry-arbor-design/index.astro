@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 
 const allProducts = await getCollection('cad-products');
@@ -93,7 +94,7 @@ blogPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date)
         {group.products.map((product) => (
           <a href={`/cherry-arbor-design/products/${product.data.slug}`} class={`product-card ${!product.data.featuredImage ? 'no-image' : ''}`}>
             {product.data.featuredImage && (
-              <img src={product.data.featuredImage} alt={product.data.title} class="product-image" loading="lazy" />
+              <Image src={product.data.featuredImage} alt={product.data.title} class="product-image" loading="lazy" width={360} />
             )}
             <div class="product-info">
               <h3>{product.data.title}</h3>

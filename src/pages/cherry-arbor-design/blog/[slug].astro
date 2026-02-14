@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -42,7 +43,7 @@ const relatedProducts = allProducts.filter((product) =>
           {relatedProducts.map((product) => (
             <a href={`/cherry-arbor-design/products/${product.data.slug}`} class="related-card">
               {product.data.featuredImage && (
-                <img src={product.data.featuredImage} alt={product.data.title} loading="lazy" />
+                <Image src={product.data.featuredImage} alt={product.data.title} loading="lazy" width={400} />
               )}
               <div class="related-info">
                 <h3>{product.data.title}</h3>

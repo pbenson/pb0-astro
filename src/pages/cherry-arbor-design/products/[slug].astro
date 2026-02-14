@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -27,8 +28,8 @@ const relatedPosts = allBlog.filter((post) =>
     <div class="product-layout">
       <div class="product-images">
         {product.data.images.length > 0 ? (
-          product.data.images.map((src: string, i: number) => (
-            <img src={src} alt={`${product.data.title} - image ${i + 1}`} loading={i === 0 ? 'eager' : 'lazy'} />
+          product.data.images.map((img, i: number) => (
+            <Image src={img} alt={`${product.data.title} - image ${i + 1}`} loading={i === 0 ? 'eager' : 'lazy'} width={480} />
           ))
         ) : (
           <div class="no-image">No image available</div>

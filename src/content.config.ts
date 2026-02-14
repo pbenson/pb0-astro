@@ -3,15 +3,15 @@ import { glob } from 'astro/loaders';
 
 const cadProducts = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/cad-products' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     slug: z.string(),
     description: z.string(),
     price: z.string(),
     priceRange: z.string().optional(),
     soldOut: z.boolean().default(false),
-    featuredImage: z.string().optional(),
-    images: z.array(z.string()).default([]),
+    featuredImage: image().optional(),
+    images: z.array(image()).default([]),
     variants: z.array(z.object({
       title: z.string(),
       price: z.string(),
@@ -28,11 +28,11 @@ const cadProducts = defineCollection({
 
 const cadBlog = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/cad-blog' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     slug: z.string(),
     date: z.string(),
-    featuredImage: z.string().optional(),
+    featuredImage: image().optional(),
     relatedProductSlugs: z.array(z.string()).default([]),
   }),
 });

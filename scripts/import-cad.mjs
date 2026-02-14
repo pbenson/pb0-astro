@@ -14,8 +14,8 @@ const astroRoot = resolve(import.meta.dirname, '..');
 
 const productsDir = join(astroRoot, 'src/content/cad-products');
 const blogDir = join(astroRoot, 'src/content/cad-blog');
-const imgDestProducts = join(astroRoot, 'public/images/cad/products');
-const imgDestBlog = join(astroRoot, 'public/images/cad/blog');
+const imgDestProducts = join(astroRoot, 'src/assets/cad/products');
+const imgDestBlog = join(astroRoot, 'src/assets/cad/blog');
 
 mkdirSync(productsDir, { recursive: true });
 mkdirSync(blogDir, { recursive: true });
@@ -148,7 +148,7 @@ for (const product of products) {
   const localImages = copyImages(imgSrc, imgDestProducts, slug);
 
   // Image paths for frontmatter
-  const imagePaths = localImages.map(f => `/images/cad/products/${slug}/${f}`);
+  const imagePaths = localImages.map(f => `../../assets/cad/products/${slug}/${f}`);
 
   // Featured image
   let featuredImage = '';
@@ -210,7 +210,7 @@ for (const post of blogPosts) {
   // Featured image
   let featuredImage = '';
   if (localImages.length > 0) {
-    featuredImage = `/images/cad/blog/${slug}/${localImages[0]}`;
+    featuredImage = `../../assets/cad/blog/${slug}/${localImages[0]}`;
   }
 
   // Related product slugs
@@ -218,7 +218,7 @@ for (const post of blogPosts) {
 
   // Insert images into content at reasonable points
   const imageMarkdown = localImages.map(f =>
-    `![](/images/cad/blog/${slug}/${f})`
+    `![](../../assets/cad/blog/${slug}/${f})`
   ).join('\n\n');
 
   const frontmatter = `---
@@ -235,7 +235,7 @@ relatedProductSlugs: ${yamlArray(relatedProductSlugs)}
 }
 
 console.log(`✓ Generated ${blogCount} blog post MDX files`);
-console.log(`✓ Images copied to public/images/cad/`);
+console.log(`✓ Images copied to src/assets/cad/`);
 console.log(`\nCross-references:`);
 console.log(`  ${productToBlog.size} products link to blog posts`);
 console.log(`  ${blogToProduct.size} blog posts link to products`);
