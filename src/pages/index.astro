@@ -1,12 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const SHOW_SECTIONS = false;
 ---
 
 <BaseLayout title="Home">
   <div class="home">
-    <h1>pete's notebook</h1>
+    <h1>...</h1>
     <p class="tagline">Interactive explorations in math, puzzles, and visualizations</p>
 
+    {SHOW_SECTIONS && (
     <section class="section">
       <h2>Puzzles</h2>
       <div class="card-grid">
@@ -24,7 +27,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </a>
       </div>
     </section>
+    )}
 
+    {SHOW_SECTIONS && (
     <section class="section">
       <h2>Math</h2>
       <div class="card-grid">
@@ -62,7 +67,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </a>
       </div>
     </section>
+    )}
 
+    {SHOW_SECTIONS && (
     <section class="section">
       <h2>Games</h2>
       <div class="card-grid">
@@ -70,13 +77,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <h3>Space Rocks</h3>
           <p>Classic asteroid-style game</p>
         </a>
-        <a href="/games/slow-sort" class="card">
+        <a href="/puzzles/slow-sort" class="card">
           <h3>Slow Sort</h3>
           <p>Sort cards one at a time — can you maximize the moves?</p>
         </a>
       </div>
     </section>
+    )}
 
+    {SHOW_SECTIONS && (
     <section class="section">
       <h2>Animations</h2>
       <div class="card-grid">
@@ -94,7 +103,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </a>
       </div>
     </section>
+    )}
 
+    {SHOW_SECTIONS && (
     <section class="section">
       <h2>Physics</h2>
       <div class="card-grid">
@@ -104,6 +115,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </a>
       </div>
     </section>
+    )}
 
     <section class="section">
       <h2>Cherry Arbor Design</h2>
@@ -115,6 +127,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </section>
 
+    {SHOW_SECTIONS && (
     <section class="section">
       <h2>Craft</h2>
       <div class="card-grid">
@@ -156,6 +169,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </a>
       </div>
     </section>
+    )}
   </div>
 </BaseLayout>
 

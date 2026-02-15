@@ -4,7 +4,9 @@ interface Props {
   description?: string;
 }
 
-const { title, description = "Pete's interactive notebook of math, puzzles, and visualizations" } = Astro.props;
+const { title, description = "Pete's interactive ... with math, puzzles, and visualizations" } = Astro.props;
+
+const SHOW_SECTIONS = false;
 ---
 
 <!DOCTYPE html>
@@ -13,7 +15,7 @@ const { title, description = "Pete's interactive notebook of math, puzzles, and 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <title>{title} | pete's notebook</title>
+    <title>{title} | ...</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/styles/global.css" />
     <script is:inline>
@@ -26,15 +28,13 @@ const { title, description = "Pete's interactive notebook of math, puzzles, and 
   </head>
   <body>
     <nav class="main-nav">
-      <a href="/" class="nav-brand">pete's notebook</a>
+      <a href="/" class="nav-brand">...</a>
       <div class="nav-links">
-        <a href="/animations">Animations</a>
+        {SHOW_SECTIONS && <a href="/animations">Animations</a>}
         <a href="/cherry-arbor-design">Cherry Arbor Design</a>
-        <a href="/craft">Craft</a>
-        <a href="/games">Games</a>
-        <a href="/math">Math</a>
-        <a href="/physics">Physics</a>
-        <a href="/puzzles">Puzzles</a>
+        {SHOW_SECTIONS && <a href="/craft">Craft</a>}
+        {SHOW_SECTIONS && <a href="/math">Math</a>}
+        {SHOW_SECTIONS && <a href="/puzzles">Puzzles</a>}
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
           <span class="sun-icon">☀️</span>
           <span class="moon-icon">🌙</span>

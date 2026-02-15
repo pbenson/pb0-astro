@@ -8,7 +8,8 @@ export function inDarkMode(): boolean {
 }
 
 export function bgColor(): string {
-  return inDarkMode() ? '#1a1a1a' : '#ffffff';
+  if (typeof document === 'undefined') return '#1e1e1c';
+  return getComputedStyle(document.documentElement).getPropertyValue('--paper').trim() || (inDarkMode() ? '#1e1e1c' : '#f5f2eb');
 }
 
 export function fgColor(): string {
