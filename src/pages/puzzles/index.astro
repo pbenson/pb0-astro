@@ -1,8 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const SHOW_SECTIONS = false;
 ---
 
 <BaseLayout title="Puzzles">
+  {SHOW_SECTIONS && (
+  <Fragment>
   <h1>Puzzles</h1>
   <p class="description">Interactive tiling puzzles and pattern challenges</p>
 
@@ -28,6 +32,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       <p>Sort cards one at a time — can you maximize the moves?</p>
     </a>
   </div>
+  </Fragment>
+  )}
 </BaseLayout>
 
 <style>
