@@ -1,11 +1,10 @@
 /**
- * Dark mode utilities using browser's prefers-color-scheme
- * Works with CSS variables defined in global.css
+ * Dark mode utilities using document class (matches site theme toggle)
  */
 
 export function inDarkMode(): boolean {
-  if (typeof window === 'undefined') return false;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (typeof document === 'undefined') return true; // default to dark (site default)
+  return document.documentElement.classList.contains('dark');
 }
 
 export function bgColor(): string {
@@ -25,14 +24,12 @@ export function strokeColorRgb(): number[] {
 }
 
 /**
- * Subscribe to dark mode changes
+ * Subscribe to dark mode changes via class mutations on <html>
  */
 export function onDarkModeChange(callback: (isDark: boolean) => void): () => void {
-  if (typeof window === 'undefined') return () => {};
+  if (typeof document === 'undefined') return () => {};
 
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  const handler = (e: MediaQueryListEvent) => callback(e.matches);
-
-  mediaQuery.addEventListener('change', handler);
-  return () => mediaQuery.removeEventListener('change', handler);
+  const observer = new MutationObserver(() => callback(inDarkMode()));
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  return () => observer.disconnect();
 }
