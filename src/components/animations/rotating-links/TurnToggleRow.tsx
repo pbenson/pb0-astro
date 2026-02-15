@@ -1,5 +1,5 @@
 import React from "react";
-import { tokens, monoFont } from "./designTokens";
+import { useIsDark, tokens, monoFont } from "./designTokens";
 
 interface TurnToggleRowProps {
   turns: string;
@@ -9,7 +9,8 @@ interface TurnToggleRowProps {
 }
 
 export default function TurnToggleRow({ turns, onChange, onAdd, onRemove }: Readonly<TurnToggleRowProps>) {
-  const t = tokens();
+  const dark = useIsDark();
+  const t = tokens(dark);
   const chars = turns.split("");
 
   const toggle = (i: number) => {
@@ -102,7 +103,7 @@ export default function TurnToggleRow({ turns, onChange, onAdd, onRemove }: Read
             key={i}
             style={{
               ...btnBase,
-              background: `${t.gridTeal}1a`,
+              background: t.gridTealBg,
             }}
             onClick={() => toggle(i)}
             onMouseEnter={(e) => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { tokens, monoFont } from "./designTokens";
+import { useIsDark, tokens, monoFont } from "./designTokens";
 
 interface NumberInputRowProps {
   label: string;
@@ -8,7 +8,8 @@ interface NumberInputRowProps {
 }
 
 export default function NumberInputRow({ label, values, onChange }: Readonly<NumberInputRowProps>) {
-  const t = tokens();
+  const dark = useIsDark();
+  const t = tokens(dark);
 
   const updateValue = (i: number, raw: string) => {
     const n = parseInt(raw, 10);
