@@ -171,29 +171,18 @@ export default function GameBoard({ configuration, resetTrigger }: Readonly<Game
   const boardWidth = Math.max(680, xForPos(numCards) + CARD_WIDTH / 2 + 20);
   const movesText = `${moveCount} move${moveCount === 1 ? "" : "s"}`;
 
-  /* Board background via CSS so the correct color applies before hydration,
-     avoiding a dark-mode flash on refresh in light mode. */
-  const boardCss = [
-    `.ss-board{background:#faf8f3}`,
-    `:root.dark .ss-board{background:#26261f}`,
-    `.ss-moves{color:#2a2a28}`,
-    `:root.dark .ss-moves{color:#e2dfd8}`,
-  ].join("");
-
   return (
     <div
-      className="ss-board"
       style={{
         position: "relative",
         width: boardWidth,
         height: 250,
+        background: t.paperRaised,
         borderRadius: 8,
         overflow: "hidden",
       }}
     >
-      <style dangerouslySetInnerHTML={{ __html: boardCss }} />
       <div
-        className="ss-moves"
         style={{
           position: "absolute",
           top: 18,
@@ -202,6 +191,7 @@ export default function GameBoard({ configuration, resetTrigger }: Readonly<Game
           fontWeight: 600,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
+          color: t.ink,
           fontFamily: monoFont,
         }}
       >

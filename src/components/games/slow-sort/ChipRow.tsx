@@ -173,19 +173,11 @@ export default function ChipRow({ order, onChange }: Readonly<ChipRowProps>) {
     border: `1px solid ${t.gridTeal}`,
   };
 
-  const chipCss = [
-    `.ss-chip{background:#faf8f3;color:#2a2a28;border:1px solid rgba(90,85,75,0.12)}`,
-    `:root.dark .ss-chip{background:#26261f;color:#e2dfd8;border:1px solid rgba(200,195,185,0.10)}`,
-    `.ss-chip-sel{background:hsla(165,45%,38%,0.1);border-color:hsl(165,45%,38%)}`,
-    `:root.dark .ss-chip-sel{background:hsla(165,45%,48%,0.1);border-color:hsl(165,45%,48%)}`,
-  ].join("");
-
   return (
     <div
       ref={containerRef}
       style={{ display: "flex", alignItems: "center", gap: GAP }}
     >
-      <style dangerouslySetInnerHTML={{ __html: chipCss }} />
       {/* Minus button */}
       <button
         type="button"
@@ -202,9 +194,11 @@ export default function ChipRow({ order, onChange }: Readonly<ChipRowProps>) {
         const isSelected = selected === index;
         const isDragging = dragging === index;
 
-        const className = isSelected ? "ss-chip ss-chip-sel" : "ss-chip";
         const style: React.CSSProperties = {
           ...chipBase,
+          background: isSelected ? t.gridTealBg : t.paperRaised,
+          color: t.ink,
+          border: `1px solid ${isSelected ? t.gridTeal : t.rule}`,
           zIndex: isDragging ? 10 : 1,
           transform: isDragging ? `translateX(${dragOffset}px)` : undefined,
           transition: isDragging ? "none" : chipBase.transition,
@@ -213,7 +207,6 @@ export default function ChipRow({ order, onChange }: Readonly<ChipRowProps>) {
         return (
           <div
             key={`chip-${index}`}
-            className={className}
             data-chip
             tabIndex={0}
             role="button"

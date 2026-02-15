@@ -22,6 +22,7 @@
 
   /* Accent — engineering graph paper teal */
   --grid-teal: hsl(165, 45%, 38%);
+  --grid-teal-bg: hsla(165, 45%, 38%, 0.1);
   --grid-teal-hover: hsl(165, 45%, 32%);
 
   /* Semantic */
@@ -84,6 +85,7 @@
     --rule-emphasis: rgba(200, 195, 185, 0.20);
 
     --grid-teal: hsl(165, 45%, 48%);
+    --grid-teal-bg: hsla(165, 45%, 48%, 0.1);
     --grid-teal-hover: hsl(165, 45%, 55%);
 
     --mark-success: hsl(150, 40%, 48%);
