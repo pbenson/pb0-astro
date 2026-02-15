@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import Point from "./Point"
-import LabeledInput from "./LabeledInput"
+import TurnToggleRow from "./TurnToggleRow"
 import { bgColor, strokeColorRgb } from "../../../utils/darkMode"
-import { limitToLR } from "../../../utils/limitToLR"
 
 interface FLSProps {
   initialTurns: string
@@ -69,12 +68,7 @@ export default function FixedLengthSegments(props: FLSProps) {
 
   return (
     <div className="center">
-      <LabeledInput
-        label="turns"
-        id="turnSequence"
-        value={turns}
-        onChange={(e) => setTurns(limitToLR(e.target.value))}
-      />
+      <TurnToggleRow turns={turns} onChange={setTurns} />
       <div ref={sketchRef} />
     </div>
   )

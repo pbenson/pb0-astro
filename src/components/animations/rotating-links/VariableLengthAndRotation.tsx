@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 import Point from "./Point"
 import LabeledInput from "./LabeledInput"
+import TurnToggleRow from "./TurnToggleRow"
 import { bgColor, strokeColorRgb } from "../../../utils/darkMode"
 import { parseIntList } from "../../../utils/parseIntList"
-import { limitToLR } from "../../../utils/limitToLR"
 
 interface VLRProps {
   initialTurns: string
@@ -78,12 +78,7 @@ export default function VariableLengthAndRotation(props: VLRProps) {
 
   return (
     <div>
-      <LabeledInput
-        label="turns"
-        id="turnSequence"
-        value={turns}
-        onChange={(e) => setTurns(limitToLR(e.target.value))}
-      />
+      <TurnToggleRow turns={turns} onChange={setTurns} />
       <LabeledInput
         label="lengths"
         id="segmentLengths"
