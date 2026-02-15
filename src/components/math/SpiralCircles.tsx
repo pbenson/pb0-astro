@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react"
-import { bgColor } from "../../utils/darkMode"
-import Slider from "../ui/Slider"
+import React, { useMemo, useState } from "react"
+
+const CANVAS_SIZE = 720
 
 const thetas = [
   NaN, NaN, NaN,
@@ -19,67 +19,141 @@ const r = [
   0.984185581045006, 0.985758410809943
 ]
 
+const monoFont =
+  "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace"
+
+const t = {
+  ink: "var(--ink)",
+  inkSecondary: "var(--ink-secondary)",
+  gridTeal: "var(--grid-teal)",
+  rule: "var(--rule)",
+}
+
+interface CircleData {
+  cx: number
+  cy: number
+  r: number
+}
+
+function computeCircles(circlesPerRevolution: number): CircleData[] {
+  const theta = thetas[circlesPerRevolution]
+  const radiusScalar = r[circlesPerRevolution]
+  const center = CANVAS_SIZE / 2
+  const pixelsPerUnit = CANVAS_SIZE * 3
+  const distanceBetweenCentersScalar = Math.sqrt(
+    (1 - radiusScalar * Math.cos(theta)) ** 2 +
+    (radiusScalar * Math.sin(theta)) ** 2
+  )
+
+  const circles: CircleData[] = []
+  let radius = pixelsPerUnit
+  let circleDiameter = (2 * radius * distanceBetweenCentersScalar) / (1 + radiusScalar)
+  let angle = 0
+
+  while (circleDiameter > 0.5) {
+    circles.push({
+      cx: center + radius * Math.cos(angle),
+      cy: center - radius * Math.sin(angle),
+      r: circleDiameter / 2,
+    })
+    angle += theta
+    radius *= radiusScalar
+    circleDiameter *= radiusScalar
+  }
+
+  return circles
+}
+
 export default function SpiralCircles() {
-  const sketchRef = useRef<HTMLDivElement>(null)
   const [circlesPerRevolution, setCirclesPerRevolution] = useState(6)
 
-  useEffect(() => {
-    let myp5: any = null
+  const circles = useMemo(
+    () => computeCircles(circlesPerRevolution),
+    [circlesPerRevolution],
+  )
 
-    import('p5').then(p5 => {
-      const s = (p5: any) => {
-        p5.setup = () => {
-          p5.createCanvas(720, 720)
-        }
-
-        p5.draw = () => {
-          p5.background(bgColor())
-          const theta = thetas[circlesPerRevolution]
-          const radiusScalar = r[circlesPerRevolution]
-
-          p5.translate(p5.width / 2, p5.height / 2)
-          p5.scale(1, -1)
-          p5.noFill()
-
-          let pixelsPerUnit = p5.width * 3
-          let angle = 0
-          const distanceBetweenCentersScalar = Math.sqrt(
-            (1 - radiusScalar * Math.cos(theta)) ** 2 +
-            (radiusScalar * Math.sin(theta)) ** 2
-          )
-          let radius = pixelsPerUnit
-          let circleDiameter = (2 * radius * distanceBetweenCentersScalar) / (1 + radiusScalar)
-
-          while (circleDiameter > 0.5) {
-            p5.noStroke()
-            const xCenter = radius * Math.cos(angle)
-            const yCenter = radius * Math.sin(angle)
-            p5.fill(0, 100, 240, 150)
-            p5.ellipse(xCenter, yCenter, circleDiameter, circleDiameter)
-            angle += theta
-            radius *= radiusScalar
-            circleDiameter *= radiusScalar
-          }
-        }
-      }
-      myp5 = new p5.default(s, sketchRef.current)
-    })
-
-    return () => {
-      if (myp5) myp5.remove()
-    }
-  }, [circlesPerRevolution])
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    fontSize: "11px",
+    fontWeight: 600,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    color: t.inkSecondary,
+    marginBottom: "6px",
+    fontFamily: monoFont,
+  }
 
   return (
     <div>
-      <Slider
-        label="Circles per revolution"
-        sliderMin={3}
-        sliderMax={20}
-        initialValue={circlesPerRevolution}
-        onChange={(value) => setCirclesPerRevolution(value)}
-      />
-      <div ref={sketchRef} />
+      <style>{`
+        .sc-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 16px; height: 16px; border-radius: 50%;
+          background: var(--grid-teal); border: none; cursor: pointer;
+          margin-top: -6px;
+        }
+        .sc-slider::-moz-range-thumb {
+          width: 16px; height: 16px; border-radius: 50%;
+          background: var(--grid-teal); border: none; cursor: pointer;
+        }
+        .sc-slider::-webkit-slider-runnable-track {
+          height: 4px; border-radius: 2px; background: var(--rule);
+        }
+        .sc-slider::-moz-range-track {
+          height: 4px; border-radius: 2px; background: var(--rule);
+        }
+      `}</style>
+
+      <div style={{ marginBottom: 16 }}>
+        <span style={labelStyle}>circles per revolution</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <input
+            type="range"
+            className="sc-slider"
+            min={3}
+            max={20}
+            value={circlesPerRevolution}
+            onChange={(e) => setCirclesPerRevolution(Number(e.target.value))}
+            style={{
+              flex: 1,
+              WebkitAppearance: "none",
+              appearance: "none" as never,
+              background: "transparent",
+              cursor: "pointer",
+            }}
+            aria-label="Circles per revolution"
+          />
+          <span
+            style={{
+              fontFamily: monoFont,
+              fontWeight: 700,
+              fontSize: 16,
+              color: t.ink,
+              minWidth: 28,
+              textAlign: "right",
+            }}
+          >
+            {circlesPerRevolution}
+          </span>
+        </div>
+      </div>
+
+      <svg
+        viewBox={`0 0 ${CANVAS_SIZE} ${CANVAS_SIZE}`}
+        width="100%"
+        style={{ maxWidth: "720px", display: "block", margin: "0 auto" }}
+      >
+        <rect width={CANVAS_SIZE} height={CANVAS_SIZE} style={{ fill: "var(--paper)" }} />
+        {circles.map((c, i) => (
+          <circle
+            key={i}
+            cx={c.cx}
+            cy={c.cy}
+            r={c.r}
+            fill="rgba(0, 100, 240, 0.59)"
+          />
+        ))}
+      </svg>
     </div>
   )
 }
