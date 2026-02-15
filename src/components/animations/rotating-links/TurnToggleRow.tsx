@@ -1,24 +1,14 @@
 import React from "react";
-import { inDarkMode } from "../../../utils/darkMode";
+import { tokens, monoFont } from "./designTokens";
 
 interface TurnToggleRowProps {
   turns: string;
   onChange: (turns: string) => void;
+  onAdd?: () => void;
+  onRemove?: (index: number) => void;
 }
 
-function tokens() {
-  const dark = inDarkMode();
-  return {
-    paperRaised: dark ? "#26261f" : "#faf8f3",
-    ink: dark ? "#e2dfd8" : "#2a2a28",
-    inkSecondary: dark ? "#a8a49c" : "#5c5a54",
-    inkTertiary: dark ? "#706d66" : "#8a8780",
-    gridTeal: dark ? "hsl(165, 45%, 48%)" : "hsl(165, 45%, 38%)",
-    rule: dark ? "rgba(200, 195, 185, 0.10)" : "rgba(90, 85, 75, 0.12)",
-  };
-}
-
-export default function TurnToggleRow({ turns, onChange }: Readonly<TurnToggleRowProps>) {
+export default function TurnToggleRow({ turns, onChange, onAdd, onRemove }: Readonly<TurnToggleRowProps>) {
   const t = tokens();
   const chars = turns.split("");
 
@@ -33,10 +23,12 @@ export default function TurnToggleRow({ turns, onChange }: Readonly<TurnToggleRo
     const updated = [...chars];
     updated.splice(i, 1);
     onChange(updated.join(""));
+    onRemove?.(i);
   };
 
   const add = () => {
     onChange(turns + "L");
+    onAdd?.();
   };
 
   const labelStyle: React.CSSProperties = {
@@ -47,7 +39,7 @@ export default function TurnToggleRow({ turns, onChange }: Readonly<TurnToggleRo
     textTransform: "uppercase",
     color: t.inkSecondary,
     marginBottom: "6px",
-    fontFamily: "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace",
+    fontFamily: monoFont,
   };
 
   const rowStyle: React.CSSProperties = {
@@ -67,7 +59,7 @@ export default function TurnToggleRow({ turns, onChange }: Readonly<TurnToggleRo
     justifyContent: "center",
     borderRadius: "4px",
     cursor: "pointer",
-    fontFamily: "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace",
+    fontFamily: monoFont,
     fontWeight: 600,
     fontSize: "16px",
     background: t.paperRaised,

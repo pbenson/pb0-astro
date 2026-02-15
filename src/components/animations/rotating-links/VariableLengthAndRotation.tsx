@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import Point from "./Point"
 import LabeledInput from "./LabeledInput"
 import TurnToggleRow from "./TurnToggleRow"
+import NumberInputRow from "./NumberInputRow"
 import { bgColor, strokeColorRgb } from "../../../utils/darkMode"
 import { parseIntList } from "../../../utils/parseIntList"
 
@@ -11,11 +12,29 @@ interface VLRProps {
   initialRotations: string
 }
 
+function parseNumbers(s: string): number[] {
+  return s.split(",").map(v => parseInt(v, 10) || 1)
+}
+
 export default function VariableLengthAndRotation(props: VLRProps) {
   const sketchRef = useRef(null);
   const [turns, setTurns] = useState(props.initialTurns || "LRR");
-  const [lengths, setLengths] = useState(props.initialLengths || "1,2,3");
+  const [lengths, setLengths] = useState<number[]>(() => parseNumbers(props.initialLengths || "1,2,3"));
   const [rotations, setRotations] = useState(props.initialRotations || "3,1,3");
+
+  const handleAdd = () => {
+    setLengths(prev => [...prev, 1]);
+    setRotations(prev => prev + ",1");
+  };
+
+  const handleRemove = (index: number) => {
+    setLengths(prev => prev.filter((_, i) => i !== index));
+    setRotations(prev => {
+      const arr = prev.split(",");
+      arr.splice(index, 1);
+      return arr.join(",");
+    });
+  };
 
   useEffect(() => {
     let myp5: any = null;
@@ -45,9 +64,8 @@ export default function VariableLengthAndRotation(props: VLRProps) {
           p5.translate(p5.width / 2, p5.height / 2);
           p5.scale(1, -1);
           p5.stroke(...strokeColorRgb(), 10)
-          const lengthArray = parseIntList(lengths);
           const unitSegmentLength =
-            (Math.min(p5.width, p5.height) / 2 / lengthArray.reduce((a: number, b: number) => a + b, 0)) * 0.9;
+            (Math.min(p5.width, p5.height) / 2 / lengths.reduce((a: number, b: number) => a + b, 0)) * 0.9;
 
           const rotationArray = parseIntList(rotations);
           let rotation = 0;
@@ -59,7 +77,7 @@ export default function VariableLengthAndRotation(props: VLRProps) {
             rotation += (turns.charAt(i) === "L" ? theta : -theta) * rotationArray[i];
             x = nextX;
             y = nextY;
-            const segmentUnits = lengthArray[i];
+            const segmentUnits = lengths[i] ?? 1;
             nextX = x + segmentUnits * unitSegmentLength * Math.cos(rotation);
             nextY = y + segmentUnits * unitSegmentLength * Math.sin(rotation);
             p5.line(x, y, nextX, nextY);
@@ -78,13 +96,8 @@ export default function VariableLengthAndRotation(props: VLRProps) {
 
   return (
     <div>
-      <TurnToggleRow turns={turns} onChange={setTurns} />
-      <LabeledInput
-        label="lengths"
-        id="segmentLengths"
-        value={lengths}
-        onChange={(e) => setLengths(e.target.value)}
-      />
+      <TurnToggleRow turns={turns} onChange={setTurns} onAdd={handleAdd} onRemove={handleRemove} />
+      <NumberInputRow label="lengths" values={lengths} onChange={setLengths} />
       <LabeledInput
         label="rotations"
         id="rotationMultiples"
