@@ -1,6 +1,8 @@
-import React, { useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 const CANVAS_SIZE = 720
+const LERP_SPEED = 0.08
+const SNAP_THRESHOLD = 0.005
 
 const thetas = [
   NaN, NaN, NaN,
@@ -35,9 +37,17 @@ interface CircleData {
   r: number
 }
 
-function computeCircles(circlesPerRevolution: number): CircleData[] {
-  const theta = thetas[circlesPerRevolution]
-  const radiusScalar = r[circlesPerRevolution]
+function lerpLookup(table: number[], n: number): number {
+  const lo = Math.floor(n)
+  const hi = Math.ceil(n)
+  if (lo === hi) return table[lo]
+  const frac = n - lo
+  return table[lo] * (1 - frac) + table[hi] * frac
+}
+
+function computeCircles(n: number): CircleData[] {
+  const theta = lerpLookup(thetas, n)
+  const radiusScalar = lerpLookup(r, n)
   const center = CANVAS_SIZE / 2
   const pixelsPerUnit = CANVAS_SIZE * 3
   const distanceBetweenCentersScalar = Math.sqrt(
@@ -65,12 +75,33 @@ function computeCircles(circlesPerRevolution: number): CircleData[] {
 }
 
 export default function SpiralCircles() {
-  const [circlesPerRevolution, setCirclesPerRevolution] = useState(6)
+  const [target, setTarget] = useState(6)
+  const [animated, setAnimated] = useState(6)
+  const animatedRef = useRef(6)
+  const rafRef = useRef(0)
 
-  const circles = useMemo(
-    () => computeCircles(circlesPerRevolution),
-    [circlesPerRevolution],
-  )
+  const animate = useCallback(() => {
+    const current = animatedRef.current
+    const goal = target
+    const diff = goal - current
+
+    if (Math.abs(diff) < SNAP_THRESHOLD) {
+      animatedRef.current = goal
+      setAnimated(goal)
+      return
+    }
+
+    animatedRef.current = current + diff * LERP_SPEED
+    setAnimated(animatedRef.current)
+    rafRef.current = requestAnimationFrame(animate)
+  }, [target])
+
+  useEffect(() => {
+    rafRef.current = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [animate])
+
+  const circles = useMemo(() => computeCircles(animated), [animated])
 
   const labelStyle: React.CSSProperties = {
     display: "block",
@@ -112,8 +143,8 @@ export default function SpiralCircles() {
             className="sc-slider"
             min={3}
             max={20}
-            value={circlesPerRevolution}
-            onChange={(e) => setCirclesPerRevolution(Number(e.target.value))}
+            value={target}
+            onChange={(e) => setTarget(Number(e.target.value))}
             style={{
               flex: 1,
               WebkitAppearance: "none",
@@ -133,7 +164,7 @@ export default function SpiralCircles() {
               textAlign: "right",
             }}
           >
-            {circlesPerRevolution}
+            {target}
           </span>
         </div>
       </div>
