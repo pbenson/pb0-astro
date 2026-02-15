@@ -271,73 +271,76 @@ export default function NessiesPuzzle({
     <div className={styles.panelContainer}>
       {/* Main puzzle panel */}
       <div className={styles.puzzlePanel}>
-        <svg
-          width={width}
-          height={height}
-          className={styles.svgContainer}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-        >
-          <g transform={`translate(${viewOffset.x}, ${viewOffset.y})`}>
-            {/* Render tiles */}
-            {tiles.map(tile => (
-              <g key={tile.id}>
-                <path
-                  d={getTilePathForRender(tile)}
-                  fill={getTileColor(tile.id)}
-                  className={styles.tile}
-                />
-                {renderSegmentHitAreas(tile)}
-                {renderSegmentMarkers(tile)}
-              </g>
-            ))}
-
-            {/* Render attachment preview */}
-            {renderAttachmentPreview()}
-          </g>
-        </svg>
-
-        <div className={styles.controls}>
-          <button className={styles.button} onClick={handleUndo} disabled={tiles.length <= 1}>
-            Undo
-          </button>
-          <button className={styles.button} onClick={handleReset}>
-            Reset
-          </button>
-          <button
-            className={styles.button}
-            onClick={() => setShowSegmentTypes(!showSegmentTypes)}
+        <div className={styles.svgWrapper}>
+          <svg
+            width={width}
+            height={height}
+            className={styles.svgContainer}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
           >
-            {showSegmentTypes ? 'Hide' : 'Show'} A/B
-          </button>
-          <button
-            className={styles.editShapeButton}
-            onClick={() => setIsDesignModalOpen(true)}
-          >
-            Edit Shape
-          </button>
-        </div>
+            <g transform={`translate(${viewOffset.x}, ${viewOffset.y})`}>
+              {/* Render tiles */}
+              {tiles.map(tile => (
+                <g key={tile.id}>
+                  <path
+                    d={getTilePathForRender(tile)}
+                    fill={getTileColor(tile.id)}
+                    className={styles.tile}
+                  />
+                  {renderSegmentHitAreas(tile)}
+                  {renderSegmentMarkers(tile)}
+                </g>
+              ))}
 
-        <div className={styles.legend}>
-          <div className={styles.legendItem}>
-            <div className={`${styles.legendDot} ${styles.legendDotA}`} />
-            <span>A segments</span>
-          </div>
-          <div className={styles.legendItem}>
-            <div className={`${styles.legendDot} ${styles.legendDotB}`} />
-            <span>B segments</span>
-          </div>
-        </div>
+              {/* Render attachment preview */}
+              {renderAttachmentPreview()}
+            </g>
+          </svg>
 
-        <div className={styles.info}>
-          {tiles.length} tile{tiles.length !== 1 ? 's' : ''} placed
-          {selectedSegment && attachmentOptions.length > 0 && (
-            <> • Option {(selectedOptionIndex % attachmentOptions.length) + 1}/{attachmentOptions.length} • ←/→ to cycle • Enter to place</>
-          )}
-          {selectedSegment && attachmentOptions.length === 0 && ` • No valid placements`}
-          {!selectedSegment && ` • Click an edge segment to attach a tile`}
+          {/* Top toolbar overlay */}
+          <div className={styles.toolbar}>
+            <div className={styles.toolbarLeft}>
+              <button className={styles.button} onClick={handleUndo} disabled={tiles.length <= 1}>
+                Undo
+              </button>
+              <button className={styles.button} onClick={handleReset}>
+                Reset
+              </button>
+              <button
+                className={styles.button}
+                onClick={() => setShowSegmentTypes(!showSegmentTypes)}
+              >
+                {showSegmentTypes ? 'Hide' : 'Show'} A/B
+              </button>
+              <button
+                className={styles.editShapeButton}
+                onClick={() => setIsDesignModalOpen(true)}
+              >
+                Edit Shape
+              </button>
+            </div>
+            <div className={styles.toolbarRight}>
+              <span className={styles.tileCount}>{tiles.length} tile{tiles.length !== 1 ? 's' : ''}</span>
+              <div className={styles.legendInline}>
+                <div className={`${styles.legendDot} ${styles.legendDotA}`} />
+                <span>A</span>
+                <div className={`${styles.legendDot} ${styles.legendDotB}`} />
+                <span>B</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom status overlay */}
+          <div className={styles.statusBar}>
+            {selectedSegment && attachmentOptions.length > 0 && (
+              <>Option {(selectedOptionIndex % attachmentOptions.length) + 1}/{attachmentOptions.length} &bull; &larr;/&rarr; to cycle &bull; Enter to place</>
+            )}
+            {selectedSegment && attachmentOptions.length === 0 && 'No valid placements'}
+            {!selectedSegment && 'Click an edge segment to attach a tile'}
+          </div>
         </div>
       </div>
 

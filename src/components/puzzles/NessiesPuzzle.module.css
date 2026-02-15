@@ -69,6 +69,71 @@
   cursor: pointer;
 }
 
+/* SVG wrapper for overlay positioning */
+.svgWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Top toolbar overlay */
+.toolbar {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 6px 10px;
+  background: var(--overlay-toolbar-bg, rgba(30, 30, 30, 0.75));
+  backdrop-filter: blur(8px);
+  border-radius: 6px;
+  z-index: 10;
+}
+
+.toolbarLeft {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.toolbarRight {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-color);
+}
+
+.tileCount {
+  white-space: nowrap;
+}
+
+.legendInline {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+/* Bottom status bar overlay */
+.statusBar {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  padding: 5px 10px;
+  background: var(--overlay-toolbar-bg, rgba(30, 30, 30, 0.75));
+  backdrop-filter: blur(8px);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: var(--text-color);
+  text-align: center;
+  z-index: 10;
+}
+
 .controls {
   display: flex;
   gap: 0.5rem;
