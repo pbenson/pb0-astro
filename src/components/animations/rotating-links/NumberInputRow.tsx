@@ -53,6 +53,7 @@ export default function NumberInputRow({ label, values, onChange }: Readonly<Num
     transition: "border-color 0.1s",
     padding: 0,
     MozAppearance: "textfield",
+    colorScheme: dark ? "dark" : "light",
   };
 
   return (
