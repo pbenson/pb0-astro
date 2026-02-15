@@ -1,6 +1,3 @@
-import { useState, useEffect } from "react"
-import { inDarkMode, onDarkModeChange } from "../../utils/darkMode"
-
 interface ImageProps {
   src: string
   darkSrc?: string
@@ -10,19 +7,36 @@ interface ImageProps {
 }
 
 export default function Image(props: ImageProps) {
-  const [isDark, setIsDark] = useState(inDarkMode())
+  const containerStyle = { display: 'block', marginLeft: 'auto', marginRight: 'auto', width: 'fit-content' }
 
-  useEffect(() => {
-    setIsDark(inDarkMode())
-    return onDarkModeChange(setIsDark)
-  }, [])
-
-  const src = isDark && props.darkSrc ? props.darkSrc : props.src
+  if (!props.darkSrc) {
+    return (
+      <div style={containerStyle}>
+        <img
+          src={props.src}
+          alt={props.alt}
+          width={props.width}
+          height={props.height} />
+      </div>
+    )
+  }
 
   return (
-    <div style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto', width: 'fit-content' }}>
+    <div style={containerStyle}>
+      <style>{`
+        .dark-mode-img { display: none; }
+        html.dark .dark-mode-img { display: inline; }
+        html.dark .light-mode-img { display: none; }
+      `}</style>
       <img
-        src={src}
+        className="light-mode-img"
+        src={props.src}
+        alt={props.alt}
+        width={props.width}
+        height={props.height} />
+      <img
+        className="dark-mode-img"
+        src={props.darkSrc}
         alt={props.alt}
         width={props.width}
         height={props.height} />

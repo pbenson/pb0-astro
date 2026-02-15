@@ -373,6 +373,13 @@ export default function Nessie2Puzzle({ width = 800, height = 600, initialScale 
     setSelectedOptionIndex(0);
   }, [selectedShape, nextId, tiles, scale]);
 
+  // Auto-place when only one valid placement exists
+  useEffect(() => {
+    if (attachmentOptions.length === 1) {
+      handleAttach(attachmentOptions[0]);
+    }
+  }, [attachmentOptions, handleAttach]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!selectedSegment || attachmentOptions.length === 0) return;

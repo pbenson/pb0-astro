@@ -99,6 +99,13 @@ export default function NessiesPuzzle({
     setSelectedOptionIndex(0);
   }, [nextId, tiles, scale]);
 
+  // Auto-place when only one valid placement exists
+  useEffect(() => {
+    if (attachmentOptions.length === 1) {
+      handleAttach(attachmentOptions[0]);
+    }
+  }, [attachmentOptions, handleAttach]);
+
   // Handle keyboard events for cycling through options
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
