@@ -13,7 +13,7 @@ export default function NumberInputRow({ label, values, onChange }: Readonly<Num
 
   const updateValue = (i: number, raw: string) => {
     const n = parseInt(raw, 10);
-    if (isNaN(n) || n < 1) return;
+    if (isNaN(n) || n < 1 || n > 9) return;
     const updated = [...values];
     updated[i] = n;
     onChange(updated);
@@ -65,6 +65,7 @@ export default function NumberInputRow({ label, values, onChange }: Readonly<Num
             key={i}
             type="number"
             min={1}
+            max={9}
             value={v}
             onChange={(e) => updateValue(i, e.target.value)}
             onFocus={(e) => {
