@@ -8,22 +8,24 @@ import VariableLengthAndRotation from '../../components/animations/rotating-link
 
 # Rotating Links
 
-This sketch explores the idea of an anchored point, with a series of linked line segments. If we imbue each link with a length, a direction to rotate, and a rate of rotation that is relative to the rotation of the preceding link, the links take on a interesting motion.
+This sketch explores the idea of an anchored point, with a series of linked line segments. If we imbue each link with a length, a direction to rotate, and a rate of rotation that is relative to the rotation of the preceding link, the links take on an interesting motion.
 
-This has literally several moving parts. So we started simply, with a single segment, rotating in one direction. That wasn't very interesting to look at, so we won't show that one. Next…
+This has literally several moving parts, so we'll build up one parameter at a time.
 
-## Vary the number and rotation direction
+## Rotation direction
 
-Enter the letters R (right for clockwise rotation) or L (left for counterclockwise rotation).
+Each segment rotates either left (counterclockwise) or right (clockwise). Toggle the buttons below to set the direction for each segment, and use **+** and **×** to add or remove segments.
 
 <FixedLengthSegments client:load initialTurns="LRL" />
 
-Enter the letters R (right for clockwise rotation) or L (left for counterclockwise rotation), and the corresponding link lengths as a comma-delimited list of integers.
+## Add variable lengths
+
+Now each segment also has its own length. Try changing the values to see how different proportions affect the motion.
 
 <VariableLengthSegments client:load initialTurns="RRR" initialLengths="2,1,4" />
 
-## Vary the segment rotation rates
+## Add variable rotation rates
 
-Enter the letters R (right for clockwise rotation) or L (left for counterclockwise rotation), the corresponding link lengths as a comma-delimited list of integers, and comma-delimited list of relative rotation rates for each link.
+Finally, each segment can rotate at a different rate relative to the one before it. Higher numbers mean faster rotation.
 
 <VariableLengthAndRotation client:load initialTurns="LRR" initialLengths="1,2,3" initialRotations="3,1,3" />
