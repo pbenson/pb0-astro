@@ -2,10 +2,65 @@
 layout: ../../layouts/BaseLayout.astro
 title: Spiral Circles
 ---
+import RingsOfCircles from '../../components/math/RingsOfCircles.tsx'
 import SpiralCircles from '../../components/math/SpiralCircles.tsx'
+import Image from '../../components/shared/Image.tsx'
 
-# Spiral Circles
+Many of the things we play around involve geometric _symmetry_. There are several types. This post is about an unusual symmetry. But first, a quick recap of some more well-known symmetries…
 
-Circles arranged in a spiral pattern where each circle is tangent to its neighbors. Adjust the number of circles per revolution to see different patterns.
+# reflective symmetry
+
+A 2D image has _reflective symmetry_ if you can flip the image over, and the image looks the same, such as this uppercase A in the Futura font:
+
+<div style={{textAlign: 'center'}}><img src="/img/spiral-circles/futuraA.svg" height="100" /></div>
+
+You can take any image and create reflective symmetry by placing it next to its reflection:
+
+<Image
+    client:load
+    src="/img/spiral-circles/rottweilerTwins.png"
+    darkSrc="/img/spiral-circles/rottweilerTwins.png"
+    alt="Rottweiler puppy with its reflection"
+    width="400" />
+
+# rotational symmetry
+
+An image has _rotational symmetry_ if it is possible to rotate the image less than 360°, and the image looks the same. This letter N is _invariant_ after rotating 180°. We say it has 2-fold rotational symmetry.
+
+<div style={{textAlign: 'center'}}><img src="/img/spiral-circles/futuraN.svg" height="100" /></div>
+
+You can take any image and create _n_-fold rotational symmetry by combining _n_ copies of the image, rotating each by a successive multiple of 360°/_n_. Steamboat Willie has 8-fold rotational symmetry here:
+
+<Image
+    client:load
+    src="/img/spiral-circles/steamboatWillies.png"
+    darkSrc="/img/spiral-circles/steamboatWilliesDarkMode.png"
+    alt="Steamboat Willie copied around a circle"
+    width="400" />
+
+# dilation symmetry
+
+A more unusual symmetry is an image with _dilation symmetry_. You can zoom in, or out, and at some point, the image looks the same again. Here we have created Willie with dilation symmetry. If you magnify the image 2x, it looks the same.
+
+<Image
+    client:load
+    src="/img/spiral-circles/steamboatWilliesDilated.jpg"
+    darkSrc="/img/spiral-circles/steamboatWilliesDilatedDarkMode.png"
+    alt="Steamboat Willie dilated"
+    width="400" />
+
+## circles packed on circles
+
+Another example of dilation symmetry uses a circle packing. A ring of circles, each tangent to its neighbor, forms the basic unit. That ring of circles is then scaled and rotated to be tangent to another ring. The image is determined by a single parameter, the number of circles in each ring:
+
+<RingsOfCircles client:load />
+
+Indeed, if you change the color of a circle in each ring, and do the same to its clockwise neighbor in the next smaller ring, you get a logarithmic spiral. Remarkably, although our eye cannot discern it, the spiral circles the center infinitely many times!
+
+## circles packed on a spiral
+
+Circles packed on circles have dilation symmetry, but also rotational symmetry and reflective symmetry. Can we pack circles in a way that has only dilation symmetry?
+
+One way to do this is by putting the circles with their centers on a logarithmic spiral. And to be packed, we want each circle tangent to the next in the spiral, as well as to the nearest circles in the previous and next arms of the spiral.
 
 <SpiralCircles client:load />

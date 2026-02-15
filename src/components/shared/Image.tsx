@@ -1,25 +1,31 @@
-import { inDarkMode, setColorModeFromReact } from "../ts/darkMode"
+import { useState, useEffect } from "react"
+import { inDarkMode, onDarkModeChange } from "../../utils/darkMode"
 
 interface ImageProps {
   src: string
   darkSrc?: string
   alt: string
-  width: string | number
+  width?: string | number
+  height?: string | number
 }
 
 export default function Image(props: ImageProps) {
-  let { src, width } = props
-  setColorModeFromReact()
-  if (inDarkMode() && props.darkSrc) {
-    src = props.darkSrc
-  }
-  // see https://stackoverflow.com/questions/4476526/do-i-use-img-object-or-embed-for-svg-files
+  const [isDark, setIsDark] = useState(inDarkMode())
+
+  useEffect(() => {
+    setIsDark(inDarkMode())
+    return onDarkModeChange(setIsDark)
+  }, [])
+
+  const src = isDark && props.darkSrc ? props.darkSrc : props.src
+
   return (
     <div style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto', width: 'fit-content' }}>
       <img
         src={src}
         alt={props.alt}
-        width={width} />
+        width={props.width}
+        height={props.height} />
     </div>
   )
 }
