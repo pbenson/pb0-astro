@@ -101,11 +101,7 @@ export default function TurnToggleRow({ turns, onChange, onAdd, onRemove }: Read
         {chars.map((ch, i) => (
           <div
             key={i}
-            style={{
-              ...btnBase,
-              background: t.gridTealBg,
-            }}
-            onClick={() => toggle(i)}
+            style={{ position: "relative" }}
             onMouseEnter={(e) => {
               const rm = e.currentTarget.querySelector("[data-remove]") as HTMLElement;
               if (rm) rm.style.opacity = "1";
@@ -114,17 +110,25 @@ export default function TurnToggleRow({ turns, onChange, onAdd, onRemove }: Read
               const rm = e.currentTarget.querySelector("[data-remove]") as HTMLElement;
               if (rm) rm.style.opacity = "0";
             }}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                toggle(i);
-              }
-            }}
-            aria-label={`Segment ${i + 1}: ${ch}. Click to toggle.`}
           >
-            {ch}
+            <div
+              style={{
+                ...btnBase,
+                background: t.gridTealBg,
+              }}
+              onClick={() => toggle(i)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  toggle(i);
+                }
+              }}
+              aria-label={`Segment ${i + 1}: ${ch}. Click to toggle.`}
+            >
+              {ch}
+            </div>
             {chars.length > 1 && (
               <span
                 data-remove
