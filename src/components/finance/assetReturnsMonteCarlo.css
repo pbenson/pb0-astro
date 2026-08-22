@@ -1,0 +1,137 @@
+.mc {
+  margin: var(--space-8) 0;
+}
+
+.mc .controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-6);
+  padding: var(--space-4);
+  background: var(--paper-inset);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+}
+
+.mc fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mc legend,
+.mc .control label {
+  padding: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.mc fieldset label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.95rem;
+}
+
+.mc .control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.mc select,
+.mc button {
+  padding: var(--space-2) var(--space-3);
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  background: var(--button-bg);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-sm);
+}
+
+.mc button {
+  cursor: pointer;
+}
+
+.mc button:hover {
+  background: var(--button-hover);
+}
+
+.mc select:focus-visible,
+.mc button:focus-visible,
+.mc input:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.mc .provenance,
+.mc .legend {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.mc .panels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin: var(--space-6) 0;
+}
+
+.mc .histogram {
+  margin: 0;
+}
+
+.mc .histogram figcaption {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--rule);
+}
+
+.mc .histogram .ticker {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.mc .histogram .name {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.mc .histogram .stats {
+  display: flex;
+  gap: var(--space-4);
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.mc .histogram .stats strong {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.mc .histogram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.mc .axis text {
+  fill: var(--ink-tertiary);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.mc .axis path,
+.mc .axis line {
+  stroke: var(--rule-emphasis);
+}

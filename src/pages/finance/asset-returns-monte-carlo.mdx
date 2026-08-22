@@ -1,0 +1,80 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Asset Returns Monte Carlo
+description: Simulating multivariate normal asset returns without a covariance matrix
+---
+import AssetReturnsMonteCarlo from '../../components/finance/AssetReturnsMonteCarlo.tsx'
+
+# Asset Returns Monte Carlo
+
+Simulated one-day returns for three stocks, generated in your browser from a year of
+daily closing prices. The returns are drawn from a multivariate normal distribution
+fitted to the historical data — but the covariance matrix is never built.
+
+## Methodology
+
+Start with a matrix **R** of historical log returns. Each row is a trading day, each
+column an asset, and each column has had its mean removed. With _T_ days and _N_
+assets, **R** is _T_ × _N_.
+
+The usual way to simulate correlated normal returns is to estimate the _N_ × _N_
+covariance matrix **S**, factor it as **S** = **LL'** by Cholesky decomposition, and
+set _r_ = **L**_z_ for a standard normal vector _z_ of length _N_. That works, but it
+makes you form and factor **S** first.
+
+You don't have to. Draw one standard normal per _day_ rather than per asset:
+
+```
+z ~ N(0, I_T)        one draw for each of the T historical days
+r = R'z              an N-vector of simulated asset returns
+```
+
+The covariance of _r_ is **R'R**, which _is_ the sample covariance of the historical
+returns. So _r_ has exactly the distribution you wanted, and **S** was never
+constructed. Each draw costs O(_TN_) instead of the O(*N*³) of a factorization, and
+the gap widens as the number of assets grows relative to the length of the history.
+The method also stays well behaved when _N_ exceeds _T_ — the case where the sample
+covariance matrix is singular and Cholesky simply fails.
+
+This is the approach described in Peter Benson and Peter Zangari,
+["A general approach to calculating VaR without volatilities and correlations"](https://web.archive.org/web/20070127075420if_/http://www.gloriamundi.org:80/picsresources/pbpzrmm2q97.pdf),
+_RiskMetrics Monitor_, Second Quarter 1997.
+
+### Weighting the observations
+
+Equal weighting treats a return from eleven months ago as being as informative as
+yesterday's. Exponential weighting instead discounts day _t_ by λ raised to its age
+in days, so recent market conditions dominate; RiskMetrics uses λ = 0.94 for daily
+data.
+
+Weighting drops into the same expression. Scale row _t_ of **R** by the square root
+of its weight _w_(_t_), normalized so the weights sum to one:
+
+```
+R̃[t] = sqrt(w(t)) · R[t]        then, as before,  r = R̃'z
+```
+
+which gives _r_ covariance Σ _w_(_t_) _r_(_t_)_r_(_t_)' — the weighted sample
+covariance. Equal weighting is the special case _w_(_t_) = 1/_T_, where the scale
+factor collapses to the familiar 1/√_T_.
+
+### What is simulated
+
+Each histogram below shows one-day continuously compounded returns, centered on zero.
+Dropping the historical drift is the usual convention for one-day risk: over a single
+day the estimated mean return is far smaller than the noise around it, so including it
+adds bias without adding information.
+
+The three assets are simulated *jointly* — every point in the run shares one draw of
+_z_ — so the correlations among them are preserved even though each panel shows only a
+marginal distribution.
+
+<AssetReturnsMonteCarlo client:load />
+
+## What to look for
+
+Switch from equal to exponential weighting and watch the histograms breathe: if the
+last few weeks have been calmer than the year as a whole, the distribution tightens,
+and the 95% value at risk pulls in toward zero. That responsiveness is the point of
+exponential weighting, and it is also its cost — the estimate reacts to recent quiet
+just as eagerly as to recent turbulence.
