@@ -12,7 +12,7 @@ export interface Section {
  * Section identity and ordering. Work sections come first so that filtering by
  * tier yields a sensible order without re-sorting.
  */
-export const SECTIONS: readonly Section[] = [
+const REGISTERED: Section[] = [
   {
     id: 'operations-research',
     title: 'Operations Research',
@@ -39,14 +39,7 @@ export const SECTIONS: readonly Section[] = [
     title: 'Recreational Math',
     description: 'Mathematical visualizations and explorations',
     tier: 'play',
-    order: 40,
-  },
-  {
-    id: 'games',
-    title: 'Games',
-    description: 'Interactive games and playable demos',
-    tier: 'play',
-    order: 50,
+    order: 25,
   },
   {
     id: 'animations',
@@ -56,20 +49,29 @@ export const SECTIONS: readonly Section[] = [
     order: 60,
   },
   {
-    id: 'physics',
-    title: 'Physics',
-    description: 'Simulations and explorations in physics',
-    tier: 'play',
-    order: 70,
-  },
-  {
     id: 'craft',
     title: 'Craft',
     description: 'Physical craft projects with mathematical themes',
     tier: 'play',
     order: 80,
   },
+  {
+    id: 'games',
+    title: 'Games',
+    description: 'Interactive games and playable demos',
+    tier: 'play',
+    order: 90,
+  },
 ];
+
+// `order` is the single source of truth for sequence: sort here so that the
+// exported array cannot disagree with the numbers written above it.
+export const SECTIONS: readonly Section[] = [...REGISTERED].sort((a, b) => a.order - b.order);
+
+const duplicate = SECTIONS.find((s, i) => i > 0 && SECTIONS[i - 1].order === s.order);
+if (duplicate) {
+  throw new Error(`Two sections share order ${duplicate.order}; see src/lib/sections.ts.`);
+}
 
 const BY_ID = new Map(SECTIONS.map((s) => [s.id, s]));
 

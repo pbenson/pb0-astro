@@ -54,7 +54,6 @@ export default function IzzyTriangles({ showUniqueCount = false }: IzzyProps) {
       const sketch = (p5: any) => {
         let izzyNumber = 0
         let uniqueCombinations = 0
-        const outerTriSideLength = p5.width * 0.4
 
         p5.setup = () => {
           p5.createCanvas(480, 480)
