@@ -2,7 +2,7 @@
 layout: ../../layouts/BaseLayout.astro
 title: Where to Look First
 description: The shortest tour and the best search order are not the same route
-blurb: "The shortest tour is not the best search order — a travelling salesman problem with the probabilities put back in"
+blurb: "Not the travelling salesman's route — you stop when you find it, so the legs at the end may never be driven"
 section: operations-research
 tier: work
 order: 10
@@ -49,6 +49,10 @@ $$
   + \sum_{i} \Bigl[\, d(s_i, s_{i+1}) \cdot \Pr[\text{not found through } s_i]
   + d(s_i, \text{home}) \cdot p_i \,\Bigr]
 $$
+
+The formula is written for general $p_i$, but this page holds them equal at
+$p_i = 1/n$ — the odds are the one thing you cannot vary here. Letting them differ is
+[the next page](/math/tsp-probabilities).
 
 **E[cost] no return** is the same expectation without the drive home from the
 final location. If you get that far the object must be there, so this is what
