@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
+import { unified } from '@astrojs/markdown-remark';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
@@ -14,19 +15,21 @@ export default defineConfig({
   // with no math JavaScript at runtime and no flash of unstyled formulas.
   // The MDX integration inherits this markdown config.
   markdown: {
-    remarkPlugins: [remarkMath],
-    rehypePlugins: [
-      [
-        rehypeKatex,
-        {
-          // Emit MathML alongside the styled HTML, so assistive technology gets
-          // real math rather than a pile of positioned spans.
-          output: 'htmlAndMathml',
-          // Surface mistakes at build time instead of rendering them in red.
-          strict: 'warn',
-          throwOnError: false,
-        },
+    processor: unified({
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [
+        [
+          rehypeKatex,
+          {
+            // Emit MathML alongside the styled HTML, so assistive technology
+            // gets real math rather than a pile of positioned spans.
+            output: 'htmlAndMathml',
+            // Surface mistakes at build time instead of rendering them in red.
+            strict: 'warn',
+            throwOnError: false,
+          },
+        ],
       ],
-    ],
+    }),
   },
 });
