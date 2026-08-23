@@ -15,6 +15,47 @@ Simulated one-day returns for three stocks, generated in your browser from a yea
 daily closing prices. The returns are drawn from a multivariate normal distribution
 fitted to the historical data — but the covariance matrix is never built.
 
+## Why avoid the covariance matrix
+
+The textbook route to correlated normal draws is to estimate the _N_ × _N_ covariance
+matrix **S**, factor it, and multiply the factor by a standard normal vector. Both
+standard factorizations have problems, and they are not the same problems.
+
+**Cholesky is brittle.** It requires **S** to be positive definite. That is not a
+technicality in this application: the sample covariance of _T_ days of _N_ factors has
+rank at most _T_, so whenever _N_ exceeds _T_ the matrix is singular and the
+factorization simply fails. Even short of that it is fragile, because near-linear
+dependence among factors is the norm rather than the exception — a stock and its ADR,
+two adjacent tenors on the same yield curve, an index and its largest constituent.
+Those pairs drive **S** toward singularity, and a Cholesky routine that survives them
+at all returns a factor contaminated by rounding.
+
+**SVD is robust but not cheap.** A singular value decomposition handles rank deficiency
+gracefully, which is the honest fix for the brittleness above. It does not, however,
+address either cost that actually binds:
+
+- You must still **form** **S**. That is _N_² entries of storage and O(_TN_²) work to
+  fill them.
+- You must still **factor** it, at O(_N_³) in the number of factors.
+
+In a real risk system _N_ is a factor count, not a handful of stocks — every tenor on
+every curve, every equity index, every exchange rate. At _N_ in the thousands, the
+cube dominates everything else in the calculation.
+
+**The decay factor bounds the other dimension.** Exponential weighting discounts day
+_t_ by λ raised to its age, and RiskMetrics uses λ between 0.94 and 0.97 for daily
+data. Those correspond to half-lives of about 11 and 23 trading days, and the weight
+surviving a full year is λ²⁵⁰ — roughly 2 × 10⁻⁷ at λ = 0.94, and 5 × 10⁻⁴ at
+λ = 0.97. Past a year of history you are adding rows that contribute nothing. So _T_
+is not a free parameter that grows with your ambitions; it is pinned near 250.
+
+That is the whole argument for drawing per day instead of per factor. The method below
+never forms **S** and never factors it, so the O(_N_²) storage and the O(_N_³)
+factorization both disappear. What remains is O(_TN_) per draw against a _T_ that λ has
+already capped — linear in the number of factors, with a constant of about 250. Per
+draw that beats multiplying by a Cholesky factor, which costs O(_N_²), once _N_ exceeds
+_T_; the setup cost and the storage it beats unconditionally.
+
 ## Methodology
 
 Start with a matrix **R** of historical log returns. Each row is a trading day, each
@@ -37,10 +78,7 @@ $$
 
 The covariance of $r$ is $R'R$, which _is_ the sample covariance of the
 historical returns. So $r$ has exactly the distribution you wanted, and $S$ was
-never constructed. Each draw costs O(_TN_) instead of the O(*N*³) of a factorization, and
-the gap widens as the number of assets grows relative to the length of the history.
-The method also stays well behaved when _N_ exceeds _T_ — the case where the sample
-covariance matrix is singular and Cholesky simply fails.
+never constructed — with the consequences for cost and conditioning described above.
 
 This is the approach described in Peter Benson and Peter Zangari,
 ["A general approach to calculating VaR without volatilities and correlations"](https://web.archive.org/web/20070127075420if_/http://www.gloriamundi.org:80/picsresources/pbpzrmm2q97.pdf),
@@ -56,8 +94,7 @@ data used on this page, and are tested to produce the same numbers.
 
 Equal weighting treats a return from eleven months ago as being as informative as
 yesterday's. Exponential weighting instead discounts day _t_ by λ raised to its age
-in days, so recent market conditions dominate; RiskMetrics uses λ = 0.94 for daily
-data.
+in days, so recent market conditions dominate.
 
 Weighting drops into the same expression. Scale row _t_ of **R** by the square root
 of its weight _w_(_t_), normalized so the weights sum to one:
