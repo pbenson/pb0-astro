@@ -7,8 +7,8 @@ import CreditBasket from '../../components/finance/CreditBasket.tsx'
 
 # A flat distribution of defaults
 
-Take a basket of _n_ credits. Each one defaults with the same probability _p_,
-and every pair of them has the same asset correlation _ρ_. How many defaults
+Take a basket of $n$ credits. Each one defaults with the same probability $p$,
+and every pair of them has the same asset correlation $\rho$. How many defaults
 should you expect, and how are they distributed?
 
 Two cases are easy. If the names are independent, the count is binomial. If they
@@ -21,24 +21,27 @@ Except at one point, where the answer is as simple as an answer can be.
 
 This is the Gaussian copula, the standard model for a credit basket. Each name
 has a latent asset return, and the name defaults when that return falls below a
-threshold. Matching the threshold to the default probability _p_ puts it at
-Φ⁻¹(_p_) standard deviations.
+threshold. Matching the threshold to the default probability $p$ puts it at
+$\Phi^{-1}(p)$ standard deviations.
 
-Correlation enters through a single market factor _M_:
+Correlation enters through a single market factor $M$:
 
-```
-R_k = √ρ · M + √(1−ρ) · Z_k
-```
+$$
+R_k = \sqrt{\rho}\, M + \sqrt{1-\rho}\, Z_k
+$$
 
-where _Z_ₖ is noise particular to name _k_. Conditional on the market — once _M_
+where $Z_k$ is noise particular to name $k$. Conditional on the market — once $M$
 is known — the names are independent, so the number of defaults is binomial with
 a shifted probability. Integrating that binomial over the market factor gives
 the distribution:
 
-```
-p(m)      = Φ( (Φ⁻¹(p) − m√ρ) / √(1−ρ) )
-Pr[N = j] = C(n,j) ∫ p(m)ʲ (1 − p(m))ⁿ⁻ʲ φ(m) dm
-```
+$$
+p(m) = \Phi\!\left( \frac{\Phi^{-1}(p) - m\sqrt{\rho}}{\sqrt{1-\rho}} \right)
+$$
+
+$$
+\Pr[N = j] = \binom{n}{j} \int_{-\infty}^{\infty} p(m)^{j}\,\bigl(1 - p(m)\bigr)^{n-j} \varphi(m)\, dm
+$$
 
 That integral normally wants a quadrature rule. Which is the point: closed-form
 answers are scarce here, and scarce enough that a single one is worth having,
@@ -46,43 +49,45 @@ if only to check the numerical methods against.
 
 ## The special case
 
-Look at _p_(_m_). It would be much friendlier if Φ⁻¹(_p_) were zero — that is,
-if **_p_ = ½**. And friendlier still if the √ρ and √(1−ρ) matched, which happens
-when **_ρ_ = ½**. Put both together and the conditional probability collapses to
+Look at $p(m)$. It would be much friendlier if $\Phi^{-1}(p)$ were zero — that
+is, if $p = \tfrac{1}{2}$. And friendlier still if the $\sqrt{\rho}$ and
+$\sqrt{1-\rho}$ matched, which happens when $\rho = \tfrac{1}{2}$. Put both
+together and the conditional probability collapses to
 
-```
-p(m) = Φ(−m) = 1 − Φ(m)
-```
+$$
+p(m) = \Phi(-m) = 1 - \Phi(m)
+$$
 
-Substituting _u_ = Φ(_m_) turns the integral into a beta integral, and out comes
-_B_(_n_−_j_+1, _j_+1). But there is a better route that needs no calculus at all.
+Substituting $u = \Phi(m)$ turns the integral into a beta integral, and out
+comes $B(n-j+1,\, j+1)$. But there is a better route that needs no calculus at
+all.
 
-With _p_ = ½ and _ρ_ = ½ the factor model is just
+With $p = \tfrac{1}{2}$ and $\rho = \tfrac{1}{2}$ the factor model is just
 
-```
-R_k = √½ (M + Z_k)
-```
+$$
+R_k = \sqrt{\tfrac{1}{2}}\,(M + Z_k)
+$$
 
-and name _k_ defaults when _R_ₖ < 0 — equivalently when _M_ < −_Z_ₖ. Write
-_M_* = −_M_, and name _k_ defaults exactly when _M_* > _Z_ₖ.
+and name $k$ defaults when $R_k < 0$ — equivalently when $M < -Z_k$. Write
+$M^{*} = -M$, and name $k$ defaults exactly when $M^{*} > Z_k$.
 
-So the number of defaults is *the number of the Z's that M\* exceeds*. Sort
-_M_* and the _n_ noise terms into one list. They are identically distributed
-continuous random variables, so _M_* is equally likely to land in any of the
-_n_+1 positions. Therefore
+So the number of defaults is *the number of the $Z$'s that $M^{*}$ exceeds*.
+Sort $M^{*}$ and the $n$ noise terms into one list. They are identically
+distributed continuous random variables, so $M^{*}$ is equally likely to land in
+any of the $n+1$ positions. Therefore
 
-```
-Pr[N = j] = 1/(n+1)
-```
+$$
+\Pr[N = j] = \frac{1}{n+1}
+$$
 
 Every outcome — no defaults, one default, all of them — is equally likely. The
-distribution is flat, and it stays flat for any _n_.
+distribution is flat, and it stays flat for any $n$.
 
 ## Try it
 
 Move the correlation and watch the binomial spread out, flatten, and then
-collapse toward the two-point distribution at _ρ_ = 1. The dashed line marks
-1/(_n_+1). It is only the answer at one setting, but you can see the shape pass
+collapse toward the two-point distribution at $\rho = 1$. The dashed line marks
+$1/(n+1)$. It is only the answer at one setting, but you can see the shape pass
 through it.
 
 <CreditBasket client:load />
@@ -90,7 +95,7 @@ through it.
 ## What to look for
 
 **The mean never moves.** Slide the correlation from zero to one and the
-expected number of defaults stays at _n_·_p_ throughout. Correlation does not
+expected number of defaults stays at $n p$ throughout. Correlation does not
 change how likely any individual name is to default; it changes only how much
 they default *together*. Everything correlation does, it does to the shape.
 
@@ -101,7 +106,7 @@ becomes far more likely, and so does none at all. This is the whole reason
 correlation matters for a tranche: a senior tranche only takes losses in the
 right tail, which barely exists at low correlation and is substantial at high.
 
-**Flat is not the same as random.** A uniform distribution over 0…_n_ defaults
+**Flat is not the same as random.** A uniform distribution over $0 \ldots n$ defaults
 looks like the least informative outcome possible, but it comes from a very
 specific pair of parameters. Move either one and the flatness goes.
 
@@ -109,9 +114,10 @@ specific pair of parameters. Move either one and the flatness goes.
 
 The distribution is computed by numerical integration over the market factor,
 using a composite Gauss-Legendre rule with panels placed on the transition
-region — as _ρ_ approaches 1 the conditional default probability becomes nearly
-a step function in _m_, and a fixed grid misses it. At _p_ = _ρ_ = ½ the
-computed values agree with 1/(_n_+1) to machine precision, which is the tightest
+region — as $\rho$ approaches 1 the conditional default probability becomes
+nearly a step function in $m$, and a fixed grid misses it. At
+$p = \rho = \tfrac{1}{2}$ the computed values agree with $1/(n+1)$ to machine
+precision, which is the tightest
 check available: the code has to reproduce an exact identity, not merely come
 close.
 

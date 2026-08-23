@@ -304,3 +304,38 @@ a:hover {
 .mt-2 { margin-top: var(--space-4); }
 .mb-1 { margin-bottom: var(--space-2); }
 .mb-2 { margin-bottom: var(--space-4); }
+
+/* ==========================================================================
+   Math (KaTeX)
+   Typeset at build time; these rules only fit it to the page and the theme.
+   ========================================================================== */
+
+.katex {
+  /* Inherit the ink colour so formulas follow light and dark mode. */
+  color: inherit;
+  font-size: 1.05em;
+}
+
+/* Display math can be wider than the column; let it scroll on its own rather
+   than forcing the page to scroll sideways. */
+.katex-display {
+  margin: var(--space-6) 0;
+  padding: var(--space-2) 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.katex-display > .katex {
+  text-align: center;
+}
+
+/* The MathML copy exists for assistive technology and must never be painted. */
+.katex .katex-mathml {
+  position: absolute;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 0;
+  border: 0;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+}

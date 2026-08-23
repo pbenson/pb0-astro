@@ -36,13 +36,15 @@ Below, every possible route is listed and measured three ways.
 location and back. It does not care about probabilities.
 
 **E[cost]** is the searcher's number. Walking the sequence, at each location
-either the object is there — with probability _p_ — and you pay the drive home,
+either the object is there — with probability $p$ — and you pay the drive home,
 or it is not, and you pay the leg to the next location, weighted by the chance
 the search is still running:
 
-```
-E[cost] = d(home, s₁) + Σᵢ [ d(sᵢ, sᵢ₊₁) · P(not found through sᵢ) + d(sᵢ, home) · pᵢ ]
-```
+$$
+\mathbb{E}[\text{cost}] = d(\text{home}, s_1)
+  + \sum_{i} \Bigl[\, d(s_i, s_{i+1}) \cdot \Pr[\text{not found through } s_i]
+  + d(s_i, \text{home}) \cdot p_i \,\Bigr]
+$$
 
 **E[cost] no return** is the same expectation without the drive home from the
 final location. If you get that far the object must be there, so this is what
@@ -79,7 +81,7 @@ time.
 
 ## Notes
 
-The number of routes is (_n_−1)!, which is why the location count stops at
+The number of routes is $(n-1)!$, which is why the location count stops at
 seven — 720 rows is already more than a page wants to show. Everything is
 computed by brute force over all orderings; nothing here is a heuristic, so
 "optimal" means optimal.
