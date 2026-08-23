@@ -74,6 +74,10 @@ describe('catalog validation', () => {
     expect(() => buildCatalog(stub({ section: 'nope' }))).toThrow('Unknown section');
   });
 
+  it('rejects a tier that disagrees with its section', () => {
+    expect(() => buildCatalog(stub({ section: 'finance', tier: 'play' }))).toThrow('which is tier');
+  });
+
   it('rejects an unknown tier', () => {
     expect(() => buildCatalog(stub({ tier: 'hobby' }))).toThrow('tier');
   });
@@ -118,6 +122,7 @@ describe('the real pages', () => {
       '/math/tsp-probabilities',
       '/finance/asset-returns-monte-carlo',
       '/finance/credit-basket',
+      '/math/quantiles',
     ]);
   });
 

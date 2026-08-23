@@ -62,9 +62,12 @@ export function buildCatalog(modules: Record<string, PageModule>): CatalogEntry[
     const tier = requireString(path, fm, 'tier') as Tier;
     const order = fm.order;
 
-    getSection(section); // throws on an unknown section id
+    const parent = getSection(section); // throws on an unknown section id
     if (!TIERS.includes(tier)) {
       fail(path, `has tier "${tier}", expected one of ${TIERS.join(' | ')}`);
+    }
+    if (tier !== parent.tier) {
+      fail(path, `is tier "${tier}" but sits in section "${section}", which is tier "${parent.tier}"`);
     }
     if (typeof order !== 'number' || !Number.isFinite(order)) {
       fail(path, 'is missing a numeric frontmatter "order"');
