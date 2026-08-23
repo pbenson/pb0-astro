@@ -1,7 +1,7 @@
 import { useMemo, type ReactElement } from 'react';
 import { format } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
-import type { ChartPalette } from './chartTokens';
+import type { ChartPalette } from '../shared/chartTokens';
 import {
   correlation,
   historicalCorrelation,

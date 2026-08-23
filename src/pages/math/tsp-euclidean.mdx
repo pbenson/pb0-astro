@@ -1,0 +1,92 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Where to Look First
+description: The shortest tour and the best search order are not the same route
+---
+import TspEuclidean from '../../components/math/TspEuclidean.tsx'
+
+# Where to look first
+
+You have lost something. It is at exactly one of several places, each equally
+likely. You start at home, drive to a place, look, and if it is not there you
+drive on to the next. When you find it, you drive home.
+
+In what order should you look?
+
+## Not the travelling salesman
+
+The obvious answer is the shortest tour — the travelling salesman's route
+through every location and back. That answer is wrong, and it is wrong in an
+interesting way.
+
+The salesman pays for every leg of the tour. A searcher does not. Once the
+object turns up, the rest of the route is never driven. So a leg late in the
+sequence only costs you if the search is still running when you reach it, and
+its price is discounted by the probability that it is.
+
+That changes what a good route looks like. It pays to take cheap stops early
+even when doing so makes the overall loop longer, because the expensive legs
+you have pushed toward the end may never be driven at all.
+
+## The three columns
+
+Below, every possible route is listed and measured three ways.
+
+**Tour length** is the salesman's number: the full loop, home through every
+location and back. It does not care about probabilities.
+
+**E[cost]** is the searcher's number. Walking the sequence, at each location
+either the object is there — with probability _p_ — and you pay the drive home,
+or it is not, and you pay the leg to the next location, weighted by the chance
+the search is still running:
+
+```
+E[cost] = d(home, s₁) + Σᵢ [ d(sᵢ, sᵢ₊₁) · P(not found through sᵢ) + d(sᵢ, home) · pᵢ ]
+```
+
+**E[cost] no return** is the same expectation without the drive home from the
+final location. If you get that far the object must be there, so this is what
+the search costs when the trip home from the last stop is somebody else's
+problem.
+
+The best value in each column is picked out in bold. When the bold entries land
+on different rows, the shortest tour and the best search order have come apart.
+
+## Try it
+
+Drag the locations. Home is the marked node; the rest each hold the object with
+equal probability. The shortest tour and the best search order are drawn in
+different colours, and when they coincide the page says so.
+
+<TspEuclidean client:load />
+
+## What to look for
+
+Start dragging one location far away from the others. The shortest tour has to
+reach it and come back regardless of where it sits in the sequence, so the tour
+length barely notices the order. The search cost does: pushing the remote
+location to the end of the sequence means you often never drive there.
+
+Then pull two locations close together, near home. Visiting that cheap pair
+first is nearly free, and it retires a large share of the probability early — so
+the whole tail of the route gets discounted.
+
+Put the locations evenly on a circle and the tension disappears. Every ordering
+of a symmetric layout looks alike to both objectives, and the two answers
+collapse onto the same route. Irregularity is what separates them: across
+randomly scattered five-location layouts, the two disagree about **72%** of the
+time.
+
+## Notes
+
+The number of routes is (_n_−1)!, which is why the location count stops at
+seven — 720 rows is already more than a page wants to show. Everything is
+computed by brute force over all orderings; nothing here is a heuristic, so
+"optimal" means optimal.
+
+The probabilities are uniform. That is a simplification: with unequal
+probabilities the same logic applies but the ordering pressure gets stronger,
+since a likely location early retires more of the probability mass.
+
+This is a rewrite of a p5.js sketch of mine from 2023. The arithmetic is ported
+exactly, and the port is tested against values captured from the original.

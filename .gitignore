@@ -23,6 +23,9 @@ pnpm-debug.log*
 # Playwright (temp)
 .screenshots/
 .playwright-mcp/
+test-results/
+playwright-report/
+blob-report/
 
 # jetbrains setting folder
 .idea/

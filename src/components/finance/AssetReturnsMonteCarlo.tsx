@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { quantile } from 'd3-array';
 import Histogram from './Histogram';
 import Correlogram from './Correlogram';
-import { useChartPalette } from './chartTokens';
+import { useChartPalette } from '../shared/chartTokens';
 import './assetReturnsMonteCarlo.css';
 import snapshot from '../../data/asset-prices.json';
 import {

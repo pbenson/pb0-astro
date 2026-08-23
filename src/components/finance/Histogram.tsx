@@ -4,7 +4,7 @@ import { bin } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { format } from 'd3-format';
-import type { ChartPalette } from './chartTokens';
+import type { ChartPalette } from '../shared/chartTokens';
 
 const WIDTH = 300;
 const HEIGHT = 168;
