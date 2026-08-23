@@ -95,32 +95,40 @@ exactly, and the port is tested against values captured from the original.
 
 ## Further reading
 
+The searcher's objective is the one with the smaller literature, and the one
+this page is actually about. It goes by *minimum latency* or the *traveling
+repairman problem*: minimise the sum of arrival times rather than the length of
+the tour. [Goemans and Kleinberg](https://math.mit.edu/~goemans/PAPERS/latency.pdf)
+give the clearest account of why it resists everything built for the salesman —
+the cost is not a sum over the edges of a tour, so an exchange argument that
+leaves the tour length alone can still wreck the expectation.
+
+[Exact and approximation algorithms for the expanding search problem](https://arxiv.org/abs/1911.08959)
+— Hermans, Leus and Matuschke, 2019. Minimising expected discovery time on a
+graph: this page's objective, with the algorithms the brute force here stands in
+for.
+
+That brute force is not laziness, it is a theorem: Trummel and Weisinger, "The
+Complexity of the Optimal Searcher Path Problem", *Operations Research* 34
+(1986), 324–327.
+
+On the salesman's side,
+[A (Slightly) Improved Approximation Algorithm for Metric TSP](https://arxiv.org/abs/2007.01409)
+— Karlin, Klein and Oveis Gharan, 2020 — is the first improvement on
+Christofides' factor of $3/2$ in forty-three years. The improvement is
+$10^{-36}$.
+
 [Bill Cook's TSP pages](https://www.math.uwaterloo.ca/tsp/) are the best single
-link on the subject: a [DIY app](https://www.math.uwaterloo.ca/tsp/app/diy.html)
+link on that side: a [DIY app](https://www.math.uwaterloo.ca/tsp/app/diy.html)
 for trying heuristics by hand, and solved tours through 49,687 UK pubs and 1.33
 billion Gaia stars. The
 [Mona Lisa challenge](https://www.math.uwaterloo.ca/tsp/data/ml/monalisa.html) —
-100,000 cities, $1,000, still open — is a good measure of the distance between
+100,000 cities, $1,000, still open — is a fair measure of the distance between
 seven locations and the state of the art.
-
 [Concorde](https://www.math.uwaterloo.ca/tsp/concorde/) is the exact solver of
-record; it has settled instances of 85,900 cities. Brute force over $(n-1)!$
-orderings is not how this is done at scale.
-
-Peter Norvig's
+record, having settled instances of 85,900 cities, and Peter Norvig's
 [Traveling Salesperson Problem notebook](https://nbviewer.org/url/norvig.com/ipython/TSP.ipynb)
-builds the problem up in Python from exhaustive search to heuristics, and is the
-closest thing in spirit to this page.
-
-[A (Slightly) Improved Approximation Algorithm for Metric TSP](https://arxiv.org/abs/2007.01409)
-— Karlin, Klein and Oveis Gharan, 2020. The first improvement on Christofides'
-factor of $3/2$ in forty-three years. The improvement is $10^{-36}$.
-
-The searcher's objective has its own literature, under the name *minimum
-latency* or the *traveling repairman problem*.
-[Goemans and Kleinberg](https://math.mit.edu/~goemans/PAPERS/latency.pdf) explain
-why it is the harder of the two: the cost is not a sum over the edges of the
-tour, so nothing built for the salesman carries across.
+builds the problem up in Python from exhaustive search to heuristics.
 
 The [graph version of this page](/math/tsp-probabilities) drops the plane
 entirely — arbitrary edge costs, unequal probabilities.
