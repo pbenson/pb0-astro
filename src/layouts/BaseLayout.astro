@@ -5,8 +5,6 @@ interface Props {
 }
 
 const { title, description = "Pete's interactive ... with math, puzzles, and visualizations" } = Astro.props;
-
-const SHOW_SECTIONS = true;
 ---
 
 <!DOCTYPE html>
@@ -31,10 +29,6 @@ const SHOW_SECTIONS = true;
     <nav class="main-nav">
       <a href="/" class="nav-brand">...</a>
       <div class="nav-links">
-        {SHOW_SECTIONS && <a href="/animations">Animations</a>}
-        {SHOW_SECTIONS && <a href="/craft">Craft</a>}
-        {SHOW_SECTIONS && <a href="/math">Math</a>}
-        {SHOW_SECTIONS && <a href="/puzzles">Puzzles</a>}
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
           <span class="sun-icon">☀️</span>
           <span class="moon-icon">🌙</span>

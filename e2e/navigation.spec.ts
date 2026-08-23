@@ -10,23 +10,18 @@ test.describe('Site navigation', () => {
     await expect(page.locator('.card-grid a').first()).toBeVisible();
   });
 
-  test('nav links are present', async ({ page }) => {
+  test('the nav carries only the brand and the theme toggle', async ({ page }) => {
     await page.goto('/');
     const nav = page.locator('nav');
-    // The section links are behind SHOW_SECTIONS in BaseLayout.
-    for (const name of ['Animations', 'Craft', 'Math', 'Puzzles']) {
-      await expect(nav.getByRole('link', { name })).toBeVisible();
-    }
     await expect(nav.getByRole('link', { name: '...' })).toHaveAttribute('href', '/');
     await expect(nav.getByRole('button', { name: 'Toggle dark mode' })).toBeVisible();
+    // Section links were removed; the home page's cards are the way in.
+    await expect(nav.getByRole('link')).toHaveCount(1);
   });
 
-  test('a nav link reaches its section index', async ({ page }) => {
-    await page.goto('/');
-    await page.locator('nav').getByRole('link', { name: 'Math' }).click();
-    await expect(page).toHaveURL(/\/math/);
-    // /math is the recreational half of the old Math section; the traveling
-    // repairman pages moved to the Operations Research heading.
+  test('the math index is the recreational half of the old section', async ({ page }) => {
+    await page.goto('/math');
+    // The traveling repairman pages moved to the Operations Research heading.
     await expect(
       page.getByRole('heading', { name: 'Recreational Math', level: 1, exact: true }),
     ).toBeVisible();
