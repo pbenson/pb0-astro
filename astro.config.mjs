@@ -9,7 +9,20 @@ import rehypeKatex from 'rehype-katex';
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [react(), mdx()],
+  integrations: [
+    react({
+      // Restore the node_modules exclusion that @vitejs/plugin-react applies by
+      // default. It reads `exclude ?? defaultExcludeRE`, so any value replaces
+      // the default rather than adding to it — and @astrojs/react always passes
+      // one (/\.astro$/). The default is therefore always lost, and Babel ends
+      // up transforming Vite's pre-bundled deps: the react-dom client chunk is
+      // over 500KB, which is what prints
+      //   [BABEL] Note: The code generator has deoptimised the styling of ...
+      // Nothing under node_modules ships JSX here, so skipping it is free.
+      exclude: [/\/node_modules\//],
+    }),
+    mdx(),
+  ],
 
   vite: {
     optimizeDeps: {
