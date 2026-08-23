@@ -92,3 +92,35 @@ since a likely location early retires more of the probability mass.
 
 This is a rewrite of a p5.js sketch of mine from 2023. The arithmetic is ported
 exactly, and the port is tested against values captured from the original.
+
+## Further reading
+
+[Bill Cook's TSP pages](https://www.math.uwaterloo.ca/tsp/) are the best single
+link on the subject: a [DIY app](https://www.math.uwaterloo.ca/tsp/app/diy.html)
+for trying heuristics by hand, and solved tours through 49,687 UK pubs and 1.33
+billion Gaia stars. The
+[Mona Lisa challenge](https://www.math.uwaterloo.ca/tsp/data/ml/monalisa.html) —
+100,000 cities, $1,000, still open — is a good measure of the distance between
+seven locations and the state of the art.
+
+[Concorde](https://www.math.uwaterloo.ca/tsp/concorde/) is the exact solver of
+record; it has settled instances of 85,900 cities. Brute force over $(n-1)!$
+orderings is not how this is done at scale.
+
+Peter Norvig's
+[Traveling Salesperson Problem notebook](https://nbviewer.org/url/norvig.com/ipython/TSP.ipynb)
+builds the problem up in Python from exhaustive search to heuristics, and is the
+closest thing in spirit to this page.
+
+[A (Slightly) Improved Approximation Algorithm for Metric TSP](https://arxiv.org/abs/2007.01409)
+— Karlin, Klein and Oveis Gharan, 2020. The first improvement on Christofides'
+factor of $3/2$ in forty-three years. The improvement is $10^{-36}$.
+
+The searcher's objective has its own literature, under the name *minimum
+latency* or the *traveling repairman problem*.
+[Goemans and Kleinberg](https://math.mit.edu/~goemans/PAPERS/latency.pdf) explain
+why it is the harder of the two: the cost is not a sum over the edges of the
+tour, so nothing built for the salesman carries across.
+
+The [graph version of this page](/math/tsp-probabilities) drops the plane
+entirely — arbitrary edge costs, unequal probabilities.

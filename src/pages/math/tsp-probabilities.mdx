@@ -98,3 +98,36 @@ This is a rewrite of a p5.js sketch of mine from 2023. The sketch drew a
 probability under every node but always set them equal; the unequal case is new
 here. The arithmetic is ported from the original, with one cancelling division
 removed, and the port is tested against values captured from the sketch itself.
+
+## Further reading
+
+The searcher's objective is known in the literature as *minimum latency*, or the
+*traveling repairman problem*: minimise the sum of arrival times rather than the
+length of the tour, weighted here by the probability of each arrival mattering.
+[Goemans and Kleinberg](https://math.mit.edu/~goemans/PAPERS/latency.pdf) give
+the clearest account of why it resists the salesman's machinery — the cost is
+not a sum over the edges of a tour, so an exchange argument that leaves the tour
+length alone can still wreck the expectation.
+
+[Exact and approximation algorithms for the expanding search problem](https://arxiv.org/abs/1911.08959)
+— Hermans, Leus and Matuschke, 2019. Minimising expected discovery time on a
+graph, which is this page's objective, with the algorithms brute force here
+stands in for.
+
+[Mining Coal or Finding Terrorists: The Expanding Search Paradigm](https://researchonline.lse.ac.uk/id/eprint/50501/1/__lse.ac.uk_storage_LIBRARY_Secondary_libfile_shared_repository_Content_Lidbetter,%20T_Mining%20coal%20finding%20terrorists_Lidbetter_Mining%20coal%20finding%20terrorists_2015.pdf)
+— Alpern and Lidbetter, 2013. A third cost model beside the salesman's and this
+one: the searcher resumes from anywhere already reached, rather than paying to
+travel there again.
+
+[A Review of Minimum Cost Box Searching Games](https://arxiv.org/abs/2502.10551)
+— Lidbetter, 2025. What the problem becomes with the travel costs taken out: the
+optimal order is then just the boxes sorted by probability over search cost, a
+rule found independently by Bellman, Blackwell, Black and Kadane. Travel costs
+are exactly what break that index.
+
+That the brute force here is not laziness is a theorem: Trummel and Weisinger,
+"The Complexity of the Optimal Searcher Path Problem", *Operations Research* 34
+(1986), 324–327.
+
+For the salesman's side of the problem, [Bill Cook's TSP pages](https://www.math.uwaterloo.ca/tsp/)
+and the [Concorde solver](https://www.math.uwaterloo.ca/tsp/concorde/).
