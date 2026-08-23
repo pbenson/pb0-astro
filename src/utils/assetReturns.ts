@@ -207,3 +207,27 @@ export function correlation(a: ArrayLike<number>, b: ArrayLike<number>): number 
   }
   return sumAB / Math.sqrt(sumAA * sumBB);
 }
+
+/**
+ * Weighted historical correlation between two assets, read straight off the
+ * return matrix as the normalized inner product of two columns.
+ *
+ * This is the one number the simulation must reproduce but a marginal histogram
+ * cannot show, so the correlogram compares it against the simulated value.
+ */
+export function historicalCorrelation(matrix: ReturnMatrix, i: number, j: number): number {
+  const a = matrix.columns[i];
+  const b = matrix.columns[j];
+  return correlation(a, b);
+}
+
+/** Every unordered pair of asset indices, in stable (i < j) order. */
+export function assetPairs(count: number): { readonly i: number; readonly j: number }[] {
+  const pairs: { i: number; j: number }[] = [];
+  for (let i = 0; i < count; i++) {
+    for (let j = i + 1; j < count; j++) {
+      pairs.push({ i, j });
+    }
+  }
+  return pairs;
+}

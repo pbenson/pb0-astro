@@ -69,16 +69,22 @@
 }
 
 .mc .provenance,
-.mc .legend {
+.mc .chart-note {
   font-size: 0.85rem;
   color: var(--text-muted);
 }
 
 .mc .panels {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  margin: var(--space-6) 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin: var(--space-6) 0 var(--space-3);
+}
+
+@media (max-width: 700px) {
+  .mc .panels {
+    grid-template-columns: 1fr;
+  }
 }
 
 .mc .histogram {
@@ -88,27 +94,36 @@
 .mc .histogram figcaption {
   display: flex;
   align-items: baseline;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--rule);
+  gap: var(--space-2);
+  padding-bottom: var(--space-1);
 }
 
 .mc .histogram .ticker {
   font-weight: 600;
   letter-spacing: 0.04em;
+  color: var(--text-color);
 }
 
 .mc .histogram .name {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+}
+
+.mc .histogram .plot {
+  position: relative;
+}
+
+.mc .histogram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
 }
 
 .mc .histogram .stats {
   display: flex;
   gap: var(--space-4);
-  margin-left: auto;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
@@ -118,11 +133,70 @@
   font-weight: 600;
 }
 
-.mc .histogram svg {
+.mc .annotation,
+.mc .cell-note {
+  font-size: 10px;
+}
+
+.mc .scale-label {
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+}
+
+.mc .coefficient {
+  font-size: 21px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.mc .diagonal-label {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.mc .tooltip {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-1) var(--space-2);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule-emphasis);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.mc .tooltip .share {
+  color: var(--text-muted);
+}
+
+.mc .correlogram {
+  margin: var(--space-6) 0 var(--space-3);
+}
+
+.mc .correlogram svg {
   display: block;
   width: 100%;
+  max-width: 520px;
   height: auto;
-  overflow: visible;
+  margin: 0 auto;
+}
+
+.mc .correlogram figcaption {
+  max-width: 60ch;
+  margin: var(--space-4) auto 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.mc h3 {
+  margin-top: var(--space-8);
 }
 
 .mc .axis text {

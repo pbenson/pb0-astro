@@ -44,3 +44,18 @@ export-state/
 # contributors to accidentally commit upstream issue databases.
 # The JSONL files (issues.jsonl, interactions.jsonl) and config files
 # are tracked by git by default since no pattern above ignores them.
+
+# Dolt backend (bd 1.x) - local database and server runtime state.
+# Added manually: the generated ignore list predates the Dolt storage engine.
+dolt/
+embeddeddolt/
+.bd-dolt-ok
+dolt-access.lock
+dolt-server.lock
+dolt-server.log
+dolt-server.pid
+dolt-server.port
+ephemeral.sqlite3
+.auto-import-issues.jsonl
+backup/
+.migration-hint-ts

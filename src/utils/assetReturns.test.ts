@@ -9,6 +9,8 @@ import {
   historicalVolatility,
   standardDeviation,
   correlation,
+  historicalCorrelation,
+  assetPairs,
   type Weighting,
 } from './assetReturns';
 
@@ -212,5 +214,64 @@ describe('simulateReturns', () => {
       0,
     );
     expect(ewma).toBeGreaterThan(equal);
+  });
+});
+
+describe('historicalCorrelation', () => {
+  it('is one for an asset against itself', () => {
+    const matrix = buildReturnMatrix(syntheticReturns(2, 80), { kind: 'equal' });
+    expect(historicalCorrelation(matrix, 0, 0)).toBeCloseTo(1, 12);
+  });
+
+  it('is symmetric', () => {
+    const matrix = buildReturnMatrix(syntheticReturns(3, 80), { kind: 'equal' });
+    expect(historicalCorrelation(matrix, 0, 2)).toBeCloseTo(
+      historicalCorrelation(matrix, 2, 0),
+      12,
+    );
+  });
+
+  it('matches the weighted covariance computed the conventional way', () => {
+    const returns = syntheticReturns(3, 150);
+    const weighting = { kind: 'ewma', lambda: 0.94 } as const;
+    const matrix = buildReturnMatrix(returns, weighting);
+
+    const expected =
+      weightedCovariance(returns, weighting, 0, 1) /
+      Math.sqrt(
+        weightedCovariance(returns, weighting, 0, 0) *
+          weightedCovariance(returns, weighting, 1, 1),
+      );
+
+    expect(historicalCorrelation(matrix, 0, 1)).toBeCloseTo(expected, 12);
+  });
+
+  it('detects a deliberately anticorrelated pair', () => {
+    const base = syntheticReturns(1, 100)[0];
+    const matrix = buildReturnMatrix([base, base.map((r) => -r)], { kind: 'equal' });
+    expect(historicalCorrelation(matrix, 0, 1)).toBeCloseTo(-1, 12);
+  });
+
+  it('is the target the simulation reproduces', () => {
+    const matrix = buildReturnMatrix(syntheticReturns(3, 250), { kind: 'equal' });
+    const simulated = simulateReturns(matrix, 40_000, mulberry32(31));
+    expect(correlation(simulated[0], simulated[2])).toBeCloseTo(
+      historicalCorrelation(matrix, 0, 2),
+      2,
+    );
+  });
+});
+
+describe('assetPairs', () => {
+  it('enumerates each unordered pair once', () => {
+    expect(assetPairs(3)).toEqual([
+      { i: 0, j: 1 },
+      { i: 0, j: 2 },
+      { i: 1, j: 2 },
+    ]);
+  });
+
+  it('is empty for a single asset', () => {
+    expect(assetPairs(1)).toEqual([]);
   });
 });
