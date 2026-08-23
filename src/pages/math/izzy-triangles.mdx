@@ -1,8 +1,8 @@
 ---
 layout: ../../layouts/BaseLayout.astro
 title: Izzy Triangles
-description: "Hexagon colorings and rotational symmetry"
-blurb: "Hexagon colorings and rotational symmetry"
+description: "Triangle colorings and rotational symmetry"
+blurb: "Colorings of a triangle cut into six, counted up to rotation"
 section: math
 tier: play
 order: 70
@@ -11,6 +11,6 @@ import IzzyTriangles from '../../components/math/IzzyTriangles.tsx'
 
 # Izzy Triangles
 
-Exploring the 64 possible colorings of a hexagon divided into 6 triangular segments. Each triangle can be black or white, but due to rotational symmetry, only 14 patterns are unique.
+Exploring the 64 possible colorings of an equilateral triangle cut into 6 segments by its medians. Each segment can be black or white, but the figure is unchanged by a third of a turn, so colorings come in orbits of three — and only 24 of the 64 are distinct. The running count is the number of distinct patterns seen so far.
 
 <IzzyTriangles client:load showUniqueCount={true} />
