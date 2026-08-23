@@ -1,0 +1,117 @@
+.basket {
+  margin: var(--space-8) 0;
+}
+
+.basket .controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: end;
+  gap: var(--space-4) var(--space-6);
+  padding: var(--space-4);
+  background: var(--paper-inset);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+}
+
+@media (max-width: 640px) {
+  .basket .controls {
+    grid-template-columns: 1fr;
+  }
+}
+
+.basket .control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.basket .control label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.basket .control strong {
+  color: var(--text-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.basket input[type='range'] {
+  width: 100%;
+  accent-color: var(--accent-color);
+}
+
+.basket button {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: var(--space-2) var(--space-3);
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  background: var(--button-bg);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.basket button:hover {
+  background: var(--button-hover);
+}
+
+.basket :focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.basket figure {
+  margin: var(--space-6) 0 0;
+}
+
+.basket svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.basket .axis text {
+  fill: var(--ink-tertiary);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.basket .axis line {
+  stroke: var(--rule-emphasis);
+}
+
+.basket .axis-title {
+  font-size: 12px;
+}
+
+.basket .reference {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.basket figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-6);
+  margin-top: var(--space-3);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.basket figcaption strong {
+  color: var(--text-color);
+}
+
+.basket figcaption .note {
+  flex: 1 1 22ch;
+  font-variant-numeric: normal;
+}
