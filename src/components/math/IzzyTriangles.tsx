@@ -61,8 +61,16 @@ export default function IzzyTriangles({ showUniqueCount = false }: IzzyProps) {
         }
 
         p5.draw = () => {
-          if (izzyNumber > 63) izzyNumber = 0
+          // The tally counts distinct patterns within one pass over the 64
+          // colourings, so it restarts with the cycle.
+          if (izzyNumber > 63) {
+            izzyNumber = 0
+            uniqueCombinations = 0
+          }
 
+          // Nothing else clears the canvas, and the triangle only repaints its
+          // own area — without this the tally digits pile up on each other.
+          p5.clear()
           p5.translate(p5.width / 2, p5.height * 0.6)
           p5.scale(1, -1)
           p5.noStroke()
@@ -86,19 +94,23 @@ export default function IzzyTriangles({ showUniqueCount = false }: IzzyProps) {
           })
 
           if (showUniqueCount) {
+            // A colouring is new if no rotation of it by a third of a turn —
+            // a two-bit rotation of the six-bit pattern — comes out smaller.
             let testNumber = izzyNumber
             let isNew = true
             for (let i = 0; i < 3; ++i) {
               testNumber = Math.floor(testNumber / 4) + (testNumber % 4) * 16
               if (testNumber < izzyNumber) isNew = false
             }
-            if (isNew) {
-              ++uniqueCombinations
-              p5.textSize(32)
-              p5.fill(128)
-              p5.scale(1, -1)
-              p5.text('' + uniqueCombinations, -p5.textWidth('' + uniqueCombinations) / 2, p5.height * 0.1)
-            }
+            if (isNew) ++uniqueCombinations
+
+            // Drawn every frame, not only on the new ones, so the tally stays
+            // legible while a repeat is on screen.
+            const label = '' + uniqueCombinations
+            p5.textSize(32)
+            p5.fill(128)
+            p5.scale(1, -1)
+            p5.text(label, -p5.textWidth(label) / 2, p5.height * 0.1)
           }
           ++izzyNumber
         }
