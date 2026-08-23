@@ -21,14 +21,22 @@ The textbook route to correlated normal draws is to estimate the _N_ × _N_ cova
 matrix **S**, factor it, and multiply the factor by a standard normal vector. Both
 standard factorizations have problems, and they are not the same problems.
 
-**Cholesky is brittle.** It requires **S** to be positive definite. That is not a
-technicality in this application: the sample covariance of _T_ days of _N_ factors has
-rank at most _T_, so whenever _N_ exceeds _T_ the matrix is singular and the
-factorization simply fails. Even short of that it is fragile, because near-linear
-dependence among factors is the norm rather than the exception — a stock and its ADR,
-two adjacent tenors on the same yield curve, an index and its largest constituent.
-Those pairs drive **S** toward singularity, and a Cholesky routine that survives them
-at all returns a factor contaminated by rounding.
+**Cholesky is brittle.** The textbook factorization — **L** lower triangular with a
+strictly positive diagonal — exists and is unique exactly when **S** is positive
+definite. Zero eigenvalues are not fatal in principle: a positive _semi_-definite
+matrix still admits **S** = **LL'** with zeros on the diagonal, and a pivoted,
+rank-revealing variant will find it. The unpivoted routine you actually call will not.
+Each pivot is computed as a difference, and at rank deficiency that difference is a
+rounding error of arbitrary sign; take its square root and the factorization fails
+outright.
+
+That is not a corner case in this application: the sample covariance of _T_ days of
+_N_ factors has rank at most _T_, so whenever _N_ exceeds _T_ the matrix is singular by
+construction. Even short of that it is fragile, because near-linear dependence among
+factors is the norm rather than the exception — a stock and its ADR, two adjacent
+tenors on the same yield curve, an index and its largest constituent. Those pairs drive
+**S** toward singularity, and a Cholesky routine that survives them at all returns a
+factor contaminated by rounding.
 
 **SVD is robust but not cheap.** A singular value decomposition handles rank deficiency
 gracefully, which is the honest fix for the brittleness above. It does not, however,
