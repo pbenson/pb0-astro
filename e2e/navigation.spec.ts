@@ -25,7 +25,27 @@ test.describe('Site navigation', () => {
     await page.goto('/');
     await page.locator('nav').getByRole('link', { name: 'Math' }).click();
     await expect(page).toHaveURL(/\/math/);
-    await expect(page.getByRole('heading', { name: 'Math', level: 1 })).toBeVisible();
+    // /math is the recreational half of the old Math section; the traveling
+    // repairman pages moved to the Operations Research heading.
+    await expect(
+      page.getByRole('heading', { name: 'Recreational Math', level: 1, exact: true }),
+    ).toBeVisible();
+  });
+
+  test('the operations research index lists both search-order pages', async ({ page }) => {
+    await page.goto('/operations-research');
+    await expect(
+      page.getByRole('heading', { name: 'Operations Research', level: 1 }),
+    ).toBeVisible();
+    await expect(page.locator('.card-grid a')).toHaveCount(2);
+    await expect(page.getByRole('link', { name: 'Where to Look First' })).toBeVisible();
+  });
+
+  test('every section index renders its cards', async ({ page }) => {
+    for (const path of ['/puzzles', '/math', '/games', '/animations', '/craft', '/finance']) {
+      await page.goto(path);
+      await expect(page.locator('.card-grid a').first()).toBeVisible();
+    }
   });
 
   test('the brand link returns to the home page', async ({ page }) => {

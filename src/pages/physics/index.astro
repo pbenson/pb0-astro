@@ -1,17 +1,18 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CardGrid from '../../components/ui/CardGrid.astro';
+import { entriesBySection } from '../../lib/pages';
+import { getSection } from '../../lib/sections';
+
+const section = getSection('physics');
+const entries = entriesBySection(section.id);
 ---
 
-<BaseLayout title="Physics">
-  <h1>Physics</h1>
-  <p class="description">Simulations and explorations in physics</p>
+<BaseLayout title={section.title}>
+  <h1>{section.title}</h1>
+  <p class="description">{section.description}</p>
 
-  <div class="card-grid">
-    <a href="/physics/makecode-foray" class="card">
-      <h3>MakeCode Foray</h3>
-      <p>Bouncing balls with conservation of energy in MakeCode</p>
-    </a>
-  </div>
+  <CardGrid entries={entries} />
 </BaseLayout>
 
 <style>
@@ -22,39 +23,5 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   .description {
     color: var(--text-muted);
     margin-bottom: 2rem;
-  }
-
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1rem;
-  }
-
-  .card {
-    display: block;
-    padding: 1.25rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--nav-bg);
-    text-decoration: none;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-
-  .card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .card h3 {
-    color: var(--text-color);
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
-  }
-
-  .card p {
-    color: var(--text-muted);
-    margin: 0;
-    font-size: 0.85rem;
-    line-height: 1.4;
   }
 </style>

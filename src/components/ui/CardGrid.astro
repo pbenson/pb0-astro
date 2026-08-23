@@ -1,0 +1,73 @@
+---
+import type { CatalogEntry } from '../../lib/catalog';
+
+interface Props {
+  entries: CatalogEntry[];
+  /** Render the tech / source / paper line. Off for play cards. */
+  showMeta?: boolean;
+}
+
+const { entries, showMeta = false } = Astro.props;
+---
+
+<div class="card-grid">
+  {entries.map((entry) => (
+    <a href={entry.url} class="card">
+      <h3>{entry.title}</h3>
+      <p>{entry.blurb}</p>
+      {showMeta && (entry.tech || entry.source || entry.paper) && (
+        <p class="card-meta">
+          {entry.tech && <span class="tech">{entry.tech.join(' · ')}</span>}
+          {entry.source && <span class="link">Source</span>}
+          {entry.paper && <span class="link">Paper</span>}
+        </p>
+      )}
+    </a>
+  ))}
+</div>
+
+<style>
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    display: block;
+    padding: 1.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--nav-bg);
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .card h3 {
+    color: var(--text-color);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+  }
+
+  .card p {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .card-meta {
+    margin-top: 0.6rem;
+    font-size: 0.75rem;
+  }
+
+  .card-meta .link {
+    margin-left: 0.6rem;
+    text-decoration: underline;
+  }
+</style>
