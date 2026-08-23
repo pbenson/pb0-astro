@@ -32,3 +32,11 @@ blob-report/
 
 # local CAD image scratch (87MB, not part of the site)
 cad-images/
+
+# session handover written by /land-the-jet (local only)
+/RESTART.md
+
+# Beads tracker data: never goes to GitHub. Issue titles, descriptions and
+# close-reasons are plaintext, and this repo is public. Off-machine backup is a
+# Dolt backup to iCloud Drive instead — see ~/code/grimoire/guides/beads-backup.md.
+.beads/
