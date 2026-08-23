@@ -30,6 +30,72 @@ const DEFAULT_SEED = 5443;
 const whole = format('.0f');
 const key = (sequence: readonly number[]) => sequence.join('-');
 
+/**
+ * One leg of a drawn route, nudged sideways so two routes sharing an edge stay
+ * separately readable, plus the arrowhead that shows which way it is driven.
+ */
+interface Leg {
+  readonly x1: number;
+  readonly y1: number;
+  readonly x2: number;
+  readonly y2: number;
+  /** Arrowhead polygon, pointing along the direction of travel. */
+  readonly arrow: string;
+  readonly step: number;
+  readonly labelX: number;
+  readonly labelY: number;
+}
+
+const ARROW_LENGTH = 11;
+const ARROW_WIDTH = 6;
+
+/**
+ * Builds the legs of a route.
+ *
+ * `offset` shifts the whole path perpendicular to each leg. Without it two
+ * routes that share an edge draw on top of each other, and the reader cannot
+ * tell that the edge belongs to both.
+ */
+function legsOf(nodes: readonly TspNode[], sequence: readonly number[], offset: number): Leg[] {
+  const legs: Leg[] = [];
+  for (let i = 1; i < sequence.length; i++) {
+    const from = nodes[sequence[i - 1]!]!;
+    const to = nodes[sequence[i]!]!;
+
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const length = Math.hypot(dx, dy) || 1;
+    const ux = dx / length;
+    const uy = dy / length;
+    // Perpendicular unit vector, for the sideways nudge.
+    const px = -uy * offset;
+    const py = ux * offset;
+
+    // Stop short of the node circles so the arrowhead is not hidden under one.
+    const x1 = from.x + ux * NODE_RADIUS + px;
+    const y1 = from.y + uy * NODE_RADIUS + py;
+    const x2 = to.x - ux * NODE_RADIUS + px;
+    const y2 = to.y - uy * NODE_RADIUS + py;
+
+    // Arrowhead two thirds along, where it is clear of both endpoints.
+    const ax = x1 + (x2 - x1) * 0.62;
+    const ay = y1 + (y2 - y1) * 0.62;
+    const arrow = [
+      `${ax + ux * ARROW_LENGTH * 0.5},${ay + uy * ARROW_LENGTH * 0.5}`,
+      `${ax - ux * ARROW_LENGTH * 0.5 - uy * ARROW_WIDTH},${ay - uy * ARROW_LENGTH * 0.5 + ux * ARROW_WIDTH}`,
+      `${ax - ux * ARROW_LENGTH * 0.5 + uy * ARROW_WIDTH},${ay - uy * ARROW_LENGTH * 0.5 - ux * ARROW_WIDTH}`,
+    ].join(' ');
+
+    legs.push({
+      x1, y1, x2, y2, arrow,
+      step: i,
+      labelX: x1 + (x2 - x1) * 0.28 - uy * 9,
+      labelY: y1 + (y2 - y1) * 0.28 + ux * 9,
+    });
+  }
+  return legs;
+}
+
 function defaultLayout(count: number): TspNode[] {
   return circleLayout(count, HEIGHT * 0.36, WIDTH * 0.5, HEIGHT * 0.5);
 }
@@ -163,7 +229,8 @@ export default function TspEuclidean() {
 
   const summary =
     cheapestTour && bestSearch
-      ? `Graph of ${count} locations. The shortest tour is ${key(cheapestTour.sequence)} at length ` +
+      ? `Graph of ${count} locations, each equally likely to hold the object. ` +
+        `The shortest tour is ${key(cheapestTour.sequence)} at length ` +
         `${whole(cheapestTour.cost)}; the best search order is ${key(bestSearch.sequence)} at an ` +
         `expected cost of ${whole(bestSearch.expectedCost)}.`
       : `Graph of ${count} locations.`;
@@ -233,20 +300,38 @@ export default function TspEuclidean() {
             )),
           )}
 
-          {drawn.map(({ route, color }) => (
-            <g key={key(route.sequence)}>
-              <polyline
-                points={route.sequence
-                  .map((label) => `${nodes[label]!.x},${nodes[label]!.y}`)
-                  .join(' ')}
-                fill="none"
-                stroke={color}
-                strokeWidth={2.5}
-                strokeLinejoin="round"
-                opacity={0.85}
-              />
-            </g>
-          ))}
+          {drawn.map(({ route, color }, routeIndex) => {
+            // Two routes are nudged apart; a single one stays centred.
+            const offset = drawn.length > 1 ? (routeIndex === 0 ? -4 : 4) : 0;
+            return (
+              <g key={key(route.sequence)}>
+                {legsOf(nodes, route.sequence, offset).map((leg) => (
+                  <g key={leg.step}>
+                    <line
+                      x1={leg.x1}
+                      y1={leg.y1}
+                      x2={leg.x2}
+                      y2={leg.y2}
+                      stroke={color}
+                      strokeWidth={2.5}
+                      strokeLinecap="round"
+                    />
+                    <polygon points={leg.arrow} fill={color} />
+                    <text
+                      x={leg.labelX}
+                      y={leg.labelY}
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      className="step-label"
+                      fill={color}
+                    >
+                      {leg.step}
+                    </text>
+                  </g>
+                ))}
+              </g>
+            );
+          })}
 
           {nodes.map((node) => {
             const isHome = node.label === 0;
@@ -259,7 +344,7 @@ export default function TspEuclidean() {
                 aria-label={
                   isHome
                     ? 'Home. Drag or use arrow keys to move.'
-                    : `Location ${node.label}, probability ${node.p.toFixed(2)}. Drag or use arrow keys to move.`
+                    : `Location ${node.label}. Drag or use arrow keys to move.`
                 }
                 onPointerDown={(event) => {
                   event.currentTarget.setPointerCapture?.(event.pointerId);
@@ -285,40 +370,31 @@ export default function TspEuclidean() {
                 >
                   {isHome ? '⌂' : node.label}
                 </text>
-                {!isHome && (
-                  <text
-                    x={node.x}
-                    y={node.y + NODE_RADIUS + 12}
-                    textAnchor="middle"
-                    className="node-prob"
-                    fill={palette.inkTertiary}
-                  >
-                    p={node.p.toFixed(2)}
-                  </text>
-                )}
               </g>
             );
           })}
         </svg>
 
         <div className="key">
-          {selected !== null ? (
-            <span>
-              <i style={{ background: palette.mark }} /> selected route
-            </span>
-          ) : (
-            <>
-              <span>
-                <i style={{ background: palette.negative }} /> shortest tour
+          {drawn.map(({ route, color, label }) => (
+            <div className="key-row" key={label}>
+              <span className="key-name" style={{ color }}>
+                {label}
               </span>
-              {objectivesAgree ? (
-                <span className="agree">best search order is the same route here</span>
-              ) : (
-                <span>
-                  <i style={{ background: palette.positive }} /> best search order
-                </span>
-              )}
-            </>
+              <span className="sequence">
+                {route.sequence.map((node, i) => (
+                  <span key={`${node}-${i}`}>
+                    {i > 0 && <b style={{ color }}>→</b>}
+                    <em>{node === 0 ? '⌂' : node}</em>
+                  </span>
+                ))}
+              </span>
+            </div>
+          ))}
+          {objectivesAgree && selected === null && (
+            <p className="agree">
+              The best search order is the same route here — drag a location to pull them apart.
+            </p>
           )}
         </div>
       </div>
