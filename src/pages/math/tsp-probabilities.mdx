@@ -1,0 +1,100 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: When the Map Is Only a Table
+description: The same search problem on a graph, where the costs are numbers and the odds are unequal
+---
+import TspProbabilities from '../../components/math/TspProbabilities.tsx'
+
+# When the map is only a table
+
+[Where to Look First](/math/tsp-euclidean) put the search problem on a map: you
+lose something, it is at one of several places, and the order you search in
+matters because a leg late in the sequence is only paid if the search is still
+running when you reach it. The shortest tour and the best search order came
+apart.
+
+That version drew its costs from the plane. This one does not. Here the costs
+are just numbers written on the edges of a graph, and the places are not equally
+likely to hold the object.
+
+## What a graph can do that a map cannot
+
+On a map, cost is distance, and distance obeys the triangle inequality: going
+from A to C directly never costs more than going by way of B. Real travel
+costs are not so well behaved. A direct flight can be dearer than the connection
+through a hub; a road can be shut; two offices in the same building can be
+half an hour apart through security.
+
+A graph has no such obligation. Any symmetric table of positive numbers is a
+legal cost matrix, and the arithmetic below never asks where the numbers came
+from. Nothing changes in the formula — but the geometric intuition that a far
+node is far from everything stops being reliable, and the two objectives can
+diverge further than any layout of points would allow.
+
+## Unequal odds
+
+The second change is the probabilities. Each location $i$ holds the object with
+probability $p_i$, and those need not be equal. The expectation is the same one:
+
+$$
+\mathbb{E}[\text{cost}] = c(\text{home}, s_1)
+  + \sum_{i} \Bigl[\, c(s_i, s_{i+1}) \cdot \Pr[\text{not found through } s_i]
+  + c(s_i, \text{home}) \cdot p_i \,\Bigr]
+$$
+
+Walking the sequence, at each stop either the object is there — with probability
+$p_i$ — and you pay the trip home, or it is not, and you pay the leg onward,
+weighted by the chance you are still looking.
+
+Unequal probabilities sharpen the pressure that made the two answers differ in
+the first place. A likely location searched early retires a large share of the
+probability, and every leg after it is discounted by what is left. A cheap stop
+is worth taking early; a likely stop is worth taking early; a stop that is both
+is worth taking first, and the tour length has no opinion about any of it.
+
+## Try it
+
+Below, the graph is complete: every pair of locations has an edge, and its cost
+is the number on it. Home is the marked node, and each other node carries the
+probability the object is there. Edit any cost, edit any probability weight, and
+watch both optima move.
+
+<TspProbabilities client:load />
+
+## What to look for
+
+Start with **Equal probabilities**. That is the original problem, and on the
+starting graph the two objectives still disagree: the costs alone are enough to
+separate them. Switch back to the unequal weights and the same two routes stay
+optimal, but the saving from searching in the right order grows.
+
+Then load the weights back onto one location. Make node 1 nearly certain and the
+rest nearly impossible, and the best search order goes to node 1 first almost
+regardless of what that leg costs: everything after it is multiplied by a
+probability close to zero. The cheapest tour does not budge — it has no idea
+which node is likely.
+
+Now do the opposite. Give one location a large probability and a very expensive
+edge from home, and there is a real trade to make: pay a lot now to retire a lot
+of probability, or take the cheap stops first and hope. Nudge that edge cost up
+one unit at a time, and at some point the best search order flips.
+
+The most instructive edit is to break the triangle inequality outright. Set the
+cost from home to node 1 to something enormous, and set both home-to-2 and 2-to-1
+to something small. Now the graph says the way to node 1 is through node 2 —
+a shape no arrangement of points on a page could produce.
+
+## Notes
+
+The number of routes is $(n-1)!$, and everything here is computed by brute force
+over all of them, so "optimal" means optimal rather than "the best a heuristic
+found". The location count stops at six for that reason.
+
+The probability weights are ratios, not probabilities: they are scaled to sum to
+one before anything is computed, so entering 3 and 1 is the same as entering 30
+and 10.
+
+This is a rewrite of a p5.js sketch of mine from 2023. The sketch drew a
+probability under every node but always set them equal; the unequal case is new
+here. The arithmetic is ported from the original, with one cancelling division
+removed, and the port is tested against values captured from the sketch itself.

@@ -1,0 +1,283 @@
+.tspg {
+  margin: var(--space-8) 0;
+}
+
+.tspg .controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--paper-inset);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+}
+
+.tspg .control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.tspg .control label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.tspg .checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.95rem;
+}
+
+.tspg select,
+.tspg button,
+.tspg input[type='number'] {
+  padding: var(--space-2) var(--space-3);
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  background: var(--button-bg);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-sm);
+}
+
+.tspg .controls button {
+  cursor: pointer;
+}
+
+.tspg .controls button:hover {
+  background: var(--button-hover);
+}
+
+.tspg :focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.tspg .board {
+  margin: var(--space-6) 0 var(--space-4);
+}
+
+.tspg svg {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.tspg .node-label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.tspg .prob-label {
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tspg .cost-label {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  /* The edges run under these numbers; the halo keeps them readable. */
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.tspg .key {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: center;
+  margin-top: var(--space-2);
+  font-size: 0.9rem;
+}
+
+.tspg .key-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.tspg .key-name {
+  font-weight: 600;
+}
+
+.tspg .sequence {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tspg .sequence em {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.tspg .sequence b {
+  margin: 0 0.15rem;
+  font-weight: 400;
+}
+
+.tspg .numbers {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tspg .numbers strong {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.tspg .key .agree {
+  margin: 0;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.tspg .editors {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.tspg fieldset {
+  min-width: 0; /* a fieldset will not shrink below its content without this */
+  padding: var(--space-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+}
+
+.tspg legend {
+  padding: 0 var(--space-2);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.tspg .grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+}
+
+.tspg .field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tspg .field label {
+  color: var(--text-muted);
+}
+
+.tspg .field input {
+  width: 4.5rem;
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.85rem;
+}
+
+.tspg .field .derived {
+  color: var(--text-muted);
+}
+
+.tspg .note {
+  margin: var(--space-3) 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.tspg .table-wrap {
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+}
+
+.tspg table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tspg caption {
+  padding: var(--space-3);
+  text-align: left;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.tspg thead th {
+  position: sticky;
+  top: 0;
+  background: var(--paper-raised);
+  border-bottom: 1px solid var(--rule-emphasis);
+  padding: var(--space-2) var(--space-3);
+  text-align: right;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tspg thead th:first-child {
+  text-align: left;
+}
+
+.tspg tbody th {
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  font-weight: 400;
+}
+
+.tspg tbody th button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-color);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.tspg tbody td {
+  padding: var(--space-2) var(--space-3);
+  text-align: right;
+  color: var(--text-muted);
+}
+
+.tspg tbody tr {
+  cursor: pointer;
+  border-top: 1px solid var(--rule);
+}
+
+.tspg tbody tr:hover {
+  background: var(--control-hover);
+}
+
+.tspg tbody tr.selected {
+  background: var(--grid-teal-bg);
+}
+
+.tspg td.best {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .tspg .editors {
+    grid-template-columns: 1fr;
+  }
+
+  .tspg .table-wrap {
+    max-height: 320px;
+  }
+}
