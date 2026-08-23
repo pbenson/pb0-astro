@@ -10,13 +10,22 @@ test.describe('Site navigation', () => {
     await expect(page.locator('.card-grid a').first()).toBeVisible();
   });
 
-  test('nav offers the brand and the theme toggle', async ({ page }) => {
-    // The section links are behind SHOW_SECTIONS, which is currently off, so
-    // the nav is down to the two things that are always there.
+  test('nav links are present', async ({ page }) => {
     await page.goto('/');
     const nav = page.locator('nav');
+    // The section links are behind SHOW_SECTIONS in BaseLayout.
+    for (const name of ['Animations', 'Craft', 'Math', 'Puzzles']) {
+      await expect(nav.getByRole('link', { name })).toBeVisible();
+    }
     await expect(nav.getByRole('link', { name: '...' })).toHaveAttribute('href', '/');
     await expect(nav.getByRole('button', { name: 'Toggle dark mode' })).toBeVisible();
+  });
+
+  test('a nav link reaches its section index', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('nav').getByRole('link', { name: 'Math' }).click();
+    await expect(page).toHaveURL(/\/math/);
+    await expect(page.getByRole('heading', { name: 'Math', level: 1 })).toBeVisible();
   });
 
   test('the brand link returns to the home page', async ({ page }) => {

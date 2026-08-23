@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const SHOW_SECTIONS = false;
+const SHOW_SECTIONS = true;
 ---
 
 <BaseLayout title="Home">
@@ -33,6 +33,14 @@ const SHOW_SECTIONS = false;
     <section class="section">
       <h2>Math</h2>
       <div class="card-grid">
+        <a href="/math/tsp-euclidean" class="card">
+          <h3>Where to Look First</h3>
+          <p>The shortest tour is not the best search order &mdash; a travelling salesman problem with the probabilities put back in</p>
+        </a>
+        <a href="/math/tsp-probabilities" class="card">
+          <h3>When the Map Is Only a Table</h3>
+          <p>The same search problem on a graph, where the costs need not be distances and the odds are unequal</p>
+        </a>
         <a href="/math/spectres" class="card">
           <h3>Spectre Monotile</h3>
           <p>Explore the aperiodic monotile discovered in 2023</p>
@@ -116,20 +124,6 @@ const SHOW_SECTIONS = false;
       </div>
     </section>
     )}
-
-    <section class="section">
-      <h2>Math</h2>
-      <div class="card-grid">
-        <a href="/math/tsp-euclidean" class="card">
-          <h3>Where to Look First</h3>
-          <p>The shortest tour is not the best search order &mdash; a travelling salesman problem with the probabilities put back in</p>
-        </a>
-        <a href="/math/tsp-probabilities" class="card">
-          <h3>When the Map Is Only a Table</h3>
-          <p>The same search problem on a graph, where the costs need not be distances and the odds are unequal</p>
-        </a>
-      </div>
-    </section>
 
     <section class="section">
       <h2>Finance</h2>
