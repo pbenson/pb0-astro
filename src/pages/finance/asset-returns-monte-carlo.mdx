@@ -40,6 +40,12 @@ This is the approach described in Peter Benson and Peter Zangari,
 ["A general approach to calculating VaR without volatilities and correlations"](https://web.archive.org/web/20070127075420if_/http://www.gloriamundi.org:80/picsresources/pbpzrmm2q97.pdf),
 _RiskMetrics Monitor_, Second Quarter 1997.
 
+The same method, implemented six times over — in Python, Go, TypeScript, Rust,
+C++, and Java — is on GitHub at
+[pbenson/var-without-covariance](https://github.com/pbenson/var-without-covariance).
+All six share one specified random number generator, run against the same price
+data used on this page, and are tested to produce the same numbers.
+
 ### Weighting the observations
 
 Equal weighting treats a return from eleven months ago as being as informative as
@@ -74,7 +80,16 @@ marginal distribution.
 ## What to look for
 
 Switch from equal to exponential weighting and watch the histograms breathe: if the
-last few weeks have been calmer than the year as a whole, the distribution tightens,
+last few weeks have been calmer than the year as a whole, the distributions tighten
 and the 95% value at risk pulls in toward zero. That responsiveness is the point of
 exponential weighting, and it is also its cost — the estimate reacts to recent quiet
 just as eagerly as to recent turbulence.
+
+Then watch the correlogram under the same switch. Volatility and correlation move
+independently: a pair can grow more volatile while becoming *less* correlated, which
+is why a risk estimate built from volatilities alone can be right about each asset
+and wrong about the portfolio.
+
+Raise the simulation count and the bars converge on their ticks. That convergence is
+the claim being tested — sampling error shrinks, and what remains is the historical
+covariance structure, reproduced exactly, from a matrix that was never built.
