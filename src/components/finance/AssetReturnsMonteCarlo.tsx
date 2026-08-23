@@ -14,7 +14,7 @@ import {
   type Weighting,
 } from '../../utils/assetReturns';
 
-const SIMULATION_CHOICES = [1_000, 10_000, 50_000] as const;
+const SIMULATION_CHOICES = [100, 1_000, 10_000, 50_000] as const;
 const RISKMETRICS_LAMBDA = 0.94;
 /** Fewer bins than a full-width panel: each small multiple is a third as wide. */
 const BIN_COUNT = 34;
@@ -24,7 +24,9 @@ const VAR_PERCENTILE = 0.05;
 
 export default function AssetReturnsMonteCarlo() {
   const [weightingKind, setWeightingKind] = useState<'equal' | 'ewma'>('equal');
-  const [simulations, setSimulations] = useState<number>(10_000);
+  // Start small: 100 draws is visibly noisy, which makes raising the count
+  // the first thing worth doing.
+  const [simulations, setSimulations] = useState<number>(100);
   const [seed, setSeed] = useState(20250822);
   const palette = useChartPalette();
 

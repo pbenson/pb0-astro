@@ -9,7 +9,7 @@
     "astro": "astro",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "astro build && astro preview --background --port 4322 && playwright test"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.4",

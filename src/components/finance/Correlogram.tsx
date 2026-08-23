@@ -11,6 +11,15 @@ import {
 const CELL = 148;
 const GAP = 6;
 const PAD = 12;
+
+/**
+ * Node's V8 and the browser's V8 disagree in the last digit of Math.exp and
+ * Math.log, so raw coordinates render one ulp apart on server and client and
+ * React reports a hydration mismatch. Three decimals is far below a pixel.
+ */
+function round(value: number) {
+  return Math.round(value * 1000) / 1000;
+}
 /** Wider inset for the coefficient cells, leaving room for the scale end labels. */
 const COEFFICIENT_PAD = 30;
 /** Plotting every draw would be a solid blob; this many shows the shape. */
@@ -110,7 +119,12 @@ export default function Correlogram({
               const points: ReactElement[] = [];
               for (let k = 0; k < xs.length; k += stride) {
                 points.push(
-                  <circle key={k} cx={scale(xs[k])} cy={CELL - scale(ys[k])} r={1} />,
+                  <circle
+                    key={k}
+                    cx={round(scale(xs[k]))}
+                    cy={round(CELL - scale(ys[k]))}
+                    r={1}
+                  />,
                 );
               }
               return (
@@ -149,8 +163,8 @@ export default function Correlogram({
             const pole = value.simulated < 0 ? palette.negative : palette.positive;
             const centre = CELL / 2;
             const barY = CELL / 2 + 16;
-            const simX = centre + value.simulated * armLength;
-            const histX = centre + value.historical * armLength;
+            const simX = round(centre + value.simulated * armLength);
+            const histX = round(centre + value.historical * armLength);
 
             return (
               <g key={key} transform={`translate(${tx}, ${ty})`}>

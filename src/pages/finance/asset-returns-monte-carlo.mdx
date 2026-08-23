@@ -42,9 +42,9 @@ factor contaminated by rounding.
 gracefully, which is the honest fix for the brittleness above. It does not, however,
 address either cost that actually binds:
 
-- You must still **form** **S**. That is _N_² entries of storage and O(_TN_²) work to
+- You must still **form** **S**. That is $N^2$ entries of storage and $O(TN^2)$ work to
   fill them.
-- You must still **factor** it, at O(_N_³) in the number of factors.
+- You must still **factor** it, at $O(N^3)$ in the number of factors.
 
 In a real risk system _N_ is a factor count, not a handful of stocks — every tenor on
 every curve, every equity index, every exchange rate. At _N_ in the thousands, the
@@ -53,15 +53,15 @@ cube dominates everything else in the calculation.
 **The decay factor bounds the other dimension.** Exponential weighting discounts day
 _t_ by λ raised to its age, and RiskMetrics uses λ between 0.94 and 0.97 for daily
 data. Those correspond to half-lives of about 11 and 23 trading days, and the weight
-surviving a full year is λ²⁵⁰ — roughly 2 × 10⁻⁷ at λ = 0.94, and 5 × 10⁻⁴ at
+surviving a full year is $\lambda^{250}$ — roughly $2 \times 10^{-7}$ at λ = 0.94, and $5 \times 10^{-4}$ at
 λ = 0.97. Past a year of history you are adding rows that contribute nothing. So _T_
 is not a free parameter that grows with your ambitions; it is pinned near 250.
 
 That is the whole argument for drawing per day instead of per factor. The method below
-never forms **S** and never factors it, so the O(_N_²) storage and the O(_N_³)
-factorization both disappear. What remains is O(_TN_) per draw against a _T_ that λ has
+never forms **S** and never factors it, so the $O(N^2)$ storage and the $O(N^3)$
+factorization both disappear. What remains is $O(TN)$ per draw against a _T_ that λ has
 already capped — linear in the number of factors, with a constant of about 250. Per
-draw that beats multiplying by a Cholesky factor, which costs O(_N_²), once _N_ exceeds
+draw that beats multiplying by a Cholesky factor, which costs $O(N^2)$, once _N_ exceeds
 _T_; the setup cost and the storage it beats unconditionally.
 
 ## Methodology

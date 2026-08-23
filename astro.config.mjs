@@ -11,6 +11,17 @@ import rehypeKatex from 'rehype-katex';
 export default defineConfig({
   integrations: [react(), mdx()],
 
+  vite: {
+    optimizeDeps: {
+      // p5 is only reached through a dynamic import inside a component, so the
+      // dev server would not discover it until the first visit to a sketch
+      // page — then re-optimize and invalidate every module graph already in
+      // the browser, which surfaces as "504 Outdated Optimize Dep" and dead
+      // controls that a reload does not fix. Pre-bundle it at startup instead.
+      include: ['p5'],
+    },
+  },
+
   // Math is typeset by KaTeX during the build, so pages ship plain HTML and CSS
   // with no math JavaScript at runtime and no flash of unstyled formulas.
   // The MDX integration inherits this markdown config.

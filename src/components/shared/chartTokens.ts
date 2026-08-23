@@ -63,10 +63,16 @@ function isDark(): boolean {
 
 /** Tracks the site theme toggle, which flips a class on <html>. */
 export function useChartPalette(): ChartPalette {
-  const [dark, setDark] = useState(() => isDark());
+  // Seed with the server's assumption rather than reading the DOM, so the first
+  // client render reproduces the server HTML exactly. Reading the real theme
+  // here instead would make hydration disagree on every fill attribute, and
+  // React 19 leaves mismatched attributes in place — after which the effect
+  // below computes the value this render already used, no state changes, and
+  // the dark palette stays stranded on a light page.
+  const [dark, setDark] = useState(true);
 
   useEffect(() => {
-    setDark(isDark()); // SSR may have guessed wrong
+    setDark(isDark()); // the server had to guess; correct it now
 
     const observer = new MutationObserver(() => setDark(isDark()));
     observer.observe(document.documentElement, {
