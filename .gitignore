@@ -29,3 +29,6 @@ blob-report/
 
 # jetbrains setting folder
 .idea/
+
+# local CAD image scratch (87MB, not part of the site)
+cad-images/
