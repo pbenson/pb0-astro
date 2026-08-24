@@ -53,6 +53,13 @@
   --space-8: 2rem;
   --space-12: 3rem;
 
+  /* Type. The display face is a system serif — no web font to download, and
+     it gives headings the look of a notebook rather than an app chrome. */
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+
+  /* Graph paper. One square of the grid the design system is named after. */
+  --grid-square: 26px;
+
   /* Radius */
   --radius-sm: 4px;
   --radius-md: 6px;
@@ -132,9 +139,17 @@ html {
 body {
   margin: 0;
   padding: 0;
-  background: var(--paper);
   color: var(--ink);
   min-height: 100vh;
+
+  /* The graph paper the design system is named after, at the faintest weight
+     that still reads as ruled rather than as noise. */
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: var(--grid-square) var(--grid-square);
+  background-position: -1px -1px;
 }
 
 /* ==========================================================================
@@ -148,12 +163,31 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.01em;
 }
 
+/* Headings carry the serif; running text, labels and controls stay in the
+   system sans, where they are easier to read at small sizes. */
+h1, h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
 h1 { font-size: 2rem; }
 h2 { font-size: 1.5rem; }
 h3 { font-size: 1.25rem; }
 
 p {
   margin-top: 0;
+}
+
+/* Hold running text to a readable measure without boxing in the sketches:
+   the prose gets a column, canvases and grids keep the full width. */
+main p,
+main ul,
+main ol,
+main blockquote,
+main h2,
+main h3 {
+  max-width: 68ch;
 }
 
 a {

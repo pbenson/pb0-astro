@@ -64,10 +64,12 @@ const CHERRY_ARBOR_AFTER = 'math';
     text-align: left;
   }
 
+  /* A hairline, not a 2px rule: the heavier line was the loudest mark on the
+     page and fought the paper it sits on. */
   .section h2 {
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--rule-emphasis);
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-4);
   }
 
   /* The generated grids come from CardGrid; this pair styles the one
