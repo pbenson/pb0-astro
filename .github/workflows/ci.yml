@@ -20,8 +20,12 @@ jobs:
           node-version: 24
           cache: npm
 
+      # npm install, not npm ci: the lockfile records the platform-optional
+      # native bindings resolved on macOS, and npm ci refuses to reconcile the
+      # Linux set on the runner. See the bead on regenerating the lock in a
+      # Linux container, which is what would let ci come back.
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Typecheck
         run: npm run typecheck
