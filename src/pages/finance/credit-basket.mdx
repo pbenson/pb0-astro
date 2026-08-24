@@ -8,14 +8,26 @@ tier: work
 order: 20
 ---
 import CreditBasket from '../../components/finance/CreditBasket.tsx'
+import PlainWords from '../../components/shared/PlainWords.astro'
+import Term from '../../components/shared/Term.astro'
 
 # A flat distribution of defaults
 
-Take a basket of $n$ credits. Each one defaults with the same probability $p$,
-and every pair of them has the same asset correlation $\rho$. How many defaults
+<PlainWords>
+Lend to a hundred companies and some of them will fail. How many? If their
+fortunes are unrelated, a middling number, and wildly different answers are
+rare. If they rise and fall together, it is closer to all or nothing.
+
+Between those extremes sits one exact setting where every outcome is equally
+likely — none failing, all failing, and each number in between all carry the
+same chance. This page finds that setting and shows why it is there.
+</PlainWords>
+
+Take a <Term name="credit-basket">basket</Term> of $n$ credits. Each one defaults with the same probability $p$,
+and every pair of them has the same <Term name="asset-correlation">asset correlation</Term> $\rho$. How many defaults
 should you expect, and how are they distributed?
 
-Two cases are easy. If the names are independent, the count is binomial. If they
+Two cases are easy. If the names are independent, the count is <Term name="binomial">binomial</Term>. If they
 are perfectly correlated they share one fate: either none default or all of them
 do. Everything between those two needs numerical work.
 
@@ -23,7 +35,7 @@ Except at one point, where the answer is as simple as an answer can be.
 
 ## The model
 
-This is the Gaussian copula, the standard model for a credit basket. Each name
+This is the <Term name="gaussian-copula">Gaussian copula</Term>, the standard model for a credit basket. Each name
 has a latent asset return, and the name defaults when that return falls below a
 threshold. Matching the threshold to the default probability $p$ puts it at
 $\Phi^{-1}(p)$ standard deviations.

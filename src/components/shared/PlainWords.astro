@@ -1,0 +1,38 @@
+---
+/**
+ * A short plain-English framing above the article proper: what question the
+ * page answers, for a reader who does not already have the vocabulary.
+ *
+ * Deliberately not a toggle. A collapsed panel is invisible to the reader who
+ * needs it most, and a persisted preference would have to be kept out of the
+ * printed and shared versions of the page. This costs an expert four lines.
+ */
+---
+
+<aside class="plain-words" aria-label="In plain words">
+  <p class="plain-words-heading">In plain words</p>
+  <slot />
+</aside>
+
+<style>
+  .plain-words {
+    margin: var(--space-6) 0;
+    padding: var(--space-4) var(--space-5);
+    background: var(--paper-inset);
+    border-left: 3px solid var(--grid-teal);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .plain-words-heading {
+    margin: 0 0 var(--space-2);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+  }
+
+  .plain-words :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>

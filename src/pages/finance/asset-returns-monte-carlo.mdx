@@ -8,12 +8,25 @@ tier: work
 order: 10
 ---
 import AssetReturnsMonteCarlo from '../../components/finance/AssetReturnsMonteCarlo.tsx'
+import PlainWords from '../../components/shared/PlainWords.astro'
+import Term from '../../components/shared/Term.astro'
 
 # Monte Carlo without a covariance matrix
 
+<PlainWords>
+Stocks do not move independently: when one large company has a bad day, others
+often do too. To imagine tomorrow honestly you have to invent numbers that
+carry those relationships, not three unrelated ones.
+
+The usual recipe first builds a table of how every pair of stocks moves
+together, then does heavy algebra on it. That table grows as the square of the
+number of stocks, and the algebra as the cube. This page takes a different
+route to the same answer, one that never builds the table at all.
+</PlainWords>
+
 Simulated one-day returns for three stocks, generated in your browser from a year of
 daily closing prices. The returns are drawn from a multivariate normal distribution
-fitted to the historical data — but the covariance matrix is never built.
+fitted to the historical data — but the <Term name="covariance-matrix">covariance matrix</Term> is never built.
 
 ## Why avoid the covariance matrix
 
@@ -21,7 +34,7 @@ The textbook route to correlated normal draws is to estimate the _N_ × _N_ cova
 matrix **S**, factor it, and multiply the factor by a standard normal vector. Both
 standard factorizations have problems, and they are not the same problems.
 
-**Cholesky is brittle.** The textbook factorization — **L** lower triangular with a
+**<Term name="cholesky">Cholesky</Term> is brittle.** The textbook factorization — **L** lower triangular with a
 strictly positive diagonal — exists and is unique exactly when **S** is positive
 definite. Zero eigenvalues are not fatal in principle: a positive _semi_-definite
 matrix still admits **S** = **LL'** with zeros on the diagonal, and a pivoted,
@@ -66,7 +79,7 @@ _T_; the setup cost and the storage it beats unconditionally.
 
 ## Methodology
 
-Start with a matrix **R** of historical log returns. Each row is a trading day, each
+Start with a matrix **R** of historical <Term name="log-return">log returns</Term>. Each row is a trading day, each
 column an asset, and each column has had its mean removed. With _T_ days and _N_
 assets, **R** is _T_ × _N_.
 
@@ -134,7 +147,7 @@ marginal distribution.
 
 Switch from equal to exponential weighting and watch the histograms breathe: if the
 last few weeks have been calmer than the year as a whole, the distributions tighten
-and the 95% value at risk pulls in toward zero. That responsiveness is the point of
+and the 95% <Term name="value-at-risk">value at risk</Term> pulls in toward zero. That responsiveness is the point of
 exponential weighting, and it is also its cost — the estimate reacts to recent quiet
 just as eagerly as to recent turbulence.
 
