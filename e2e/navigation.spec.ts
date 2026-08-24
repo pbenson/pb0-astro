@@ -31,6 +31,24 @@ test.describe('Site navigation', () => {
     await expect(nav.getByRole('button')).toHaveCount(0);
   });
 
+  test('every page carries a footer that says whose it is', async ({ page }) => {
+    await page.goto('/math/quantiles');
+    const footer = page.locator('footer');
+    await expect(footer).toContainText('Built by Pete');
+    await expect(footer.getByRole('link', { name: 'About this site' })).toHaveAttribute(
+      'href',
+      '/about',
+    );
+  });
+
+  test('the about page loads and links out', async ({ page }) => {
+    await page.goto('/about');
+    await expect(page.getByRole('heading', { name: 'About', level: 1 })).toBeVisible();
+    await expect(
+      page.locator('main').getByRole('link', { name: 'GitHub' }),
+    ).toHaveAttribute('href', 'https://github.com/pbenson/');
+  });
+
   test('the nav marks the section you are in', async ({ page }) => {
     await page.goto('/math/quantiles');
     await expect(page.locator('nav .nav-sections a[aria-current="page"]')).toHaveText('Math');

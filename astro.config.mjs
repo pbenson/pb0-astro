@@ -9,6 +9,11 @@ import rehypeKatex from 'rehype-katex';
 
 // https://astro.build/config
 export default defineConfig({
+  // The published origin. Astro.site drives rel=canonical, og:url and the
+  // absolute share image URL in BaseLayout; without it those are omitted
+  // rather than emitted as relative URLs no crawler can resolve.
+  site: 'https://pb0.dev',
+
   integrations: [
     react({
       // Restore the node_modules exclusion that @vitejs/plugin-react applies by

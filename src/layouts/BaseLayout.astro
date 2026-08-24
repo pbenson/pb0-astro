@@ -31,6 +31,10 @@ const pageTitle = !title || title === 'Home' ? SITE_NAME : `${title} | ${SITE_NA
 // emitted as a relative URL that no crawler can resolve.
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 
+// Crawlers want an absolute image URL, so the card only goes out when a site
+// origin is configured. Regenerate it with `npm run og` if the tagline moves.
+const shareImage = Astro.site ? new URL('/og.png', Astro.site).href : undefined;
+
 // Section links, straight from the registry, so adding or retiring a section
 // updates the nav without anyone remembering to. Marked current when the
 // visitor is inside that section, including on its individual pages.
@@ -60,9 +64,17 @@ const navSections = SECTIONS.map((section) => ({
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     {canonical && <meta property="og:url" content={canonical} />}
-    <meta name="twitter:card" content="summary" />
+    {shareImage && (
+      <>
+        <meta property="og:image" content={shareImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+      </>
+    )}
+    <meta name="twitter:card" content={shareImage ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
+    {shareImage && <meta name="twitter:image" content={shareImage} />}
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/styles/global.css" />
     <link rel="stylesheet" href="/styles/katex/katex.min.css" />
@@ -116,6 +128,14 @@ const navSections = SECTIONS.map((section) => ({
     <main>
       <slot />
     </main>
+
+    <footer class="site-footer">
+      <p>
+        Built by Pete. <a href="/about">About this site</a> ·
+        <a href="https://github.com/pbenson/" rel="noopener noreferrer">GitHub</a> ·
+        <a href="https://cherryarbordesign.pb0.dev" rel="noopener noreferrer">Cherry Arbor Design</a>
+      </p>
+    </footer>
   </body>
 </html>
 
@@ -182,11 +202,40 @@ const navSections = SECTIONS.map((section) => ({
     padding: 2rem;
   }
 
+  /* A visitor who arrives deep, on one page from a link, has nowhere to go at
+     the bottom otherwise — this is where "whose is this?" gets answered. */
+  .site-footer {
+    max-width: 1200px;
+    margin: var(--space-12) auto 0;
+    padding: var(--space-6) 2rem var(--space-8);
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .site-footer p {
+    margin: 0;
+  }
+
+  .site-footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    color: var(--accent-color);
+  }
+
   @media (max-width: 768px) {
     .main-nav {
       flex-wrap: wrap;
       gap: var(--space-3);
       padding: 0.6rem 1rem;
+    }
+
+    .site-footer {
+      padding-left: 1rem;
+      padding-right: 1rem;
     }
 
     .nav-sections {

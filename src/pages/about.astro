@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const description =
+  'What this site is, how it is built, and where else to find the work.';
+---
+
+<BaseLayout title="About" description={description}>
+  <div class="about">
+    <h1>About</h1>
+
+    <p>
+      I'm Pete. This is where I work problems out in public — some from my working
+      life in quantitative finance and operations research, some for the pleasure of
+      it. Whichever half a page comes from, the aim is the same: build the idea as
+      something you can operate, so that reading about it and playing with it are the
+      same act.
+    </p>
+
+    <p>
+      The pages are static, and every sketch runs in your browser — no server does any
+      of the thinking. The site is built with Astro; the interactive pieces are React
+      and p5.js, the charts are D3, and it all follows your system's light or dark
+      setting rather than asking you to pick one. The source is public if you want to
+      see how any of it works.
+    </p>
+
+    <ul class="links">
+      <li><a href="https://github.com/pbenson/">GitHub</a> — the source for this site and everything else</li>
+      <li><a href="https://cherryarbordesign.pb0.dev">Cherry Arbor Design</a> — handcrafted mathematical art and objects</li>
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .about {
+    max-width: 60ch;
+  }
+
+  h1 {
+    margin-bottom: var(--space-6);
+  }
+
+  p {
+    line-height: 1.6;
+    margin-bottom: var(--space-4);
+  }
+
+  .links {
+    margin-top: var(--space-8);
+    padding-left: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.9;
+  }
+
+  .links a {
+    color: var(--accent-color);
+  }
+</style>
