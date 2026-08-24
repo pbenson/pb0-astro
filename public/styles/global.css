@@ -374,3 +374,92 @@ a:hover {
   width: 1px;
   overflow: hidden;
 }
+
+/* Sliders
+   ==========================================================================
+   One track style for every range input on the site. Two sketches used to
+   carry their own copy of this (.sc-slider, .roc-slider); the rest shipped
+   the browser default, so focus rings and touch targets differed page to
+   page. */
+
+.slider {
+  margin-bottom: var(--space-3);
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  /* Without a cap the track spans the whole measure, which reads as a rule
+     rather than a control. */
+  max-width: 32rem;
+}
+
+.slider-label {
+  /* A floor, not a fixed width: it lines the tracks up within a group of
+     short labels, and a long one still gets the room it needs. */
+  min-width: 12ch;
+  font-weight: 600;
+}
+
+.slider-value {
+  /* Wide enough for a formatted readout like 50.0%, so the tracks in a group
+     stay the same length whatever each row happens to show. */
+  min-width: 5ch;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.slider-track {
+  flex: 1;
+  min-width: 8rem;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.slider-track::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--rule);
+}
+
+.slider-track::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--rule);
+}
+
+.slider-track::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border: none;
+  border-radius: 50%;
+  background: var(--grid-teal);
+  cursor: pointer;
+}
+
+.slider-track::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background: var(--grid-teal);
+  cursor: pointer;
+}
+
+/* The thumb is the target, so the ring belongs on it — but only for keyboard
+   focus, or every drag flashes an outline. */
+.slider-track:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--grid-teal);
+  outline-offset: 2px;
+}
+
+.slider-track:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--grid-teal);
+  outline-offset: 2px;
+}

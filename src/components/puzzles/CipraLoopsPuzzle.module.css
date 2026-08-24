@@ -140,21 +140,3 @@
   cursor: not-allowed;
 }
 
-.sliderGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.sliderLabel {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.slider {
-  width: 100%;
-  max-width: 200px;
-  cursor: pointer;
-}

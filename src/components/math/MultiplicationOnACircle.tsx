@@ -1,38 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { bgColor, strokeColorRgb } from "../../utils/darkMode"
-
-interface EValueEvent extends React.ChangeEvent<HTMLInputElement> {}
-
-const eValue = (e: EValueEvent): number => Number(e.target.value)
-
-interface CircleSliderProps {
-  label: string
-  min: number
-  max: number
-  step: number
-  onChange: (e: EValueEvent) => void
-  valueGetter: () => string | number
-}
-
-function CircleSlider(props: CircleSliderProps) {
-  return (
-    <div style={{ marginBottom: '0.5rem' }}>
-      <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <span style={{ minWidth: '100px' }}>{props.label}</span>
-        <input
-          type="range"
-          style={{ width: '200px' }}
-          value={props.valueGetter()}
-          onChange={props.onChange}
-          min={props.min}
-          max={props.max}
-          step={props.step}
-        />
-        <span style={{ minWidth: '50px' }}>{props.valueGetter()}</span>
-      </label>
-    </div>
-  )
-}
+import Slider from "../ui/Slider"
 
 export default function MultiplicationOnACircle() {
   const sketchRef = useRef<HTMLDivElement>(null)
@@ -118,59 +86,60 @@ export default function MultiplicationOnACircle() {
     <div>
       <div ref={sketchRef} />
 
-      <CircleSlider
+      <Slider
         label="modulus"
-        min={3}
-        max={210}
-        step={1}
-        onChange={e => setModulus(eValue(e))}
-        valueGetter={() => modulus}
+        sliderMin={3}
+        sliderMax={210}
+        stepSize={1}
+        value={modulus}
+        onChange={setModulus}
       />
 
-      <CircleSlider
+      <Slider
         label="numerator"
-        min={1}
-        max={100}
-        step={1}
-        onChange={e => setNum(eValue(e))}
-        valueGetter={() => num}
+        sliderMin={1}
+        sliderMax={100}
+        stepSize={1}
+        value={num}
+        onChange={setNum}
       />
 
-      <CircleSlider
+      <Slider
         label="denominator"
-        min={1}
-        max={12}
-        step={2}
-        onChange={e => setDen(eValue(e))}
-        valueGetter={() => den}
+        sliderMin={1}
+        sliderMax={12}
+        stepSize={2}
+        value={den}
+        onChange={setDen}
       />
 
-      <CircleSlider
+      <Slider
         label="opacity"
-        min={0}
-        max={255}
-        step={1}
-        onChange={e => setOp(eValue(e))}
-        valueGetter={() => op}
+        sliderMin={0}
+        sliderMax={255}
+        stepSize={1}
+        value={op}
+        onChange={setOp}
       />
 
-      <CircleSlider
+      <Slider
         label="separation"
-        min={0}
-        max={1}
-        step={0.01}
-        onChange={e => setSep(eValue(e))}
-        valueGetter={() => sep}
+        sliderMin={0}
+        sliderMax={1}
+        stepSize={0.01}
+        value={sep}
+        onChange={setSep}
       />
 
-      <CircleSlider
+      <Slider
         label="size"
-        min={0.1}
-        max={4}
-        step={0.01}
-        onChange={e => setSz(eValue(e))}
-        valueGetter={() => sz}
+        sliderMin={0.1}
+        sliderMax={4}
+        stepSize={0.01}
+        value={sz}
+        onChange={setSz}
       />
+
     </div>
   )
 }

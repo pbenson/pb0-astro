@@ -1,4 +1,5 @@
-import { useId, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import Slider from "../ui/Slider"
 import { axisBottom } from 'd3-axis';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
@@ -25,7 +26,6 @@ export default function CreditBasket() {
   const axisRef = useRef<SVGGElement>(null);
   // Ids must be unique per instance: hardcoding them breaks the label
   // associations as soon as the component appears twice on a page.
-  const id = useId();
 
   const [names, setNames] = useState(10);
   const [probability, setProbability] = useState(0.5);
@@ -83,50 +83,33 @@ export default function CreditBasket() {
   return (
     <div className="basket">
       <div className="controls">
-        <div className="control">
-          <label htmlFor={`${id}-names`}>
-            Names in the basket <strong>{names}</strong>
-          </label>
-          <input
-            id={`${id}-names`}
-            type="range"
-            min={2}
-            max={30}
-            step={1}
-            value={names}
-            onChange={(event) => setNames(Number(event.target.value))}
-          />
-        </div>
+        <Slider
+          label="Names in the basket"
+          sliderMin={2}
+          sliderMax={30}
+          value={names}
+          onChange={setNames}
+        />
 
-        <div className="control">
-          <label htmlFor={`${id}-probability`}>
-            Default probability <strong>{percent(probability)}</strong>
-          </label>
-          <input
-            id={`${id}-probability`}
-            type="range"
-            min={0.01}
-            max={0.99}
-            step={0.01}
-            value={probability}
-            onChange={(event) => setProbability(Number(event.target.value))}
-          />
-        </div>
+        <Slider
+          label="Default probability"
+          sliderMin={0.01}
+          sliderMax={0.99}
+          stepSize={0.01}
+          value={probability}
+          onChange={setProbability}
+          formatValue={percent}
+        />
 
-        <div className="control">
-          <label htmlFor={`${id}-correlation`}>
-            Asset correlation <strong>{percent(correlation)}</strong>
-          </label>
-          <input
-            id={`${id}-correlation`}
-            type="range"
-            min={0}
-            max={1}
-            step={0.01}
-            value={correlation}
-            onChange={(event) => setCorrelation(Number(event.target.value))}
-          />
-        </div>
+        <Slider
+          label="Asset correlation"
+          sliderMin={0}
+          sliderMax={1}
+          stepSize={0.01}
+          value={correlation}
+          onChange={setCorrelation}
+          formatValue={percent}
+        />
 
         <button
           type="button"

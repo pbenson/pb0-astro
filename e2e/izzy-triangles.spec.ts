@@ -24,11 +24,14 @@ test.describe('Izzy Triangles', () => {
     test.setTimeout(90_000);
     await page.goto('/math/izzy-triangles');
 
-    // Set before p5's dynamic import can have resolved: the chosen speed is
-    // held on the React side, so it must survive being set this early.
-    await page.locator('input[type=range]').first().fill('3');
-
+    // Wait for the button to enable before touching the slider. It enables
+    // from inside p5.setup, which is downstream of hydration — and a fill
+    // before hydration sets the DOM value that React then discards, leaving
+    // the run at its default speed and well past this test's budget.
     const button = page.getByRole('button', { name: /Count/ });
+    await expect(button).toBeEnabled();
+
+    await page.locator('input[type=range]').first().fill('3');
     await button.click();
     await expect(button).toHaveText(/Counting… \d+\/64/);
 
