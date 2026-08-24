@@ -62,13 +62,15 @@ test.describe('Site navigation', () => {
     ).toBeVisible();
   });
 
-  test('the operations research index lists both search-order pages', async ({ page }) => {
+  test('the operations research index lists its pages', async ({ page }) => {
     await page.goto('/operations-research');
     await expect(
       page.getByRole('heading', { name: 'Operations Research', level: 1 }),
     ).toBeVisible();
-    await expect(page.locator('.card-grid a')).toHaveCount(2);
+    // Two search-order pages and the sphere method.
+    await expect(page.locator('.card-grid a')).toHaveCount(3);
     await expect(page.getByRole('link', { name: 'Where to Look First' })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Ball That Rolls Downhill/ })).toBeVisible();
   });
 
   test('every section index renders its cards', async ({ page }) => {

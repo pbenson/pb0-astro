@@ -1,0 +1,123 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: The Ball That Rolls Downhill
+description: "An interior method for linear programming that never inverts a matrix"
+blurb: "Solving a linear program from the inside, by growing the largest ball that fits and sliding it downhill"
+section: operations-research
+tier: work
+order: 30
+---
+import SphereMethod from '../../components/math/SphereMethod.tsx'
+import PlainWords from '../../components/shared/PlainWords.astro'
+
+# The ball that rolls downhill
+
+<PlainWords>
+A linear program is a room whose walls are flat, and a direction you want to
+travel as far as possible. The classic method walks the corners of the room,
+testing one after another. That works, but corners are where the arithmetic is
+worst behaved, and a room in a thousand dimensions has an enormous number of
+them.
+
+The method here stays in the middle instead. At any point, ask for the largest
+ball that fits without poking through a wall. Where the ball touches tells you
+which walls are close; the lowest point of the ball tells you which way is
+downhill. Move, grow a new ball, repeat.
+</PlainWords>
+
+Take the linear program
+
+$$
+\min\; c \cdot x \quad \text{subject to} \quad Ax \ge b
+$$
+
+and stay strictly inside the feasible region $K$ the whole way. No pivoting, no
+basis, and — the claim this page is really about — no matrix inversion.
+
+## The largest ball that fits
+
+For a point $x$ inside $K$, write $\delta(x)$ for the radius of the largest ball
+centred there that still fits inside:
+
+$$
+\delta(x) = \min_i \frac{A_i \cdot x - b_i}{\lVert A_i \rVert}
+$$
+
+That is a minimum over the constraints of a distance — the perpendicular
+distance from $x$ to each facet. No system is solved to get it, which is the
+first place the usual machinery is absent.
+
+Call that ball $B(x)$. The constraints achieving the minimum are the **touching
+set** $T(x)$: the facets $B(x)$ actually rests against. Usually one. At a point
+equidistant from several facets, more — and the set jumps as $x$ moves, which is
+worth watching rather than hiding.
+
+Each touching constraint gives a **touching point** $x^i$, the orthogonal
+projection of the centre onto that facet. And sliding the objective plane down
+the $-c$ direction until it first meets the ball gives the **bottom point**: the
+best point of the ball, by objective value.
+
+## Try it
+
+Click to unpin the centre and move it with the pointer; click again to pin it.
+The ball is the largest that fits, the blue spokes run to the touching points,
+and the amber line is the objective plane resting on the bottom of the ball.
+
+**Iterate** runs one iteration — a centering step, then a cycle of descent
+steps — and leaves the path behind it. The ring marks the best point found so
+far.
+
+<SphereMethod client:load />
+
+## What ε is for
+
+A descent step runs to the boundary, and the boundary is exactly where the
+method must not go: on a facet, $\delta = 0$, the ball vanishes, and there is
+nothing left to compute a direction from. So each step stops short, at the
+**near touching point**
+
+$$
+(1 - \varepsilon)\, x^i + \varepsilon\, x
+$$
+
+a fraction of the way back toward the centre. Turn ε down and the steps hug the
+walls; turn it up and they stay timid and central.
+
+## Why the iterate wanders
+
+Watch the path and you will see it move *away* from the objective sometimes.
+That is the centering step, and it is deliberate: a bigger ball gives the next
+descent step more room to run. The method's answer is therefore not where it
+currently stands but the best point it has seen — the ring, not the dot.
+
+## The argument
+
+Standard LP codes solve a linear system at every step, over and over. That is
+what makes dense models expensive, and it is where floating-point error
+accumulates. Everything on this page is a dot product, a norm and a minimum:
+
+- $\delta(x)$ is a minimum of $m$ distances.
+- $T(x)$ is the arg-min of the same list.
+- A touching point is one projection, $x - A_i (A_i \cdot x - b_i)/\lVert A_i \rVert^2$.
+- A step length is a ratio of two dot products.
+
+No factorisation, no inverse, nothing to become ill-conditioned. In two
+dimensions that is a curiosity. The reason it matters is that none of it gets
+harder in a thousand.
+
+## Notes
+
+The picture is a port of a p5.js sketch of mine from January 2023, which drew
+one ball and one step; the iteration, the path and the incumbent are new here.
+
+The centering step is a plain hill-climb on $\delta$ — step along the sum of the
+outward normals of $T(x)$, backtracking until the ball actually grows. That is
+not the paper's centering procedure, which does more; it is enough to show what
+centering is *for*.
+
+## Further reading
+
+Katta G. Murty, "Sphere Method-7 Using No Matrix Inversions for Linear Programs
+(LPs)", Department of Industrial and Operations Engineering, University of
+Michigan, June 2014. The method above is SM-7 in that paper's terms, reduced to
+two dimensions and to the pieces a drawing needs.
