@@ -7,6 +7,12 @@ interface SliderProps {
   initialValue: number
   stepSize?: number
   onChange?: (value: number) => void
+  /**
+   * Render the readout for a value. Use when the raw number is not what the
+   * reader needs — a stepped scale whose positions stand for something else,
+   * or a value that wants a unit.
+   */
+  formatValue?: (value: number) => string
 }
 
 export default function Slider(props: SliderProps) {
@@ -32,8 +38,13 @@ export default function Slider(props: SliderProps) {
           min={props.sliderMin}
           max={props.sliderMax}
           step={props.stepSize || 1}
+          // Without this a screen reader announces the raw position — "0,
+          // minimum 0, maximum 3" — while the page shows the formatted value.
+          aria-valuetext={props.formatValue ? props.formatValue(value) : undefined}
         />
-        <span style={{ minWidth: '50px', fontWeight: 600 }}>{value}</span>
+        <span style={{ minWidth: '50px', fontWeight: 600 }}>
+          {props.formatValue ? props.formatValue(value) : value}
+        </span>
       </label>
     </div>
   )
