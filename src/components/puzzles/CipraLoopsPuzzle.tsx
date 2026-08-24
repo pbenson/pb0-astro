@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react"
+import Slider from "../ui/Slider"
 import styles from "./CipraLoopsPuzzle.module.css"
 import type { ColorMode } from "./cipraLogic"
 import { getAllLoops, getEndpointToLoopMap, getPathColor, getLoopIndexColor, getLoopColor } from "./cipraLogic"
@@ -407,20 +408,15 @@ export default function CipraLoopsPuzzle() {
       </label>
 
       {isLocalhost && (
-        <div className={styles.sliderGroup}>
-          <label className={styles.sliderLabel}>
-            Ribbon width
-            <input
-              type="range"
-              min="0.05"
-              max="0.33"
-              step="0.01"
-              value={ribbonWidth}
-              onChange={(e) => setRibbonWidth(parseFloat(e.target.value))}
-              className={styles.slider}
-            />
-          </label>
-        </div>
+        <Slider
+          label="Ribbon width"
+          sliderMin={0.05}
+          sliderMax={0.33}
+          stepSize={0.01}
+          value={ribbonWidth}
+          onChange={setRibbonWidth}
+          formatValue={(width) => width.toFixed(2)}
+        />
       )}
     </div>
   )

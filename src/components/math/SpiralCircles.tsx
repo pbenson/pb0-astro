@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import Slider from "../ui/Slider"
 
 const CANVAS_SIZE = 720
 const LERP_SPEED = 0.08
@@ -117,57 +118,15 @@ export default function SpiralCircles() {
   return (
     <div>
       <style>{`
-        .sc-slider::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          width: 16px; height: 16px; border-radius: 50%;
-          background: var(--grid-teal); border: none; cursor: pointer;
-          margin-top: -6px;
-        }
-        .sc-slider::-moz-range-thumb {
-          width: 16px; height: 16px; border-radius: 50%;
-          background: var(--grid-teal); border: none; cursor: pointer;
-        }
-        .sc-slider::-webkit-slider-runnable-track {
-          height: 4px; border-radius: 2px; background: var(--rule);
-        }
-        .sc-slider::-moz-range-track {
-          height: 4px; border-radius: 2px; background: var(--rule);
-        }
       `}</style>
 
-      <div style={{ marginBottom: 16 }}>
-        <span style={labelStyle}>circles per revolution</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <input
-            type="range"
-            className="sc-slider"
-            min={3}
-            max={20}
-            value={target}
-            onChange={(e) => setTarget(Number(e.target.value))}
-            style={{
-              flex: 1,
-              WebkitAppearance: "none",
-              appearance: "none" as never,
-              background: "transparent",
-              cursor: "pointer",
-            }}
-            aria-label="Circles per revolution"
-          />
-          <span
-            style={{
-              fontFamily: monoFont,
-              fontWeight: 700,
-              fontSize: 16,
-              color: t.ink,
-              minWidth: 28,
-              textAlign: "right",
-            }}
-          >
-            {target}
-          </span>
-        </div>
-      </div>
+      <Slider
+        label="circles per revolution"
+        sliderMin={3}
+        sliderMax={20}
+        value={target}
+        onChange={setTarget}
+      />
 
       <svg
         viewBox={`0 0 ${CANVAS_SIZE} ${CANVAS_SIZE}`}

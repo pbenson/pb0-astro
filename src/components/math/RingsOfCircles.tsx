@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
+import Slider from "../ui/Slider"
 
 const CANVAS_SIZE = 720
 const FRAMES_PER_DILATION = 120
@@ -159,58 +160,16 @@ export default function RingsOfCircles() {
   return (
     <>
       <style>{`
-        .roc-slider::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          width: 16px; height: 16px; border-radius: 50%;
-          background: var(--grid-teal); border: none; cursor: pointer;
-          margin-top: -6px;
-        }
-        .roc-slider::-moz-range-thumb {
-          width: 16px; height: 16px; border-radius: 50%;
-          background: var(--grid-teal); border: none; cursor: pointer;
-        }
-        .roc-slider::-webkit-slider-runnable-track {
-          height: 4px; border-radius: 2px; background: var(--rule);
-        }
-        .roc-slider::-moz-range-track {
-          height: 4px; border-radius: 2px; background: var(--rule);
-        }
       `}</style>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 16 }}>
-        <div>
-          <span style={labelStyle}>circles per ring</span>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <input
-              type="range"
-              className="roc-slider"
-              min={3}
-              max={60}
-              value={circlesPerRing}
-              onChange={(e) => setCirclesPerRing(Number(e.target.value))}
-              style={{
-                flex: 1,
-                WebkitAppearance: "none",
-                appearance: "none" as never,
-                background: "transparent",
-                cursor: "pointer",
-              }}
-              aria-label="Circles per ring"
-            />
-            <span
-              style={{
-                fontFamily: monoFont,
-                fontWeight: 700,
-                fontSize: 16,
-                color: t.ink,
-                minWidth: 28,
-                textAlign: "right",
-              }}
-            >
-              {circlesPerRing}
-            </span>
-          </div>
-        </div>
+        <Slider
+          label="circles per ring"
+          sliderMin={3}
+          sliderMax={60}
+          value={circlesPerRing}
+          onChange={setCirclesPerRing}
+        />
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           <div
