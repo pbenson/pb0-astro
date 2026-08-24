@@ -106,6 +106,13 @@
    Reset and Base Styles
    ========================================================================== */
 
+/* Images in prose never overflow their column. The craft pages carried this
+   as an inline style on all 45 of their <img> tags; it belongs here. */
+main img {
+  max-width: 100%;
+  height: auto;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
