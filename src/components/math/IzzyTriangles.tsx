@@ -56,10 +56,19 @@ function isDistinct(colouring: number) {
 }
 
 interface IzzyProps {
-  showUniqueCount?: boolean
+  /**
+   * Show the gallery of distinct colourings beside the animation. Off for a
+   * bare triangle, on for the enumeration.
+   */
+  showGallery?: boolean
 }
 
-export default function IzzyTriangles({ showUniqueCount = false }: IzzyProps) {
+/** The 24 distinct colourings lay out as four columns of six. */
+const GALLERY_COLUMNS = 4
+const GALLERY_ROWS = 6
+const DISTINCT_TOTAL = GALLERY_COLUMNS * GALLERY_ROWS
+
+export default function IzzyTriangles({ showGallery = false }: IzzyProps) {
   const canvasRef = useRef<HTMLDivElement>(null)
   const sketchRef = useRef<any>(null)
   const [counting, setCounting] = useState(false)
@@ -73,15 +82,18 @@ export default function IzzyTriangles({ showUniqueCount = false }: IzzyProps) {
 
       const sketch = (p5: any) => {
         let colouring = 0
-        let distinctSoFar = 0
+        /** The distinct colourings found so far, in the order they turned up. */
+        let distinct: number[] = []
         let running = false
+        let width = 480
+        let sideBySide = true
 
         // The sketch owns the animation; React owns the button. These two hooks
         // are the whole of the traffic between them.
         sketchRef.current = {
           start() {
             colouring = 0
-            distinctSoFar = 0
+            distinct = []
             running = true
             p5.loop()
           },
@@ -91,46 +103,92 @@ export default function IzzyTriangles({ showUniqueCount = false }: IzzyProps) {
           },
         }
 
+        /** One colouring, drawn as six wedges around (cx, cy). */
+        const paintColouring = (colouring: number, cx: number, cy: number, radius: number) => {
+          p5.push()
+          p5.translate(cx, cy)
+          // The triangle geometry is defined with y pointing up.
+          p5.scale(1, -1)
+          p5.stroke(127, 90)
+          p5.strokeWeight(1)
+
+          let remaining = colouring
+          for (const triangle of triangles) {
+            const [p0, p1, p2] = triangle.scale(radius).vertices
+            // Bit set means a black wedge; the hairline keeps a white wedge
+            // visible against cream paper and a black one against slate.
+            p5.fill(remaining % 2 === 0 ? 255 : 0)
+            p5.triangle(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y)
+            remaining = Math.floor(remaining / 2)
+          }
+          p5.pop()
+        }
+
+        /**
+         * The tally, as a filling grid rather than a number: each distinct
+         * colouring takes the next of 24 slots, so the picture shows which
+         * patterns have turned up, not merely how many.
+         */
+        const paintGallery = (x: number, y: number, width: number, height: number) => {
+          const cellW = width / GALLERY_COLUMNS
+          const cellH = height / GALLERY_ROWS
+          const radius = Math.min(cellW, cellH) * 0.44
+
+          for (let slot = 0; slot < DISTINCT_TOTAL; ++slot) {
+            const cx = x + (slot % GALLERY_COLUMNS + 0.5) * cellW
+            const cy = y + (Math.floor(slot / GALLERY_COLUMNS) + 0.5) * cellH
+
+            if (slot < distinct.length) {
+              paintColouring(distinct[slot], cx, cy, radius)
+            } else {
+              // An empty slot still shows: the grid is a progress bar.
+              p5.push()
+              p5.noFill()
+              p5.stroke(127, 45)
+              p5.strokeWeight(1)
+              p5.circle(cx, cy, radius * 1.5)
+              p5.pop()
+            }
+          }
+        }
+
         p5.setup = () => {
-          p5.createCanvas(480, 480)
+          const available = canvasRef.current?.offsetWidth ?? 480
+          width = showGallery ? Math.max(360, Math.min(available, 880)) : 480
+          sideBySide = showGallery && width >= 700
+          // Stacked, the triangle needs less room above the gallery than it
+          // gets side by side, where it shares the height with six rows.
+          p5.createCanvas(width, showGallery && !sideBySide ? 820 : 480)
           p5.frameRate(2)
           p5.noLoop() // idle until the button says otherwise
         }
 
         p5.draw = () => {
-          // Nothing else clears the canvas, and the triangle only repaints its
-          // own area — without this the tally digits pile up on each other.
+          // Nothing else clears the canvas, and each colouring only repaints
+          // its own wedges — without this they pile up on each other.
           p5.clear()
-          p5.translate(p5.width / 2, p5.height * 0.6)
-          p5.scale(1, -1)
-          p5.noStroke()
 
-          let remaining = colouring
-          triangles.forEach((triangle) => {
-            const tri = triangle.scale(p5.width * 0.4)
-            const [p0, p1, p2] = tri.vertices
+          const stageW = showGallery && sideBySide ? width * 0.52 : width
+          paintColouring(
+            colouring,
+            stageW / 2,
+            showGallery && !sideBySide ? 200 : 288,
+            Math.min(stageW, 480) * 0.4,
+          )
 
-            p5.fill(remaining % 2 === 0 ? 255 : 0)
-            p5.triangle(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y)
-
-            p5.noFill()
-            p5.stroke(127, 20)
-            remaining = Math.floor(remaining / 2)
-          })
-
-          if (running && isDistinct(colouring)) ++distinctSoFar
-
-          if (showUniqueCount) {
-            // Drawn every frame, not only on the distinct ones, so the tally
-            // stays legible while a repeat is on screen.
-            const label = '' + distinctSoFar
-            p5.textSize(32)
-            p5.fill(128)
-            p5.scale(1, -1)
-            p5.text(label, -p5.textWidth(label) / 2, p5.height * 0.1)
+          if (showGallery) {
+            if (sideBySide) {
+              paintGallery(stageW, 40, width - stageW, 400)
+            } else {
+              paintGallery(0, 380, width, 430)
+            }
           }
 
           if (!running) return
+
+          if (isDistinct(colouring) && distinct.length < DISTINCT_TOTAL) {
+            distinct.push(colouring)
+          }
 
           if (colouring >= LAST_COLOURING) {
             running = false
@@ -150,7 +208,7 @@ export default function IzzyTriangles({ showUniqueCount = false }: IzzyProps) {
       sketchRef.current = null
       instance?.remove()
     }
-  }, [showUniqueCount])
+  }, [showGallery])
 
   const startCounting = useCallback(() => {
     if (!sketchRef.current) return

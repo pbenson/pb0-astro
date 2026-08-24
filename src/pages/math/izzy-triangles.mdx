@@ -11,6 +11,8 @@ import IzzyTriangles from '../../components/math/IzzyTriangles.tsx'
 
 # Izzy Triangles
 
-Exploring the 64 possible colorings of an equilateral triangle cut into 6 segments by its medians. Each segment can be black or white, but the figure is unchanged by a third of a turn, so colorings come in orbits of three — and only 24 of the 64 are distinct. The running count is the number of distinct patterns seen so far.
+Exploring the 64 possible colorings of an equilateral triangle cut into 6 segments by its medians. Each segment can be black or white, but the figure is unchanged by a third of a turn, so colorings come in orbits of three — and only 24 of the 64 are distinct.
 
-<IzzyTriangles client:load showUniqueCount={true} />
+Press Count to walk through all 64. The grid beside it holds one slot for each of the 24 distinct colorings, and fills as each new one appears — so you can see which patterns have turned up, not just how many.
+
+<IzzyTriangles client:load showGallery={true} />
