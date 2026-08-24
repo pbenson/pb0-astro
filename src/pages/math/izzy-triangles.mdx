@@ -18,3 +18,43 @@ Press Count to walk through all 64. The grid beside it holds one slot for each o
 When the colouring on the left is one you have already seen, it is a third or two-thirds of a turn away from one in the grid, and that one is ringed. The speed control runs from a quarter of the original pace up to twice it; the slowest setting is the default, because at speed the repeats go by faster than you can match them.
 
 <IzzyTriangles client:load showGallery={true} />
+
+## Where this came from
+
+I met [Mark Saul](https://www.aaas.org/membership/member-spotlight/mark-saul-working-solve-uss-math-problem)
+through Ethan Berman's i2camp. Among the things he put in front of children was
+[IZZI](https://www.jaapsch.net/puzzles/izzi.htm), an
+[edge-matching puzzle](https://en.wikipedia.org/wiki/Edge-matching_puzzle) of 64
+square cardboard tiles designed by Frank Nichols and published by Binary Arts in
+1992. Each square is cut into eight triangles by its diagonals and its two
+mid-lines, every triangle black or white, and the game is to lay all 64 in an
+8×8 square with each touching edge matching colour to colour. Watching that, I
+wanted to know what the same idea looked like on a triangle.
+
+The connection is closer than inspiration. IZZI uses 64 of **70** possible
+tiles, and 70 is exactly the number of eight-triangle colourings counted up to
+rotation — Burnside over the four turns of a square:
+
+$$
+\frac{2^8 + 2^2 + 2^4 + 2^2}{4} = \frac{256 + 4 + 16 + 4}{4} = 70
+$$
+
+which is the calculation on this page, one figure over. Six wedges with
+three-fold symmetry give
+
+$$
+\frac{2^6 + 2^2 + 2^2}{3} = \frac{64 + 4 + 4}{3} = 24
+$$
+
+Both figures happen to have 64 in them — IZZI's tile count, and this page's
+colourings — and that is a coincidence rather than a correspondence.
+
+## Sol LeWitt would have called it a wall drawing
+
+Stating a rule and then exhibiting every variation it permits is a
+conceptual-art method as much as a mathematical one.
+[Sol LeWitt](https://en.wikipedia.org/wiki/Sol_LeWitt) built all 122
+*Variations of Incomplete Open Cubes* in 1974 and showed them as a grid,
+because the complete set is the work — no single cube is the point. The 4×6
+gallery above is the same gesture: the rule is a third of a turn, and what you
+get for obeying it is 24 objects and no more.
