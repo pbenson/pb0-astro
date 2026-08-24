@@ -14,6 +14,15 @@ import { useEffect, useState } from 'react';
  * and #1e1e1c (dark); worst-case CVD separation between the diverging poles is
  * ΔE 20.3 light / 22.4 dark under protanopia.
  */
+/**
+ * Colours of drawn artwork rather than of the interface around it. They do not
+ * follow the theme, and that is deliberate: the spiral is the same object on
+ * cream paper as on slate. Declared here so the choice is made once and reads
+ * as a decision instead of a literal buried in a sketch.
+ */
+export const ORANGE = '#fc6600';
+export const SPIRAL_RED = '#7f0000';
+
 export interface ChartPalette {
   /** Single hue for every histogram panel — see note on identity below. */
   readonly distribution: string;

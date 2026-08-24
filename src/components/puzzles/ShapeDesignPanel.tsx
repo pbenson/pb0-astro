@@ -118,8 +118,8 @@ export default function ShapeDesignPanel({ controlPoints, onControlPointsChange 
         {/* Tile shape with curves */}
         <path
           d={getTilePathWithCurves(designTile, controlPoints, DESIGN_SCALE)}
-          fill="hsl(165, 50%, 45%)"
-          stroke="#2d5a4a"
+          fill="var(--tile-fill)"
+          stroke="var(--tile-stroke)"
           strokeWidth={1.5}
         />
 

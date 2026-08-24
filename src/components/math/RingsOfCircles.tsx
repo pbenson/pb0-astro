@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import Slider from "../ui/Slider"
+import { ORANGE, SPIRAL_RED } from "../shared/chartTokens"
 
 const CANVAS_SIZE = 720
 const FRAMES_PER_DILATION = 120
 const DIAGONAL = Math.sqrt(CANVAS_SIZE * CANVAS_SIZE + CANVAS_SIZE * CANVAS_SIZE)
-const ORANGE = "#fc6600"
-const SPIRAL_RED = "#7f0000"
 
 const monoFont =
   "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace"

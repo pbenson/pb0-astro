@@ -27,7 +27,7 @@
 }
 
 .tile {
-  stroke: #2d5a4a;
+  stroke: var(--tile-stroke);
   stroke-width: 1.5;
   cursor: pointer;
   transition: filter 0.15s ease;

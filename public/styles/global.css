@@ -31,6 +31,15 @@
   --mark-success: hsl(150, 40%, 38%);
   --mark-warning: hsl(38, 60%, 48%);
   --mark-error: hsl(4, 50%, 48%);
+  --mark-error-wash: hsla(4, 50%, 48%, 0.1);
+
+  /* Artwork — fixed on purpose, and the same in both themes. These are the
+     colours of the drawn objects themselves, not of the interface around
+     them, so they do not follow the light/dark tokens above. Declared here
+     because CSS modules cannot import a JavaScript constant, and the tile
+     stroke had six copies across three files before this. */
+  --tile-stroke: #2d5a4a;
+  --tile-fill: hsl(165, 50%, 45%);
 
   /* Segments — visualization colors */
   --segment-a: rgba(225, 180, 90, 0.85);
@@ -100,6 +109,7 @@
     --mark-success: hsl(150, 40%, 48%);
     --mark-warning: hsl(38, 55%, 52%);
     --mark-error: hsl(4, 45%, 55%);
+    --mark-error-wash: hsla(4, 45%, 55%, 0.1);
 
     --control-bg: var(--paper-inset);
     --control-hover: rgba(200, 195, 185, 0.08);
