@@ -38,10 +38,13 @@ Two smaller things, if they are easy:
      I would be grateful.
   2. I would like to confirm the full membership of my doctoral committee. My
      advisors, Robert L. Smith and James C. Bean, are in the record, but the
-     other members are not, and the only document I know of that lists them is
-     the signature page of the dissertation itself — which is inside the file
-     I cannot open. If you are able to look at that page, or point me to the
-     Rackham or IOE record that would have it, that would settle it.
+     other members are not. My recollection is that Stephen Pollock of IOE was
+     one, and that the cognate member came from EECS — possibly Elmer Gilbert
+     — but I would rather confirm than guess. The only document I know of that
+     lists them is the signature page of the dissertation itself, which is
+     inside the file I cannot open. If you are able to look at that page, or
+     point me to the Rackham or IOE record that would have it, that would
+     settle it.
 
 My reason for asking is modest: I am writing about this work publicly and
 would like to be able to point readers at the dissertation itself rather than
