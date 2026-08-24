@@ -107,9 +107,16 @@
    ========================================================================== */
 
 /* Images in prose never overflow their column. The craft pages carried this
-   as an inline style on all 45 of their <img> tags; it belongs here. */
+   as an inline style on all 45 of their <img> tags; it belongs here.
+
+   height: auto only where the markup does not set a height: the Spiral
+   Circles page sizes its letterform SVGs with height="100" and no width, and
+   a blanket height: auto lets those expand to the full column. */
 main img {
   max-width: 100%;
+}
+
+main img:not([height]) {
   height: auto;
 }
 
