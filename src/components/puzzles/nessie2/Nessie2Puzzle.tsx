@@ -314,7 +314,7 @@ function ShapeDesignPanel({ shape, controlPoints, onControlPointsChange, onClose
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--ink)', fontSize: '1.2rem', cursor: 'pointer' }}>×</button>
         </div>
         <svg ref={svgRef} width={PANEL_WIDTH} height={PANEL_HEIGHT} style={{ background: 'var(--paper-inset)', borderRadius: '8px' }}>
-          <path d={getTilePathWithCurves(shape, designTile, controlPoints, DESIGN_SCALE)} fill="hsl(165, 50%, 45%)" stroke="#2d5a4a" strokeWidth={1.5} />
+          <path d={getTilePathWithCurves(shape, designTile, controlPoints, DESIGN_SCALE)} fill="var(--tile-fill)" stroke="var(--tile-stroke)" strokeWidth={1.5} />
           <line x1={designSegment.start.x} y1={designSegment.start.y} x2={designSegment.end.x} y2={designSegment.end.y} stroke="rgba(255, 200, 100, 0.5)" strokeWidth={8} strokeLinecap="round" />
           <line x1={designSegment.start.x} y1={designSegment.start.y} x2={worldCp1.x} y2={worldCp1.y} stroke="rgba(255, 100, 100, 0.6)" strokeWidth={1} strokeDasharray="3 2" />
           <line x1={designSegment.end.x} y1={designSegment.end.y} x2={worldCp2.x} y2={worldCp2.y} stroke="rgba(100, 100, 255, 0.6)" strokeWidth={1} strokeDasharray="3 2" />
@@ -411,7 +411,7 @@ export default function Nessie2Puzzle({ width = 800, height = 600, initialScale 
           {SHAPES.map(shape => (
             <div key={shape.id} onClick={() => handleSelectShape(shape)} style={styles.shapeCard}>
               <svg width={140} height={70}>
-                <path d={getTilePath(shape, { id: 0, cx: 70, cy: 35, rotation: shape.previewRotation }, 25)} fill="hsl(165, 50%, 45%)" stroke="#2d5a4a" strokeWidth={1.5} />
+                <path d={getTilePath(shape, { id: 0, cx: 70, cy: 35, rotation: shape.previewRotation }, 25)} fill="var(--tile-fill)" stroke="var(--tile-stroke)" strokeWidth={1.5} />
               </svg>
               <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{shape.name}</div>
             </div>
@@ -436,7 +436,7 @@ export default function Nessie2Puzzle({ width = 800, height = 600, initialScale 
         <g transform={`translate(${viewOffset.x}, ${viewOffset.y})`}>
           {tiles.map(tile => (
             <g key={tile.id}>
-              <path d={getTilePathForRender(tile)} fill={getTileColor(tile.id)} stroke="#2d5a4a" strokeWidth={1.5} />
+              <path d={getTilePathForRender(tile)} fill={getTileColor(tile.id)} stroke="var(--tile-stroke)" strokeWidth={1.5} />
               {getSegmentEndpoints(selectedShape, tile, scale).map((seg, i) => (
                 <line
                   key={`hit-${tile.id}-${i}`}

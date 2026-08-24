@@ -50,17 +50,20 @@
   line-height: 0;
 }
 
+/* The same semantic pair as the clear button below, so they take the same
+   tokens. color-mix rather than more --*-wash variables: three alphas of two
+   colours would be six tokens nothing else would ever ask for. */
 .validCell {
-  background-color: rgba(46, 204, 113, 0.3);
+  background-color: color-mix(in srgb, var(--mark-success) 30%, transparent);
   cursor: pointer;
 }
 
 .validCell:hover {
-  background-color: rgba(46, 204, 113, 0.5);
+  background-color: color-mix(in srgb, var(--mark-success) 50%, transparent);
 }
 
 .blockedCell {
-  background-color: rgba(231, 76, 60, 0.3);
+  background-color: color-mix(in srgb, var(--mark-error) 30%, transparent);
   position: relative;
 }
 
@@ -205,12 +208,12 @@
 }
 
 .clearButton {
-  color: #e74c3c;
-  border-color: #e74c3c;
+  color: var(--mark-error);
+  border-color: var(--mark-error);
 }
 
 .clearButton:hover:not(:disabled) {
-  background: rgba(231, 76, 60, 0.1);
+  background: var(--mark-error-wash);
 }
 
 .instructions {

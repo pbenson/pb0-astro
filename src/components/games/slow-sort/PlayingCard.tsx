@@ -92,9 +92,11 @@ export default function PlayingCard({ value }: Readonly<PlayingCardProps>) {
       style={{
         width: CARD_WIDTH,
         height: CARD_HEIGHT,
+        // A card face is white in both themes — that is the object, not the
+        // interface around it. The border is chrome, so it follows the theme.
         background: "white",
         borderRadius: 4,
-        border: "1px solid #7f7f7f",
+        border: "1px solid var(--control-border)",
         position: "relative",
         overflow: "hidden",
         boxSizing: "border-box",
