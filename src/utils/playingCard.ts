@@ -1,3 +1,19 @@
+/**
+ * The p5 instance, untyped: this module predates p5's own types and draws
+ * through the instance-mode API, which the shipped typings model loosely.
+ * Named so the intent is legible where it appears.
+ */
+type P5 = any;
+
+/** Draws one suit symbol centred on (x, y), in the current p5 transform. */
+type SymbolRenderer = (
+  p5: P5,
+  x: number,
+  y: number,
+  cardWidth: number,
+  cardHeight: number,
+) => void;
+
 class Location {
   x: number
   y: number
@@ -26,7 +42,7 @@ class CardOrdinal {
 
   drawOrdinal(p5: any, suit: Suit, cardWidth: number, cardHeight: number) {
     // draw numbers in upper left and lower right, with a smaller symbol
-    const drawNumber = (p5, cardWidth, cardHeight) => {
+    const drawNumber = (p5: P5, cardWidth: number, cardHeight: number) => {
       const textX = -cardWidth * 0.44
       const textY = -cardHeight * 0.34
 
@@ -177,11 +193,11 @@ new CardFace(13, 'K')
 ]
 
 class Suit {
-  symbolRenderer: any
+  symbolRenderer: SymbolRenderer
   r: number
   g: number
   b: number
-  constructor(symbolRenderer: any,
+  constructor(symbolRenderer: SymbolRenderer,
     r: number,
     g: number,
     b: number) {
@@ -205,12 +221,12 @@ class Suit {
     p5.pop()
   }
 
-  setColor(p5) {
+  setColor(p5: P5) {
     p5.fill(this.r, this.g, this.b)
   }
 }
 
-export const suits = {
+export const suits: Record<string, Suit> = {
   "hearts": new Suit(
     (p5, x, y, cardWidth, cardHeight) => {
       p5.fill(255, 0, 0)

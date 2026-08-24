@@ -80,7 +80,7 @@ export default function VariableLengthAndRotation(props: VLRProps) {
           endPoints.forEach((p) => p.draw(p5));
         };
       }
-      myp5 = new p5.default(s, sketchRef.current);
+      myp5 = new p5.default(s, sketchRef.current ?? undefined);
     });
     return () => {
       if (myp5) myp5.remove();

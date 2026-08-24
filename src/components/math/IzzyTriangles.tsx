@@ -142,7 +142,7 @@ export default function IzzyTriangles({ showUniqueCount = false }: IzzyProps) {
         }
       }
 
-      instance = new p5.default(sketch, canvasRef.current)
+      instance = new p5.default(sketch, canvasRef.current ?? undefined)
     })
 
     return () => {

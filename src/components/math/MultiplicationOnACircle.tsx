@@ -104,7 +104,7 @@ export default function MultiplicationOnACircle() {
       if (myp5) {
         myp5.remove()
       }
-      myp5 = new p5.default(s, sketchRef.current)
+      myp5 = new p5.default(s, sketchRef.current ?? undefined)
     })
 
     return () => {

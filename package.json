@@ -9,7 +9,9 @@
     "astro": "astro",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "astro build && astro preview --background --port 4322 && playwright test"
+    "test:e2e": "astro build && astro preview --background --port 4322 && playwright test",
+    "thumbs": "node scripts/capture-thumbnails.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.4",
@@ -40,7 +42,9 @@
     "@types/d3-format": "^3.0.4",
     "@types/d3-scale": "^4.0.9",
     "@types/d3-selection": "^3.0.11",
+    "@types/node": "^26.2.0",
     "jsdom": "^28.1.0",
+    "typescript": "^7.0.2",
     "vitest": "^4.0.18",
     "vitest-axe": "^0.1.0"
   }

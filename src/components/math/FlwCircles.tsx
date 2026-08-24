@@ -49,7 +49,7 @@ export default function FlwCircles() {
           return polyVertexDistFromCenter - circRadius
         }
       }
-      myp5 = new p5.default(s, canvasRef.current)
+      myp5 = new p5.default(s, canvasRef.current ?? undefined)
     })
 
     return () => {

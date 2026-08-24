@@ -125,7 +125,7 @@ export default function QuantileExplorer(props: Props) {
           }
         }
       }
-      myp5 = new p5.default(s, sketchRef.current);
+      myp5 = new p5.default(s, sketchRef.current ?? undefined);
     });
     return () => {
       if (myp5) myp5.remove();

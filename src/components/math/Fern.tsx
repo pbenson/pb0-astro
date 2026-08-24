@@ -63,7 +63,7 @@ export default function Fern() {
           }
         }
       }
-      new p5.default(sketch, canvasRef.current)
+      new p5.default(sketch, canvasRef.current ?? undefined)
     })
   }, [])
 

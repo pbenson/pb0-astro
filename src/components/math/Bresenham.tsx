@@ -73,7 +73,7 @@ export default function Bresenham() {
           }
         }
       }
-      new p5.default(sketch, canvasRef.current)
+      new p5.default(sketch, canvasRef.current ?? undefined)
     })
   }, [])
 

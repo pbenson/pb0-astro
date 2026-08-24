@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Typecheck
+        run: npm run typecheck
+
       - name: Run unit tests
         run: npm test
 
@@ -30,8 +33,13 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
+      # The suite talks to a preview server on 4322 (see playwright.config.ts),
+      # which nothing else starts. --background daemonises it so the step ends.
+      - name: Start preview server
+        run: npx astro preview --port 4322 --background
+
       - name: Run E2E tests (excluding visual regression)
-        run: npx playwright test --ignore-snapshots e2e/cipra-loops.spec.ts e2e/navigation.spec.ts e2e/nessies.spec.ts e2e/theme-toggle.spec.ts
+        run: npx playwright test --ignore-snapshots e2e/cipra-loops.spec.ts e2e/navigation.spec.ts e2e/nessies.spec.ts e2e/theme.spec.ts
 
       - name: Upload Playwright report
         if: failure()
