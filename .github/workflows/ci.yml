@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
+      # Runs astro sync first: .astro/types.d.ts declares astro:content,
+      # import.meta.glob and the CSS module shims, and a fresh checkout has to
+      # generate it before tsc sees them.
       - name: Typecheck
         run: npm run typecheck
 
