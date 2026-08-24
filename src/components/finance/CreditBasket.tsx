@@ -1,4 +1,4 @@
-import { useId, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Slider from "../ui/Slider"
 import { axisBottom } from 'd3-axis';
 import { scaleBand, scaleLinear } from 'd3-scale';
@@ -26,7 +26,6 @@ export default function CreditBasket() {
   const axisRef = useRef<SVGGElement>(null);
   // Ids must be unique per instance: hardcoding them breaks the label
   // associations as soon as the component appears twice on a page.
-  const id = useId();
 
   const [names, setNames] = useState(10);
   const [probability, setProbability] = useState(0.5);
