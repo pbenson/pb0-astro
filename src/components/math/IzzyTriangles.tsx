@@ -1,4 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+import Slider from "../ui/Slider"
+import { useChartPalette } from "../shared/chartTokens"
+import {
+  canonical,
+  COLOURING_COUNT,
+  isDistinct,
+  LAST_COLOURING,
+} from "./izzyLogic"
 
 class Point {
   x: number
@@ -42,18 +50,14 @@ const triangles = [
   new Triangle([origin, mid.rotate(2 * thirdCircle), tipN]),
 ]
 
-/** All six segments black: the last of the 64 colourings, and the 24th distinct one. */
-const LAST_COLOURING = 63
-
-/** A colouring is distinct if no third-of-a-turn rotation of it comes out smaller. */
-function isDistinct(colouring: number) {
-  let rotated = colouring
-  for (let i = 0; i < 3; ++i) {
-    rotated = Math.floor(rotated / 4) + (rotated % 4) * 16
-    if (rotated < colouring) return false
-  }
-  return true
-}
+/**
+ * Frames per second the slider can select. The slowest is a quarter of the
+ * original fixed rate of 2/s and is the default: at 2/s the run was over
+ * before a reader could take in which pattern had just appeared.
+ */
+const SPEEDS: readonly number[] = [0.5, 1, 2, 4]
+const SPEED_LABELS = ['\u00bc\u00d7', '\u00bd\u00d7', '1\u00d7', '2\u00d7']
+const DEFAULT_SPEED_INDEX = 0
 
 interface IzzyProps {
   /**
@@ -72,6 +76,20 @@ export default function IzzyTriangles({ showGallery = false }: IzzyProps) {
   const canvasRef = useRef<HTMLDivElement>(null)
   const sketchRef = useRef<any>(null)
   const [counting, setCounting] = useState(false)
+  const [progress, setProgress] = useState(0)
+  // p5 arrives through a dynamic import. Until it lands there is nothing to
+  // drive, and a click would be swallowed in silence.
+  const [ready, setReady] = useState(false)
+  // The chosen speed lives here, not only in the sketch: p5 arrives through a
+  // dynamic import, so a slider moved before it resolves would otherwise write
+  // to nothing and the choice would be silently lost.
+  const speedRef = useRef(SPEEDS[DEFAULT_SPEED_INDEX])
+
+  // The sketch outlives any one render, so it reads the palette through a ref
+  // rather than closing over the value it was built with.
+  const palette = useChartPalette()
+  const paletteRef = useRef(palette)
+  paletteRef.current = palette
 
   useEffect(() => {
     let instance: any = null
@@ -87,6 +105,9 @@ export default function IzzyTriangles({ showGallery = false }: IzzyProps) {
         let running = false
         let width = 480
         let sideBySide = true
+        let speed = SPEEDS[DEFAULT_SPEED_INDEX]
+        /** Gallery slot holding the orbit representative of a repeat, or -1. */
+        let matchedSlot = -1
 
         // The sketch owns the animation; React owns the button. These two hooks
         // are the whole of the traffic between them.
@@ -94,12 +115,21 @@ export default function IzzyTriangles({ showGallery = false }: IzzyProps) {
           start() {
             colouring = 0
             distinct = []
+            matchedSlot = -1
             running = true
+            p5.frameRate(speed)
             p5.loop()
           },
           stop() {
             running = false
             p5.noLoop()
+          },
+          setSpeed(fps: number) {
+            // Only while running. Calling p5.frameRate() on a stopped sketch
+            // leaves it stopped, and the following p5.loop() does not revive
+            // it — the run then sits at frame zero forever.
+            speed = fps
+            if (running) p5.frameRate(fps)
           },
         }
 
@@ -139,6 +169,16 @@ export default function IzzyTriangles({ showGallery = false }: IzzyProps) {
             const cy = y + (Math.floor(slot / GALLERY_COLUMNS) + 0.5) * cellH
 
             if (slot < distinct.length) {
+              if (slot === matchedSlot) {
+                // The colouring on the stage is a turn of this one. Ring it so
+                // the repeat is visibly a repeat OF something, not just a miss.
+                p5.push()
+                p5.noFill()
+                p5.stroke(paletteRef.current.positive)
+                p5.strokeWeight(2.5)
+                p5.circle(cx, cy, radius * 2.1)
+                p5.pop()
+              }
               paintColouring(distinct[slot], cx, cy, radius)
             } else {
               // An empty slot still shows: the grid is a progress bar.
@@ -159,11 +199,24 @@ export default function IzzyTriangles({ showGallery = false }: IzzyProps) {
           // Stacked, the triangle needs less room above the gallery than it
           // gets side by side, where it shares the height with six rows.
           p5.createCanvas(width, showGallery && !sideBySide ? 820 : 480)
-          p5.frameRate(2)
+          p5.frameRate(speed)
           p5.noLoop() // idle until the button says otherwise
         }
 
         p5.draw = () => {
+          // Record before painting. The gallery is drawn from `distinct`, so a
+          // colouring added after the paint is only shown by the NEXT frame —
+          // and the last colouring, 63, has no next frame: it stops the loop.
+          // That left the 24th slot permanently empty.
+          if (running) {
+            if (isDistinct(colouring)) {
+              if (distinct.length < DISTINCT_TOTAL) distinct.push(colouring)
+              matchedSlot = -1
+            } else {
+              matchedSlot = distinct.indexOf(canonical(colouring))
+            }
+          }
+
           // Nothing else clears the canvas, and each colouring only repaints
           // its own wedges — without this they pile up on each other.
           p5.clear()
@@ -186,12 +239,11 @@ export default function IzzyTriangles({ showGallery = false }: IzzyProps) {
 
           if (!running) return
 
-          if (isDistinct(colouring) && distinct.length < DISTINCT_TOTAL) {
-            distinct.push(colouring)
-          }
+          setProgress(colouring + 1)
 
           if (colouring >= LAST_COLOURING) {
             running = false
+            matchedSlot = -1
             p5.noLoop()
             setCounting(false)
             return
@@ -201,10 +253,12 @@ export default function IzzyTriangles({ showGallery = false }: IzzyProps) {
       }
 
       instance = new p5.default(sketch, canvasRef.current ?? undefined)
+      setReady(true)
     })
 
     return () => {
       cancelled = true
+      setReady(false)
       sketchRef.current = null
       instance?.remove()
     }
@@ -212,16 +266,38 @@ export default function IzzyTriangles({ showGallery = false }: IzzyProps) {
 
   const startCounting = useCallback(() => {
     if (!sketchRef.current) return
+    setProgress(0)
     setCounting(true)
+    sketchRef.current.setSpeed(speedRef.current)
     sketchRef.current.start()
+  }, [])
+
+  const changeSpeed = useCallback((index: number) => {
+    speedRef.current = SPEEDS[index] ?? SPEEDS[DEFAULT_SPEED_INDEX]
+    sketchRef.current?.setSpeed(speedRef.current)
   }, [])
 
   return (
     <div>
       <div className="controls">
-        <button type="button" className="button" onClick={startCounting} disabled={counting}>
-          {counting ? 'Counting…' : 'Count'}
+        <button
+          type="button"
+          className="button"
+          onClick={startCounting}
+          disabled={counting || !ready}
+        >
+          {/* A full pass is over two minutes at the slowest speed, so the
+              button carries progress rather than a bare "Counting…". */}
+          {counting ? `Counting… ${progress}/${COLOURING_COUNT}` : 'Count'}
         </button>
+        <Slider
+          label="Speed"
+          sliderMin={0}
+          sliderMax={SPEEDS.length - 1}
+          initialValue={DEFAULT_SPEED_INDEX}
+          onChange={changeSpeed}
+          formatValue={(index) => SPEED_LABELS[index] ?? ''}
+        />
       </div>
       <div ref={canvasRef} />
     </div>
