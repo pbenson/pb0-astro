@@ -12,8 +12,9 @@ const CHERRY_ARBOR_AFTER = 'math';
 
 <BaseLayout title="Home">
   <div class="home">
-    <h1>...</h1>
-    <p class="tagline">Interactive explorations in math, puzzles, and visualizations</p>
+    <header class="intro">
+      <h1>Problems from work and play, made playable</h1>
+    </header>
 
     {sections.map((section) => (
       <>
@@ -39,20 +40,24 @@ const CHERRY_ARBOR_AFTER = 'math';
 </BaseLayout>
 
 <style>
-  .home {
-    text-align: center;
+  /* The nav wordmark carries the name, so the page leads with what the site
+     is. Left-aligned and measure-limited: this reads as a sentence someone
+     wrote, not a banner. */
+  .intro {
+    max-width: 52ch;
+    margin-bottom: var(--space-8);
   }
 
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .tagline {
+  /* Sized as a standfirst, not a banner: it should read a beat above the
+     section headings below it, not three lines of shouting. */
+  .intro h1 {
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.35;
     color: var(--text-muted);
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
+    margin: 0;
   }
+
 
   .section {
     margin-bottom: 3rem;

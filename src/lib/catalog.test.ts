@@ -117,12 +117,13 @@ describe('the real pages', () => {
       '/math/tsp-euclidean',
       '/math/tsp-probabilities',
     ]);
+    // Finance leads the work tier; section order lives in src/lib/sections.ts.
     expect(byTier(entries, 'work').map((e) => e.url)).toEqual([
-      '/math/tsp-euclidean',
-      '/math/tsp-probabilities',
       '/finance/asset-returns-monte-carlo',
       '/finance/credit-basket',
       '/math/quantiles',
+      '/math/tsp-euclidean',
+      '/math/tsp-probabilities',
     ]);
   });
 

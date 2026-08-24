@@ -18,14 +18,14 @@ const REGISTERED: Section[] = [
     title: 'Operations Research',
     description: 'Search and routing problems where the objective is expected time, not distance',
     tier: 'work',
-    order: 10,
+    order: 20,
   },
   {
     id: 'finance',
     title: 'Finance',
     description: 'Simulation and credit risk, worked out in the browser',
     tier: 'work',
-    order: 20,
+    order: 10,
   },
   {
     id: 'puzzles',
@@ -40,13 +40,6 @@ const REGISTERED: Section[] = [
     description: 'Mathematical visualizations and explorations',
     tier: 'play',
     order: 25,
-  },
-  {
-    id: 'animations',
-    title: 'Animations',
-    description: 'Interactive visual experiments and eye candy',
-    tier: 'play',
-    order: 60,
   },
   {
     id: 'craft',

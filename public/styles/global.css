@@ -5,6 +5,8 @@
 
 /* --- Light Mode (cream paper) --- */
 :root {
+  color-scheme: light dark;
+
   /* Ink hierarchy — graphite on paper */
   --ink: #2a2a28;
   --ink-secondary: #5c5a54;
@@ -69,9 +71,9 @@
   --button-border: var(--control-border);
 }
 
-/* --- Dark Mode (slate/chalkboard) — system preference --- */
+/* --- Dark Mode (slate/chalkboard) — follows the OS setting --- */
 @media (prefers-color-scheme: dark) {
-  :root:not(.light) {
+  :root {
     --ink: #e2dfd8;
     --ink-secondary: #a8a49c;
     --ink-tertiary: #706d66;
@@ -98,34 +100,6 @@
 
     --overlay-bg: rgba(0, 0, 0, 0.7);
   }
-}
-
-/* --- Dark Mode (manual toggle) --- */
-:root.dark {
-  --ink: #e2dfd8;
-  --ink-secondary: #a8a49c;
-  --ink-tertiary: #706d66;
-  --ink-muted: #4a4843;
-
-  --paper: #1e1e1c;
-  --paper-raised: #26261f;
-  --paper-inset: #18181a;
-
-  --rule: rgba(200, 195, 185, 0.10);
-  --rule-emphasis: rgba(200, 195, 185, 0.20);
-
-  --grid-teal: hsl(165, 45%, 48%);
-  --grid-teal-hover: hsl(165, 45%, 55%);
-
-  --mark-success: hsl(150, 40%, 48%);
-  --mark-warning: hsl(38, 55%, 52%);
-  --mark-error: hsl(4, 45%, 55%);
-
-  --control-bg: var(--paper-inset);
-  --control-hover: rgba(200, 195, 185, 0.08);
-  --control-border: var(--rule-emphasis);
-
-  --overlay-bg: rgba(0, 0, 0, 0.7);
 }
 
 /* ==========================================================================

@@ -1,8 +1,8 @@
 ---
 layout: ../../layouts/BaseLayout.astro
 title: Quantiles
-description: "Exploring rank, relative rank, and quantile buckets"
-blurb: "Exploring rank, relative rank, and quantile buckets"
+description: "The tallest person in the room is not the tallest person — with n data, the largest never sits at 100% and the smallest never sits at 0%"
+blurb: "The tallest person in the room is not the tallest person — with n data, the largest never sits at 100% and the smallest never sits at 0%"
 section: finance
 tier: work
 order: 30
@@ -29,7 +29,11 @@ Below you can specify how many data you have, and see how those points are distr
 
 If a data point lands on a bucket edge, then it belongs to the bucket immediately left of the tick mark.
 
-We distributed the points uniformly on the interval [0, 1]. We needed to make a choice about whether to assign the smallest datum to zero, and the largest to 1. We choose not to. While this point could be argued, it comes down to how we choose to define it. We do have our justifications however. If there is only one point, would you assign it to zero or one? We think it makes more sense to assign it to the midpoint, 0.5. In fact, if we are sampling from a distribution where we expect all data to be different, then the expected [order statistics](https://en.wikipedia.org/wiki/Order_statistic) will be distributed the way we are showing here.
+We distributed the points uniformly on the interval [0, 1]. We needed to make a choice about whether to assign the smallest datum to zero, and the largest to 1. We choose not to.
+
+Put another way, the tallest person in the room is not the tallest person. We measured the room, not the world, and someone taller is out there--as is someone shorter than the shortest person we measured. Our data should leave room for them. That is why the largest datum above stops short of 1, and the smallest stops short of 0. Notice what the picture is doing: _n_ points cut the interval into _n_+1 gaps, not _n_, so the datum of rank _i_ sits at _i_/(_n_+1). With five data, the largest sits at 5/6, not at 1.
+
+While this point could be argued, it comes down to how we choose to define it. We do have our justifications however. If there is only one point, would you assign it to zero or one? We think it makes more sense to assign it to the midpoint, 0.5. In fact, if we are sampling from a distribution where we expect all data to be different, then the expected [order statistics](https://en.wikipedia.org/wiki/Order_statistic) will be distributed the way we are showing here.
 
 ## When there is duplicate data
 
