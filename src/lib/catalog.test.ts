@@ -112,10 +112,11 @@ describe('the real pages', () => {
     expect(entries).toHaveLength(mdxFiles().length);
   });
 
-  it('groups the traveling-repairman pages as work', () => {
+  it('groups the operations research pages as work', () => {
     expect(bySection(entries, 'operations-research').map((e) => e.url)).toEqual([
       '/math/tsp-euclidean',
       '/math/tsp-probabilities',
+      '/operations-research/sphere-method',
     ]);
     // Finance leads the work tier; section order lives in src/lib/sections.ts.
     expect(byTier(entries, 'work').map((e) => e.url)).toEqual([
@@ -124,6 +125,7 @@ describe('the real pages', () => {
       '/math/quantiles',
       '/math/tsp-euclidean',
       '/math/tsp-probabilities',
+      '/operations-research/sphere-method',
     ]);
   });
 
