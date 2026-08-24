@@ -127,6 +127,19 @@ main img:not([height]) {
   height: auto;
 }
 
+/* Much of the craft artwork is dark line work on a transparent or white
+   ground — scans, tile diagrams, knot sketches. On the slate theme those
+   lines disappear into the page, so prose images get their own sheet of
+   paper to sit on. Images authored for dark mode (Image.tsx swaps in a
+   .dark-mode-img) are exempt: they already suit the dark ground. */
+@media (prefers-color-scheme: dark) {
+  main img:not(.dark-mode-img) {
+    background: var(--paper-raised-fixed, #faf8f3);
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
 }

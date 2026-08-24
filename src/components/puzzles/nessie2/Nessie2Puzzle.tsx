@@ -233,17 +233,20 @@ const SHAPES: PolygonShape[] = [
 ];
 
 // ============ Styles ============
+// Design tokens, not fixed colours: this component was authored against the
+// dark theme, so its charcoal cards and white labels turned into dark boxes
+// with invisible text once the site started following the system setting.
 const styles = {
   selectionContainer: { display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '1.5rem', padding: '2rem' },
   shapeGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' },
-  shapeCard: { display: 'flex', flexDirection: 'column' as const, alignItems: 'center', padding: '0.75rem', border: '2px solid #444', borderRadius: '12px', cursor: 'pointer', background: '#2a2a2a', transition: 'all 0.2s' },
+  shapeCard: { display: 'flex', flexDirection: 'column' as const, alignItems: 'center', padding: '0.75rem', border: '2px solid var(--control-border)', borderRadius: '12px', cursor: 'pointer', background: 'var(--paper-raised)', transition: 'all 0.2s' },
   panelContainer: { display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '1rem', padding: '1rem' },
-  svgContainer: { border: '1px solid #444', borderRadius: '8px' },
+  svgContainer: { border: '1px solid var(--rule-emphasis)', borderRadius: '8px' },
   controls: { display: 'flex', gap: '0.5rem', flexWrap: 'wrap' as const, justifyContent: 'center' },
-  button: { padding: '0.5rem 1rem', border: '1px solid #555', borderRadius: '4px', background: '#333', color: '#fff', cursor: 'pointer', fontSize: '0.9rem' },
-  accentButton: { padding: '0.5rem 1rem', border: '2px solid hsl(165, 50%, 40%)', borderRadius: '4px', background: 'hsl(165, 50%, 45%)', color: '#fff', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 500 },
+  button: { padding: '0.5rem 1rem', border: '1px solid var(--control-border)', borderRadius: '4px', background: 'var(--control-bg)', color: 'var(--ink)', cursor: 'pointer', fontSize: '0.9rem' },
+  accentButton: { padding: '0.5rem 1rem', border: '2px solid var(--grid-teal-hover)', borderRadius: '4px', background: 'var(--grid-teal)', color: 'var(--paper)', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 500 },
   legend: { display: 'flex', gap: '1rem', fontSize: '0.8rem', alignItems: 'center' },
-  info: { fontSize: '0.85rem', color: '#888' },
+  info: { fontSize: '0.85rem', color: 'var(--ink-tertiary)' },
 };
 
 // ============ Shape Design Panel ============
@@ -305,12 +308,12 @@ function ShapeDesignPanel({ shape, controlPoints, onControlPointsChange, onClose
   return (
     <>
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 10000, backdropFilter: 'blur(2px)' }} />
-      <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10001, background: '#1a1a1a', borderRadius: '12px', padding: '1rem', border: '1px solid #444' }}>
+      <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10001, background: 'var(--paper)', borderRadius: '12px', padding: '1rem', border: '1px solid var(--rule-emphasis)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
           <span style={{ fontWeight: 600 }}>Edit Shape</span>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' }}>×</button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--ink)', fontSize: '1.2rem', cursor: 'pointer' }}>×</button>
         </div>
-        <svg ref={svgRef} width={PANEL_WIDTH} height={PANEL_HEIGHT} style={{ background: '#222', borderRadius: '8px' }}>
+        <svg ref={svgRef} width={PANEL_WIDTH} height={PANEL_HEIGHT} style={{ background: 'var(--paper-inset)', borderRadius: '8px' }}>
           <path d={getTilePathWithCurves(shape, designTile, controlPoints, DESIGN_SCALE)} fill="hsl(165, 50%, 45%)" stroke="#2d5a4a" strokeWidth={1.5} />
           <line x1={designSegment.start.x} y1={designSegment.start.y} x2={designSegment.end.x} y2={designSegment.end.y} stroke="rgba(255, 200, 100, 0.5)" strokeWidth={8} strokeLinecap="round" />
           <line x1={designSegment.start.x} y1={designSegment.start.y} x2={worldCp1.x} y2={worldCp1.y} stroke="rgba(255, 100, 100, 0.6)" strokeWidth={1} strokeDasharray="3 2" />
@@ -325,7 +328,7 @@ function ShapeDesignPanel({ shape, controlPoints, onControlPointsChange, onClose
         <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem', justifyContent: 'center' }}>
           <button onClick={() => onControlPointsChange(DEFAULT_CONTROL_POINTS)} style={styles.button}>Reset</button>
         </div>
-        <p style={{ fontSize: '0.75rem', color: '#888', textAlign: 'center', margin: '0.5rem 0 0' }}>Drag the red/blue handles to curve edges</p>
+        <p style={{ fontSize: '0.75rem', color: 'var(--ink-tertiary)', textAlign: 'center', margin: '0.5rem 0 0' }}>Drag the red/blue handles to curve edges</p>
       </div>
     </>
   );
@@ -403,7 +406,7 @@ export default function Nessie2Puzzle({ width = 800, height = 600, initialScale 
     return (
       <div style={styles.selectionContainer}>
         <h2 style={{ margin: 0 }}>Choose a Shape</h2>
-        <p style={{ color: '#888', margin: 0 }}>Select a polygon to start the tiling puzzle</p>
+        <p style={{ color: 'var(--ink-tertiary)', margin: 0 }}>Select a polygon to start the tiling puzzle</p>
         <div style={styles.shapeGrid}>
           {SHAPES.map(shape => (
             <div key={shape.id} onClick={() => handleSelectShape(shape)} style={styles.shapeCard}>
@@ -474,7 +477,7 @@ export default function Nessie2Puzzle({ width = 800, height = 600, initialScale 
       )}
 
       <div style={styles.legend}>
-        <span style={{ fontWeight: 500, color: '#888' }}>{selectedShape.name}</span>
+        <span style={{ fontWeight: 500, color: 'var(--ink-tertiary)' }}>{selectedShape.name}</span>
         <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><span style={{ width: 12, height: 12, borderRadius: '50%', background: 'rgba(255, 200, 100, 0.8)' }} />A</span>
         <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><span style={{ width: 12, height: 12, borderRadius: '50%', background: 'rgba(100, 200, 255, 0.8)' }} />B</span>
       </div>

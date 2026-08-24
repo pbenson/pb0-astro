@@ -131,8 +131,11 @@ const navSections = SECTIONS.map((section) => ({
 
     <footer class="site-footer">
       <p>
-        Built by Pete. <a href="/about">About this site</a> ·
-        <a href="https://github.com/pbenson/" rel="noopener noreferrer">GitHub</a> ·
+        Built by Pete.
+        <a href="/about">About this site</a>
+        <span class="sep">·</span>
+        <a href="https://github.com/pbenson/" rel="noopener noreferrer">GitHub</a>
+        <span class="sep">·</span>
         <a href="https://cherryarbordesign.pb0.dev" rel="noopener noreferrer">Cherry Arbor Design</a>
       </p>
     </footer>
@@ -220,6 +223,13 @@ const navSections = SECTIONS.map((section) => ({
   .site-footer a {
     color: var(--text-muted);
     text-decoration: none;
+  }
+
+  /* Explicit separators: the middle dots were collapsing against the link
+     that followed them. */
+  .site-footer .sep {
+    margin: 0 var(--space-1);
+    color: var(--ink-muted);
   }
 
   .site-footer a:hover {
