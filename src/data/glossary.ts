@@ -74,3 +74,14 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
       'It is what the default count collapses to when the borrowers are unrelated.',
   },
 };
+
+/**
+ * Monotonic counter for popover element ids. A random suffix would work but
+ * would change the built HTML on every build for no reason; this keeps a given
+ * source tree building byte-identically.
+ */
+let termCount = 0;
+
+export function nextTermId(): number {
+  return ++termCount;
+}

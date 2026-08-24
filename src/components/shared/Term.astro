@@ -1,5 +1,6 @@
 ---
 import { GLOSSARY } from '../../data/glossary';
+import { nextTermId } from '../../data/glossary';
 
 interface Props {
   /** Key into the shared glossary. */
@@ -14,9 +15,10 @@ if (!entry) {
   );
 }
 
-// Unique per use: two mentions of the same term on a page each need their own
-// popover target.
-const id = `term-${name}-${Math.random().toString(36).slice(2, 8)}`;
+// Unique per use — two mentions of the same term on a page each need their own
+// popover target — but counted rather than randomised, so the same source
+// builds to the same HTML.
+const id = `term-${name}-${nextTermId()}`;
 ---
 
 <span class="term-wrap">
