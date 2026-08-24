@@ -38,6 +38,9 @@ export default function Slider(props: SliderProps) {
           min={props.sliderMin}
           max={props.sliderMax}
           step={props.stepSize || 1}
+          // Without this a screen reader announces the raw position — "0,
+          // minimum 0, maximum 3" — while the page shows the formatted value.
+          aria-valuetext={props.formatValue ? props.formatValue(value) : undefined}
         />
         <span style={{ minWidth: '50px', fontWeight: 600 }}>
           {props.formatValue ? props.formatValue(value) : value}

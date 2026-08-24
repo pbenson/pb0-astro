@@ -86,10 +86,14 @@ export default function IzzyTriangles({ showGallery = false }: IzzyProps) {
   const speedRef = useRef(SPEEDS[DEFAULT_SPEED_INDEX])
 
   // The sketch outlives any one render, so it reads the palette through a ref
-  // rather than closing over the value it was built with.
+  // rather than closing over the value it was built with. Written in an effect,
+  // not during render: a render can be thrown away under concurrent rendering,
+  // and a ref written there would keep a value the committed tree never used.
   const palette = useChartPalette()
   const paletteRef = useRef(palette)
-  paletteRef.current = palette
+  useEffect(() => {
+    paletteRef.current = palette
+  }, [palette])
 
   useEffect(() => {
     let instance: any = null
@@ -125,11 +129,8 @@ export default function IzzyTriangles({ showGallery = false }: IzzyProps) {
             p5.noLoop()
           },
           setSpeed(fps: number) {
-            // Only while running. Calling p5.frameRate() on a stopped sketch
-            // leaves it stopped, and the following p5.loop() does not revive
-            // it — the run then sits at frame zero forever.
             speed = fps
-            if (running) p5.frameRate(fps)
+            p5.frameRate(fps)
           },
         }
 
@@ -201,6 +202,13 @@ export default function IzzyTriangles({ showGallery = false }: IzzyProps) {
           p5.createCanvas(width, showGallery && !sideBySide ? 820 : 480)
           p5.frameRate(speed)
           p5.noLoop() // idle until the button says otherwise
+
+          // Only now is the sketch really startable. p5 2.x starts
+          // asynchronously — the constructor returns long before setup runs,
+          // and until it does `_loop` is still at its default of true, so
+          // p5.loop() is a no-op and the run would stall with the button
+          // stuck disabled. Enabling the button from here closes that window.
+          setReady(true)
         }
 
         p5.draw = () => {
@@ -253,7 +261,6 @@ export default function IzzyTriangles({ showGallery = false }: IzzyProps) {
       }
 
       instance = new p5.default(sketch, canvasRef.current ?? undefined)
-      setReady(true)
     })
 
     return () => {
