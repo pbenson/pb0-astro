@@ -20,12 +20,14 @@ jobs:
           node-version: 24
           cache: npm
 
-      # npm install, not npm ci: the lockfile records the platform-optional
-      # native bindings resolved on macOS, and npm ci refuses to reconcile the
-      # Linux set on the runner. See the bead on regenerating the lock in a
-      # Linux container, which is what would let ci come back.
+      # npm ci, so the runner installs exactly what the lockfile pins. It was
+      # npm install for a while: the lock is written on macOS, where npm omits
+      # @emnapi/core and @emnapi/wasi-threads from @napi-rs/wasm-runtime's
+      # entry because that optional path is never resolved there — and npm ci
+      # on Linux then refuses the tree. The lock is now repaired inside a
+      # node:24 container (see docs in the bead), so both platforms resolve.
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       # Runs astro sync first: .astro/types.d.ts declares astro:content,
       # import.meta.glob and the CSS module shims, and a fresh checkout has to
