@@ -1,0 +1,75 @@
+---
+import { GLOSSARY } from '../../data/glossary';
+
+interface Props {
+  /** Key into the shared glossary. */
+  name: string;
+}
+
+const { name } = Astro.props;
+const entry = GLOSSARY[name];
+if (!entry) {
+  throw new Error(
+    `Term "${name}" is not in src/data/glossary.ts. Add it there rather than writing the gloss inline.`,
+  );
+}
+
+// Unique per use: two mentions of the same term on a page each need their own
+// popover target.
+const id = `term-${name}-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<span class="term-wrap">
+  <button type="button" class="term" popovertarget={id} aria-describedby={id}>
+    <slot />
+  </button>
+  <span id={id} popover="auto" class="term-popover" role="note">
+    <strong class="term-popover-title">{entry.title}</strong>
+    <span class="term-popover-gloss">{entry.gloss}</span>
+  </span>
+</span>
+
+<style>
+  /* A dotted underline, not a link colour: following it does not leave the
+     page, and it should not compete with real links in the prose. */
+  .term {
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    border-bottom: 1px dotted var(--ink-tertiary);
+    cursor: help;
+  }
+
+  .term:hover,
+  .term:focus-visible {
+    border-bottom-color: var(--grid-teal);
+  }
+
+  .term-popover {
+    max-width: 32ch;
+    padding: var(--space-3) var(--space-4);
+    color: var(--ink);
+    background: var(--paper-raised);
+    border: 1px solid var(--rule-emphasis);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  }
+
+  .term-popover::backdrop {
+    background: var(--overlay-bg);
+  }
+
+  .term-popover-title {
+    display: block;
+    margin-bottom: var(--space-1);
+  }
+
+  .term-popover-gloss {
+    display: block;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--ink-secondary);
+  }
+</style>
