@@ -6,6 +6,8 @@ export interface Section {
   description: string;
   tier: Tier;
   order: number;
+  /** Short label for the nav, where "Operations Research" does not fit. */
+  navTitle?: string;
 }
 
 /**
@@ -16,6 +18,7 @@ const REGISTERED: Section[] = [
   {
     id: 'operations-research',
     title: 'Operations Research',
+    navTitle: 'Ops Research',
     description: 'Search and routing problems where the objective is expected time, not distance',
     tier: 'work',
     order: 20,
@@ -37,6 +40,7 @@ const REGISTERED: Section[] = [
   {
     id: 'math',
     title: 'Recreational Math',
+    navTitle: 'Math',
     description: 'Mathematical visualizations and explorations',
     tier: 'play',
     order: 25,

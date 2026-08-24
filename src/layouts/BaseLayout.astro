@@ -1,4 +1,6 @@
 ---
+import { SECTIONS } from '../lib/sections';
+
 interface Props {
   title?: string;
   description?: string;
@@ -28,6 +30,16 @@ const pageTitle = !title || title === 'Home' ? SITE_NAME : `${title} | ${SITE_NA
 // `site` in astro.config.mjs; without it, og:url is simply omitted rather than
 // emitted as a relative URL that no crawler can resolve.
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+
+// Section links, straight from the registry, so adding or retiring a section
+// updates the nav without anyone remembering to. Marked current when the
+// visitor is inside that section, including on its individual pages.
+const path = Astro.url.pathname;
+const navSections = SECTIONS.map((section) => ({
+  href: `/${section.id}`,
+  label: section.navTitle ?? section.title,
+  current: path === `/${section.id}` || path.startsWith(`/${section.id}/`),
+}));
 ---
 
 <!DOCTYPE html>
@@ -79,6 +91,14 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
           <circle cx="21.4" cy="4.6" r="1.8" />
         </svg>
       </a>
+      <div class="nav-sections">
+        {navSections.map((section) => (
+          <a href={section.href} aria-current={section.current ? 'page' : undefined}>
+            {section.label}
+          </a>
+        ))}
+      </div>
+
       <a
         class="nav-github"
         href="https://github.com/pbenson/"
@@ -106,10 +126,31 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
     z-index: 100;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 1rem 2rem;
+    gap: var(--space-6);
+    /* Tighter than it was: the bar used to be sized around a theme toggle that
+       no longer exists, and every page paid for the empty height. */
+    padding: 0.6rem 2rem;
     border-bottom: 1px solid var(--border-color);
     background: var(--nav-bg);
+  }
+
+  .nav-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-right: auto;
+  }
+
+  .nav-sections a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.15s ease;
+  }
+
+  .nav-sections a:hover,
+  .nav-sections a[aria-current='page'] {
+    color: var(--accent-color);
   }
 
   .nav-brand {
@@ -143,9 +184,23 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
 
   @media (max-width: 768px) {
     .main-nav {
-      flex-direction: column;
-      gap: 1rem;
-      padding: 1rem;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      padding: 0.6rem 1rem;
+    }
+
+    .nav-sections {
+      order: 3;
+      width: 100%;
+      justify-content: flex-start;
+      gap: var(--space-3);
+      margin-right: 0;
+    }
+
+    /* The section links drop to their own row, so the GitHub icon has to claim
+       the right edge itself rather than inheriting it from them. */
+    .nav-github {
+      margin-left: auto;
     }
 
     main {

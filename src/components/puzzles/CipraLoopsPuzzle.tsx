@@ -134,7 +134,11 @@ export default function CipraLoopsPuzzle() {
             textAnchor="end"
             fontSize="12"
             fontFamily="monospace"
-            fill="rgba(0,0,0,0.5)"
+            /* currentColor follows the theme's ink, except where the density
+               shading paints a light grey under the label — that patch stays
+               light in both themes, so the number stays dark on it. */
+            fill={bgColor === 'transparent' ? 'currentColor' : 'rgba(0,0,0,0.55)'}
+            fillOpacity={bgColor === 'transparent' ? 0.55 : 1}
           >
             {tileIndex.toString(2).padStart(4, '0')}
           </text>

@@ -16,6 +16,12 @@
   position: relative;
 }
 
+/* The tile SVGs draw their labels in currentColor. */
+.grid,
+.tile {
+  color: var(--text-color);
+}
+
 .tile {
   cursor: pointer;
   transition: box-shadow 0.1s ease;

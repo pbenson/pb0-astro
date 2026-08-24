@@ -10,7 +10,7 @@ test.describe('Site navigation', () => {
     await expect(page.locator('.card-grid a').first()).toBeVisible();
   });
 
-  test('the nav carries the brand and a GitHub link', async ({ page }) => {
+  test('the nav carries the mark, the sections and a GitHub link', async ({ page }) => {
     await page.goto('/');
     const nav = page.locator('nav');
     await expect(nav.getByRole('link', { name: 'Pete — home' })).toHaveAttribute('href', '/');
@@ -18,10 +18,22 @@ test.describe('Site navigation', () => {
       'href',
       'https://github.com/pbenson/',
     );
-    // Section links were removed; the home page's cards are the way in. The
-    // theme toggle went too — the theme follows the system setting now.
-    await expect(nav.getByRole('link')).toHaveCount(2);
+    // Every registered section, in registry order, plus the mark and GitHub.
+    await expect(nav.locator('.nav-sections a')).toHaveText([
+      'Finance',
+      'Ops Research',
+      'Math',
+      'Puzzles',
+      'Craft',
+      'Games',
+    ]);
+    // The theme toggle is gone — the theme follows the system setting now.
     await expect(nav.getByRole('button')).toHaveCount(0);
+  });
+
+  test('the nav marks the section you are in', async ({ page }) => {
+    await page.goto('/math/quantiles');
+    await expect(page.locator('nav .nav-sections a[aria-current="page"]')).toHaveText('Math');
   });
 
   test('the math index is the recreational half of the old section', async ({ page }) => {
