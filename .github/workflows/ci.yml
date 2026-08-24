@@ -29,6 +29,33 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
+      # The lockfile is written on macOS, where npm resolves no wasm path for
+      # @napi-rs/wasm-runtime and so drops @emnapi/core and
+      # @emnapi/wasi-threads from its entry — which is exactly what broke
+      # npm ci on this runner before. Running `npm install --package-lock-only`
+      # on macOS strips them again, so any lock regenerated there arrives here
+      # incomplete and silent.
+      #
+      # Regenerating on Linux is a no-op against a correct lock (verified
+      # byte-identical), so a plain diff is a sound check. If it fails, repair
+      # the lock in a container rather than by hand:
+      #
+      #   docker run --rm -v "$PWD":/w -w /w node:24 \
+      #     npm install --package-lock-only --no-audit --no-fund
+      #
+      # seeded with BOTH package.json and the existing package-lock.json —
+      # package.json alone re-resolves everything and bumps ~100 versions.
+      - name: Lockfile is complete for Linux
+        run: |
+          cp package-lock.json /tmp/lock.before
+          npm install --package-lock-only --no-audit --no-fund
+          if ! diff -q /tmp/lock.before package-lock.json; then
+            echo "::error::package-lock.json is incomplete on Linux. See the comment above this step."
+            diff /tmp/lock.before package-lock.json | head -40
+            exit 1
+          fi
+          git checkout -- package-lock.json
+
       # Runs astro sync first: .astro/types.d.ts declares astro:content,
       # import.meta.glob and the CSS module shims, and a fresh checkout has to
       # generate it before tsc sees them.
