@@ -361,9 +361,14 @@ a:hover {
   font-size: 1.05em;
 }
 
-/* Display math can be wider than the column; let it scroll on its own rather
+/* Display math belongs to the prose, so it takes the prose measure and
+   centres inside that. Without the cap it centred on the full width of main
+   and sat well to the right of the column it interrupts.
+
+   It can still be wider than the column — let it scroll on its own rather
    than forcing the page to scroll sideways. */
 .katex-display {
+  max-width: 68ch;
   margin: var(--space-6) 0;
   padding: var(--space-2) 0;
   overflow-x: auto;

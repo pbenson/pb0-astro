@@ -13,6 +13,7 @@
  */
 
 import { chromium } from '@playwright/test';
+import sharp from 'sharp';
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -36,11 +37,25 @@ const PAPER = { light: 'F5F2EB', dark: '1E1E1C' };
 const OVERRIDES = {
   // The sketch idles until the button runs the enumeration.
   '/math/izzy-triangles': { click: 'button:has-text("Count")', wait: 2500 },
-  '/games/space-rocks': { skip: true },      // Scratch iframe, shows a splash
+  // The Scratch embed is cross-origin, so its green flag cannot be clicked by
+  // selector — only by position, at the top-left of the embed's own chrome.
+  // It also needs WebGL, which is why the browser below asks for swiftshader.
+  // waitUntil 'domcontentloaded', not the default 'networkidle': the embed
+  // keeps connections open and its own load event waits on the whole Scratch
+  // player, so anything stricter times out. The explicit wait below is what
+  // actually gives the project time to come up.
+  // Hand-supplied. The Scratch player is cross-origin and cannot be driven
+  // reliably: clicking its flag by position starts the project only sometimes,
+  // and its state moves between the check and the shot, so runs produced a
+  // purple loading screen, a start overlay and a blank white stage on
+  // successive attempts. One good frame imported by hand beats three in four.
+  '/games/space-rocks': { manual: true },
   '/puzzles/celtic-knots': { skip: true },   // empty board until you place tiles
-  '/puzzles/nessies': { skip: true },
-  '/puzzles/nessie2': { skip: true },
-  '/puzzles/slow-sort': { skip: true },
+  // Empty boards too, but a played one is worth seeing, so these carry a
+  // hand-supplied screenshot imported by scripts/import-thumbnail.mjs. Marked
+  // manual so a capture run leaves the files where they are.
+  '/puzzles/nessies': { manual: true },
+  '/puzzles/nessie2': { manual: true },
   '/math/rotating-links': { skip: true },     // segments only move once configured
   '/math/bresenham': { skip: true },
 };
@@ -67,14 +82,24 @@ const CROP = { width: 640, height: 480 };   // 4:3, cropped out of the viewport
  * the visitor starts playing.
  */
 async function region(page) {
+  // An explicit hook wins outright. Pages whose picture is neither a canvas
+  // nor an svg — Slow Sort draws its cards as divs — mark their own element
+  // with data-thumbnail rather than being guessed at or skipped.
+  const marked = page.locator('[data-thumbnail]').first();
+  if (await marked.count()) {
+    await marked.scrollIntoViewIfNeeded().catch(() => {});
+    await page.waitForTimeout(200);
+    return { element: marked };
+  }
+
   // Rank by kind before size: a page's own sketch is a canvas or an svg, while
   // an <img> is usually illustration inside the prose (the Spiral Circles page
   // explains reflection with a photo of two puppies, which is emphatically not
   // its thumbnail). Within a kind, the biggest one is the picture.
-  const KINDS = ['canvas', 'svg', 'figure', 'img'];
+  const KINDS = ['canvas', 'svg', 'iframe', 'figure', 'img'];
   const boxes = await page.evaluate((kinds) => {
     const found = [];
-    for (const el of document.querySelectorAll('main canvas, main svg, main img, main figure, main .plot')) {
+    for (const el of document.querySelectorAll('main canvas, main svg, main iframe, main img, main figure, main .plot')) {
       const r = el.getBoundingClientRect();
       // Thresholds are deliberately low: some sketches are wide and short (the
       // Quantiles number line is 600x100) or are grids of small tiles (Cipra
@@ -94,12 +119,12 @@ async function region(page) {
   });
 
   const target = page
-    .locator('main canvas, main svg, main img, main figure, main .plot')
+    .locator('main canvas, main svg, main iframe, main img, main figure, main .plot')
     .nth(await page.evaluate(({ kinds, pick }) => {
       // Re-walk in DOM order to turn the chosen entry back into an index the
       // locator can address, applying the same filter as above.
       let seen = -1;
-      const all = document.querySelectorAll('main canvas, main svg, main img, main figure, main .plot');
+      const all = document.querySelectorAll('main canvas, main svg, main iframe, main img, main figure, main .plot');
       for (let i = 0; i < all.length; i++) {
         const r = all[i].getBoundingClientRect();
         if (r.width < 110 || r.height < 80) continue;
@@ -120,6 +145,20 @@ async function region(page) {
   // corner of the drawing, which reads as a mistake rather than a detail.
   // Also shoot wide-and-short sketches whole: a 640x480 window centred on the
   // Quantiles number line is four fifths prose.
+  // A cross-origin embed cannot be shot as an element: Playwright's stability
+  // check waits on fonts inside the frame, which it cannot see, and times out.
+  // Its box clipped out of a page screenshot is the same picture.
+  if (await target.evaluate((el) => el.tagName.toLowerCase() === 'iframe')) {
+    return {
+      clip: {
+        x: Math.round(Math.max(0, box.x)),
+        y: Math.round(Math.max(0, box.y)),
+        width: Math.round(Math.min(box.width, SHOT.width - Math.max(0, box.x))),
+        height: Math.round(Math.min(box.height, SHOT.height - Math.max(0, box.y))),
+      },
+    };
+  }
+
   if (box.width > CROP.width || box.height > CROP.height || box.width / box.height > 2.5) {
     return { element: target };
   }
@@ -136,6 +175,25 @@ async function region(page) {
   };
 }
 
+/**
+ * Is there anything in this region, or is it one flat colour? A Scratch
+ * project that has not started yet is a solid purple rectangle, which is
+ * indistinguishable from a successful capture unless the pixels are checked.
+ */
+async function hasPicture(page, box) {
+  const clip = {
+    x: Math.round(Math.max(0, box.x)),
+    y: Math.round(Math.max(0, box.y)),
+    width: Math.round(Math.min(box.width, SHOT.width - Math.max(0, box.x))),
+    height: Math.round(Math.min(box.height, SHOT.height - Math.max(0, box.y))),
+  };
+  const shot = await page.screenshot({ clip }).catch(() => null);
+  if (!shot) return false;
+  const { channels } = await sharp(shot).stats();
+  // Flat fill: every channel has essentially no spread.
+  return channels.some((c) => c.stdev > 6);
+}
+
 const list = routes();
 if (!list.length) {
   console.error('No card routes found in dist/index.html — run `npm run build` first.');
@@ -144,7 +202,12 @@ if (!list.length) {
 
 mkdirSync(OUT, { recursive: true });
 
-const browser = await chromium.launch();
+// Software WebGL: the Scratch embed renders its stage through WebGL, and
+// without this it draws its chrome onto a blank white stage — a thumbnail of
+// nothing. Costs a little speed on every page and is worth it for the one.
+const browser = await chromium.launch({
+  args: ['--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=swiftshader'],
+});
 let captured = 0;
 const fellBack = [];
 
@@ -154,16 +217,45 @@ for (const theme of THEMES) {
 
   for (const route of list) {
     const override = OVERRIDES[route] ?? {};
-    if (override.skip) continue;
+    if (override.skip || override.manual) continue;
 
     const file = join(OUT, `${slugOf(route)}-${theme}.png`);
-    await page.goto(`${BASE}${route}`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE}${route}`, { waitUntil: override.waitUntil ?? 'networkidle' });
+    // A screenshot waits for document.fonts, and a page that navigated on
+    // domcontentloaded may still have them pending — which reads as a
+    // screenshot timeout rather than a font problem. Settle them here, where
+    // a failure is survivable.
+    await page.evaluate(() => document.fonts.ready).catch(() => {});
+
     // p5 sketches mount on a dynamic import and draw over several frames.
     await page.waitForTimeout(1200);
 
     if (override.click) {
       await page.locator(override.click).first().click().catch(() => {});
       await page.waitForTimeout(override.wait ?? 1500);
+    } else if (override.mouseAt) {
+      // Driving a third-party embed is racy: the click can land on a loading
+      // screen, and the result is a thumbnail of one flat colour. Click, look
+      // at what is actually on screen, and try again rather than shipping it.
+      const box = await page.locator(override.mouseAt.selector).first().boundingBox();
+      // dx/dy below 1 are read as fractions of the element, so a control that
+      // sits in the middle of an embed can be named without hard-coding a size.
+      const offset = (v, extent) => (Math.abs(v) <= 1 ? v * extent : v);
+      for (let attempt = 0; box && attempt < 4; ++attempt) {
+        await page.mouse.click(
+          box.x + offset(override.mouseAt.dx, box.width),
+          box.y + offset(override.mouseAt.dy, box.height),
+        );
+        await page.waitForTimeout(override.wait ?? 1500);
+        if (await hasPicture(page, box)) break;
+        if (attempt === 3) {
+          console.warn(`  ${route} (${theme}): embed never rendered — leaving the previous file`);
+        }
+      }
+    } else if (override.wait) {
+      // A page can need longer without needing a nudge: a third-party embed
+      // has its own load to finish after the document is idle.
+      await page.waitForTimeout(override.wait);
     }
 
     const target = await region(page);
@@ -196,7 +288,13 @@ for (const theme of THEMES) {
 await browser.close();
 
 const skipped = list.filter(r => OVERRIDES[r]?.skip);
-console.log(`\n${captured} thumbnails in ${OUT}/ (${list.length - skipped.length} routes x ${THEMES.length} themes)`);
+const manual = list.filter(r => OVERRIDES[r]?.manual);
+const shot = list.length - skipped.length - manual.length;
+console.log(`\n${captured} thumbnails in ${OUT}/ (${shot} routes x ${THEMES.length} themes)`);
+if (manual.length) {
+  console.log(`\nHand-supplied, left untouched by this run:`);
+  for (const route of manual) console.log(`  ${route}`);
+}
 if (skipped.length) {
   console.log(`\nSkipped — nothing is drawn until the visitor plays:`);
   for (const route of skipped) console.log(`  ${route}`);
