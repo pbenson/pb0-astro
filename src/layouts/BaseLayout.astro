@@ -128,17 +128,6 @@ const navSections = SECTIONS.map((section) => ({
     <main>
       <slot />
     </main>
-
-    <footer class="site-footer">
-      <p>
-        Built by Pete.
-        <a href="/about">About this site</a>
-        <span class="sep">·</span>
-        <a href="https://github.com/pbenson/" rel="noopener noreferrer">GitHub</a>
-        <span class="sep">·</span>
-        <a href="https://cherryarbordesign.pb0.dev" rel="noopener noreferrer">Cherry Arbor Design</a>
-      </p>
-    </footer>
   </body>
 </html>
 
@@ -205,47 +194,12 @@ const navSections = SECTIONS.map((section) => ({
     padding: 2rem;
   }
 
-  /* A visitor who arrives deep, on one page from a link, has nowhere to go at
-     the bottom otherwise — this is where "whose is this?" gets answered. */
-  .site-footer {
-    max-width: 1200px;
-    margin: var(--space-12) auto 0;
-    padding: var(--space-6) 2rem var(--space-8);
-    border-top: 1px solid var(--border-color);
-    color: var(--text-muted);
-    font-size: 0.9rem;
-  }
-
-  .site-footer p {
-    margin: 0;
-  }
-
-  .site-footer a {
-    color: var(--text-muted);
-    text-decoration: none;
-  }
-
-  /* Explicit separators: the middle dots were collapsing against the link
-     that followed them. */
-  .site-footer .sep {
-    margin: 0 var(--space-1);
-    color: var(--ink-muted);
-  }
-
-  .site-footer a:hover {
-    color: var(--accent-color);
-  }
 
   @media (max-width: 768px) {
     .main-nav {
       flex-wrap: wrap;
       gap: var(--space-3);
       padding: 0.6rem 1rem;
-    }
-
-    .site-footer {
-      padding-left: 1rem;
-      padding-right: 1rem;
     }
 
     .nav-sections {

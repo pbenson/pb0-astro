@@ -31,14 +31,12 @@ test.describe('Site navigation', () => {
     await expect(nav.getByRole('button')).toHaveCount(0);
   });
 
-  test('every page carries a footer that says whose it is', async ({ page }) => {
+  test('pages carry no footer', async ({ page }) => {
+    // The footer was dropped: the nav already answers "whose is this?" with
+    // the brand mark and the GitHub link, and the about page is reachable
+    // from there.
     await page.goto('/math/quantiles');
-    const footer = page.locator('footer');
-    await expect(footer).toContainText('Built by Pete');
-    await expect(footer.getByRole('link', { name: 'About this site' })).toHaveAttribute(
-      'href',
-      '/about',
-    );
+    await expect(page.locator('footer')).toHaveCount(0);
   });
 
   test('the about page loads and links out', async ({ page }) => {

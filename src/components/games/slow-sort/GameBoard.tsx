@@ -173,6 +173,10 @@ export default function GameBoard({ configuration, resetTrigger }: Readonly<Game
 
   return (
     <div
+      // The board is the picture of this page, and it is built from divs
+      // rather than a canvas or an svg, so the thumbnail capture cannot find
+      // it by shape. See scripts/capture-thumbnails.mjs.
+      data-thumbnail
       style={{
         position: "relative",
         width: boardWidth,
