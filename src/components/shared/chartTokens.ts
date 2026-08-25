@@ -29,6 +29,8 @@ export interface ChartPalette {
   /** Diverging poles for correlation: cool = negative, warm = positive. */
   readonly negative: string;
   readonly positive: string;
+  /** Something is wrong here — the counterpart of the --mark-error token. */
+  readonly error: string;
   /** Scatter marks: neutral ink, never a series color. */
   readonly mark: string;
   readonly rule: string;
@@ -43,6 +45,7 @@ const LIGHT: ChartPalette = {
   distribution: '#1d8a6f',
   negative: '#226ba0',
   positive: '#a5731d',
+  error: '#b8413a',
   mark: '#5c5a54',
   rule: 'rgba(90, 85, 75, 0.12)',
   ruleEmphasis: 'rgba(90, 85, 75, 0.25)',
@@ -56,6 +59,7 @@ const DARK: ChartPalette = {
   distribution: '#3ba286',
   negative: '#3b91ce',
   positive: '#bd8829',
+  error: '#c96f66',
   mark: '#a8a49c',
   rule: 'rgba(200, 195, 185, 0.10)',
   ruleEmphasis: 'rgba(200, 195, 185, 0.20)',

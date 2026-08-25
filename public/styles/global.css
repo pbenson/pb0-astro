@@ -478,3 +478,64 @@ a:hover {
   outline: 2px solid var(--grid-teal);
   outline-offset: 2px;
 }
+
+/* Ormat game
+   ========================================================================== */
+
+.ormat-stage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-6);
+  margin-bottom: var(--space-4);
+}
+
+.ormat-template figcaption {
+  margin-top: var(--space-2);
+  font-size: 0.8rem;
+  color: var(--ink-tertiary);
+}
+
+.ormat-overlays {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: var(--space-2);
+}
+
+.ormat-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-2);
+  background: var(--control-bg);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-sm);
+  color: var(--ink-tertiary);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.ormat-overlay:hover {
+  background: var(--control-hover);
+}
+
+/* A picked overlay reads as pressed, not merely hovered — the whole game is
+   which ones are down. */
+.ormat-overlay.is-picked {
+  border-color: var(--grid-teal);
+  background: var(--grid-teal-bg);
+  color: var(--ink);
+}
+
+.ormat-message {
+  min-height: 1.5em;
+  font-size: 0.95rem;
+}
+
+.ormat-message.is-good { color: var(--mark-success); }
+.ormat-message.is-bad { color: var(--mark-error); }
+
+.ormat-payout {
+  color: var(--ink-tertiary);
+}

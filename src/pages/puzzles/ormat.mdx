@@ -1,0 +1,94 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: The Ormat Game
+description: "Cover a template with permutation overlays, using as few as possible"
+blurb: "Cover the coloured squares and none of the blanks, with as few overlays as you can"
+section: puzzles
+tier: play
+order: 50
+---
+import OrmatGame from '../../components/math/OrmatGame.tsx'
+
+# The Ormat Game
+
+Here is a square grid with some cells coloured and some left blank — a
+**template**. You have a set of transparent overlays, each bearing dots, one dot
+in every row and every column.
+
+Lay overlays on the template so the dots cover **all** the coloured squares and
+**none** of the blank ones. Dots may pile up on a coloured square; a dot on a
+blank square is what makes a choice wrong. Use as few overlays as you can.
+
+At 3×3 there are exactly six overlays, because there are 3! = 6 ways to put
+one dot in each row and column, and those are the only 3×3 grids with that
+property.
+
+## The wager
+
+Brian Hayes, whose game this is, offers a bet: **\$3 for a correct covering, and
+you pay \$1 for each overlay you use.** Take it?
+
+<OrmatGame client:load />
+
+Not every template can be covered. Nothing with fewer than three coloured
+squares can be, since every overlay lays down exactly three dots — but the
+uncoverable ones are not all that obvious, which is what the **no solution**
+button is for. Pressing it on a template that *can* be covered is a wrong
+answer, and the game says so.
+
+## Why you should decline the bet
+
+The full grid, all nine squares coloured, needs three overlays — nine dots on
+nine squares, an exact partition with nothing doubled up. That is break-even:
+win \$3, pay \$3. There are exactly two ways to do it, and between them they use
+all six overlays.
+
+Now take one square away. Eight coloured squares, one blank. Fewer squares to
+cover, so surely no harder?
+
+It needs **four** overlays, and there is only one way to do it. Every one of the
+nine single-blank templates behaves the same. So Hayes can always hand you a
+template with a single blank, and you lose a dollar every time.
+
+## The gap at four
+
+A template that can be covered at all is called an **ormat**: the Boolean OR of
+a set of permutation matrices — superimpose them and keep every cell that is
+lit in at least one.
+
+Ask which templates are ormats and a gap appears. Three coloured squares: six of
+them, the overlays themselves. Five, six, seven, eight, nine: all achievable.
+
+Four: **none at all.**
+
+The reason is worth sitting with. To make a four-dot template you would need two
+overlays whose dots agree in every position but one — and two permutations
+cannot differ in exactly one place. Move one dot and you break the
+one-per-row-and-column rule; you have to move a second to repair it. Four is the
+only count above two that no combination of overlays can produce.
+
+## Where this goes next
+
+Hayes's real question, which came from Barry Cipra: given an ormat, what is the
+*minimum* number of permutations that produce it, and in how many ways is that
+minimum achieved? At 3×3 both are answered by enumerating all 2⁶ = 64 subsets,
+which is what this page does.
+
+At 4×4 it stops being obvious. Hayes conjectured that a *k*×*k* ormat never
+needs more than *k*+1 overlays, and had what he thought was a proof. His program
+found 2,032 4×4 ormats needing five and — the surprise — **480 needing six**.
+He then wondered whether the bound might be *k*+2, or 2*k*−2, offering ormats
+that need 8 and 10.
+
+Cipra's reply introduced the **addmat**: add the permutation matrices as
+ordinary integers instead of OR-ing them. Every row and column of the sum totals
+*r*, the number of permutations used, and the ormat is that matrix's shadow —
+every positive entry flattened to 1. With that he showed a 7×7 "uppity
+triangular" ormat needs at least 16.
+
+## Source
+
+Brian Hayes, ["The Ormat Game"](http://bit-player.org/2010/the-ormat-game/),
+*bit-player*, 16 August 2010, with Barry Cipra's question and his follow-up
+letter of 19 August. The counting facts on this page are computed here rather
+than quoted, and the tests check them against Hayes's.
