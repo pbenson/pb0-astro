@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Slider from '../ui/Slider';
-import { useChartPalette } from '../shared/chartTokens';
+import { useChartPalette, type ChartPalette } from '../shared/chartTokens';
 import {
   advanceChain,
   leadTarget,
@@ -62,6 +62,68 @@ function startRun(followers: number): Run {
   return { chain, previous: chain, lead, theta: 0 };
 }
 
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' &&
+  (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
+
+/** Wipe the surface back to the paper colour. */
+function paintGround(context: CanvasRenderingContext2D, surface: string) {
+  context.globalAlpha = 1;
+  context.fillStyle = surface;
+  context.fillRect(0, 0, RESOLUTION, RESOLUTION);
+}
+
+/**
+ * Advance the chain one frame and draw the segments it just travelled.
+ *
+ * Module-level rather than a closure inside the effect so that the animation
+ * loop and the reduced-motion path can share it without the effect that owns
+ * the loop also owning the canvas wipe — which is what made pausing erase the
+ * picture.
+ */
+function drawFrame(
+  context: CanvasRenderingContext2D,
+  run: Run,
+  params: Params,
+  palette: ChartPalette,
+) {
+  const { ease, fade, petalScalar, path } = params;
+
+  // The fade IS the trail. Painting the ground at a low alpha lets old strokes
+  // decay toward the paper instead of vanishing; clearRect would destroy the
+  // whole effect.
+  context.fillStyle = palette.surface;
+  context.globalAlpha = fade / 255;
+  context.fillRect(0, 0, RESOLUTION, RESOLUTION);
+  context.globalAlpha = 1;
+
+  run.previous = run.chain;
+  run.chain = advanceChain(run.chain, run.lead, ease);
+
+  run.theta += THETA_INCREMENT;
+  // The lead eases toward the curve rather than sitting on it, exactly as the
+  // sketch does. It therefore lags, and the figure drawn is a softened,
+  // slightly smaller rose than r = 0.9*cos(k*theta). Assigning the target
+  // straight to run.lead gives a sharper, larger figure and a different
+  // picture; the lag is the sketch's look and is kept on purpose.
+  const target = leadTarget(path, run.theta, petalScalar);
+  run.lead = {
+    x: run.lead.x + (target.x - run.lead.x) * 0.1,
+    y: run.lead.y + (target.y - run.lead.y) * 0.1,
+  };
+
+  context.strokeStyle = palette.distribution;
+  context.lineWidth = 1;
+  context.beginPath();
+  for (let i = 0; i < run.chain.length; ++i) {
+    const from = run.previous[i];
+    const to = run.chain[i];
+    context.moveTo(from.x * RESOLUTION, from.y * RESOLUTION);
+    context.lineTo(to.x * RESOLUTION, to.y * RESOLUTION);
+  }
+  context.stroke();
+}
+
 export default function Swarm() {
   const palette = useChartPalette();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -92,68 +154,32 @@ export default function Swarm() {
     setGeneration((g) => g + 1);
   }, [params.followers]);
 
+  // The ground. Repainted on a restart and on a theme flip — and deliberately
+  // NOT when `running` changes: pausing has to hold the picture on screen, and
+  // wiping here on every toggle erased it.
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext('2d');
-    if (!canvas || !context) return;
+    const context = canvasRef.current?.getContext('2d');
+    if (!context) return;
+    paintGround(context, palette.surface);
 
-    // Repaint the ground on every restart and on a theme flip. Trails already
-    // drawn carry the old ink, and fading them out gradually would leave the
-    // wrong colour smeared under the new one for several seconds.
-    context.fillStyle = palette.surface;
-    context.fillRect(0, 0, RESOLUTION, RESOLUTION);
-
-    const drawFrame = () => {
-      const run = runRef.current;
-      const { ease, fade, petalScalar, path } = paramsRef.current;
-
-      context.fillStyle = palette.surface;
-      context.globalAlpha = fade / 255;
-      context.fillRect(0, 0, RESOLUTION, RESOLUTION);
-      context.globalAlpha = 1;
-
-      run.previous = run.chain;
-      run.chain = advanceChain(run.chain, run.lead, ease);
-
-      run.theta += THETA_INCREMENT;
-      // The lead eases toward the curve rather than sitting on it, exactly as
-      // the sketch does. It therefore lags, and the figure drawn is a softened,
-      // slightly smaller rose than r = 0.9*cos(k*theta). Assigning the target
-      // straight to run.lead gives a sharper, larger figure and a different
-      // picture; the lag is the sketch's look and is kept on purpose.
-      const target = leadTarget(path, run.theta, petalScalar);
-      run.lead = {
-        x: run.lead.x + (target.x - run.lead.x) * 0.1,
-        y: run.lead.y + (target.y - run.lead.y) * 0.1,
-      };
-
-      context.strokeStyle = palette.distribution;
-      context.lineWidth = 1;
-      context.beginPath();
-      for (let i = 0; i < run.chain.length; ++i) {
-        const from = run.previous[i];
-        const to = run.chain[i];
-        context.moveTo(from.x * RESOLUTION, from.y * RESOLUTION);
-        context.lineTo(to.x * RESOLUTION, to.y * RESOLUTION);
+    // A reader who has asked for no motion gets the finished figure drawn in
+    // one go, rather than an empty square or something that moves.
+    if (prefersReducedMotion()) {
+      for (let i = 0; i < STATIC_FRAMES; ++i) {
+        drawFrame(context, runRef.current, paramsRef.current, palette);
       }
-      context.stroke();
-    };
-
-    const reduced =
-      typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-
-    if (reduced) {
-      // Draw the finished figure in one go rather than animating toward it, so
-      // the page still shows what it is about without anything moving.
-      for (let i = 0; i < STATIC_FRAMES; ++i) drawFrame();
-      return;
     }
+  }, [generation, palette]);
 
-    if (!running) return;
+  // The animation, declared after the ground effect so that a restart clears
+  // the surface before the first new frame lands on it.
+  useEffect(() => {
+    if (!running || prefersReducedMotion()) return;
+    const context = canvasRef.current?.getContext('2d');
+    if (!context) return;
 
     let frame = requestAnimationFrame(function loop() {
-      drawFrame();
+      drawFrame(context, runRef.current, paramsRef.current, palette);
       frame = requestAnimationFrame(loop);
     });
     return () => cancelAnimationFrame(frame);
@@ -220,7 +246,7 @@ export default function Swarm() {
         // The control reads as persistence but the number is the fade alpha, so
         // a bigger alpha means a shorter trail. Invert the readout rather than
         // the slider, which would put the sketch's own 3 at the far end.
-        formatValue={(v) => `${(31 - v).toString()}`}
+        formatValue={(v) => String(31 - v)}
       />
       <Slider
         label="Petal scalar k"
