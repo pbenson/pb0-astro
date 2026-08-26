@@ -1,0 +1,137 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: How Far Ahead Is Far Enough
+description: "Capacity expansion over an infinite horizon, and the planning horizon that settles the only decision you actually make"
+blurb: "You must build something now. How much of the future do you have to work out first?"
+section: operations-research
+tier: work
+order: 40
+---
+import CapacityExpansion from '../../components/operations-research/CapacityExpansion.tsx'
+
+# How Far Ahead Is Far Enough
+
+Demand for something you make grows, year on year, and will not stop. You meet
+it by building plant. Plant comes in a few fixed sizes, and bigger is cheaper per
+unit, so there is a real argument for overbuilding now and coasting. Against
+that: money spent later is worth less, so there is an equally real argument for
+building the smallest thing that gets you through the year.
+
+You have to build **something**, this year. How much of the future do you have to
+work out before you can know what it is?
+
+<CapacityExpansion client:load />
+
+The lower panel is the whole subject. It plots the size you would build now
+against how far ahead you let yourself look. For short horizons it jumps about —
+of course it does, there is no sense buying plant you will never use. Then it
+locks, and looking further changes nothing.
+
+Past that point the future stops mattering to today's decision. **A finite
+calculation has settled a question about an infinite one.**
+
+## The dilemma, stated by the man who solved it
+
+> One of the planner's greatest dilemmas is how long a horizon time to select so
+> that end of horizon effects do not distort the first capacity deployment
+> decision. It is of course this first decision which is the only one implemented
+> and therefore the critical one.
+>
+> — Robert L. Smith, *Planning Horizons for the Deterministic Capacity Problem*, 1981
+
+Pick a horizon too short and you are answering a different question: one where the
+world ends in year ten and there is no point owning anything that lasts longer.
+Pick one too long and you are burning effort forecasting a decade whose details
+cannot change what you do this afternoon.
+
+Notice on the panel that the decision does not have to settle **tidily**. Bend
+the demand curve away from a straight line and the first build can rise, drop back
+and rise again before it locks. That is why "look a good long way ahead" is not a
+substitute for knowing when you are allowed to stop looking.
+
+## Where it comes from
+
+The model goes back to Alan Manne: capacity for steadily growing demand over an
+unlimited horizon, weighing economies of scale in big increments against the value
+of deferring the spend. It is a standard shape in process industries,
+communications and electric power — anywhere plant is lumpy, durable and
+expensive.
+
+Two papers by Robert Smith and James Bean at Michigan carry it further:
+
+- **Smith (1981)**, [*Planning Horizons for the Deterministic Capacity
+  Problem*](http://hdl.handle.net/2027.42/24528), solves the problem for *all*
+  horizon times by solving a single finite one, and bounds the first expansion as
+  an explicit function of horizon length. Facility sizes there are continuous.
+- **Bean and Smith (1985)**, [*Optimal Capacity Expansion Over an Infinite
+  Horizon*](https://www.jstor.org/stable/2631792), *Management Science* 31(12),
+  1523–1532, takes the sizes from a **finite menu** of durable facilities. The
+  continuous and discrete faces of one question.
+
+There is also a [stochastic
+companion](https://deepblue.lib.umich.edu/items/43c94cb3-4894-477f-8535-3704fef3e7e7)
+with Julia Higle, and it has the loveliest result of the three: when demand is
+genuinely uncertain, the problem collapses back to a deterministic one. Replace
+the random demand by its trend, and discount at a **lower** rate, roughly in
+proportion to how uncertain things are. Uncertainty in, patience out. Not knowing
+what is coming makes you behave as though you cared more about the future.
+
+## My part in it
+
+The 1985 result is Bean and Smith's. The program that ran it was mine — Fortran,
+on an IBM 360, around 1980. That is the whole of my contribution and I want it
+stated exactly: I implemented their algorithm, I am not an author of it.
+
+They were both later my thesis advisors.
+
+The machine is worth a sentence. An algorithm whose entire point is knowing when
+it may stop computing, first run on hardware where computing was expensive enough
+that you *felt* every extra year of horizon. The code is long gone. What you are
+running above is the same act, forty-odd years on, in a browser tab, fast enough
+to redraw while you drag a slider.
+
+## Why an optimum exists at all
+
+Before you can ask which infinite policy is best you have to know that a best one
+exists. As I remember the argument:
+
+- Discounting makes the cost of every policy a convergent sum, so each has a
+  finite value.
+- Put a metric on the space of policies that discounts disagreements further out.
+  Under it the space is bounded — and compact.
+- Cost is continuous in that metric.
+- A continuous function on a compact space attains its minimum. So an optimal
+  policy exists.
+
+*(Recalled rather than checked against the paper — read it as the shape of the
+argument, not a transcription.)*
+
+The discounting is doing two jobs at once, and they are the same job. It makes the
+sum converge, and it makes the distant future negligible enough to measure with.
+That second one is why a finite horizon can settle the first decision: if the far
+future barely registers in the total, it cannot swing what you do today.
+
+## What this page actually computes
+
+Honesty about the model. What runs above is the simplest thing that shows the
+phenomenon, not Bean and Smith's algorithm:
+
+- Demand is $g\,t^{\,p}$. Capacity is bought from the menu 1, 2, 3, 5, 8.
+- Building size $s$ at time $t$ costs $s^{\alpha}e^{-rt}$ in present value, with
+  $\alpha < 1$ for economies of scale.
+- Plant is bought exactly when existing capacity binds. Costs are discounted, so
+  buying earlier than you must is never worth it — and buying later is not
+  allowed.
+- The finite-horizon problem is a dynamic program over standing capacity, which is
+  all the state you need: how much capacity you have tells you both what demand
+  you face and what the clock says.
+
+At $p = 1$ the problem looks identical from every capacity level, so the optimal
+infinite policy just repeats one size forever and there is nothing for a horizon to
+settle. Bending the demand breaks that self-similarity, which is why the curvature
+slider is there.
+
+And that is the gap between this page and the paper. Here you can *watch* the
+first decision settle for one tidy family of models. Bean and Smith prove you can
+always find such a horizon, and that its first decision is optimal for the
+infinite problem, without leaning on any of the structure above.
