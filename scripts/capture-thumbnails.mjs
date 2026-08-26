@@ -58,6 +58,11 @@ const OVERRIDES = {
   '/puzzles/nessie2': { manual: true },
   '/math/rotating-links': { skip: true },     // segments only move once configured
   '/math/bresenham': { skip: true },
+  // The picture is an accumulating smear, so an immediate shot catches ninety
+  // scattered particles and nothing else. Eight seconds is long enough for the
+  // chain to gather and the rose to come through, and short enough that the
+  // trails have not yet filled the middle in.
+  '/math/swarm': { wait: 8000 },
 };
 
 /** Card routes, in home page order, skipping anything off-site. */

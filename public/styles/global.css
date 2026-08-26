@@ -539,3 +539,22 @@ a:hover {
 .ormat-payout {
   color: var(--ink-tertiary);
 }
+
+/* Swarm
+   ========================================================================== */
+
+.swarm {
+  margin-bottom: var(--space-4);
+}
+
+/* Square, and never wider than the column it sits in. The canvas has a fixed
+   drawing resolution, so this scales the picture rather than the coordinates. */
+.swarm-canvas {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+}

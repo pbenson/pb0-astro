@@ -1,0 +1,73 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Swarm
+description: "A chain of ninety particles chasing a rose curve, drawing its own wake"
+blurb: "Ninety particles chase a rose curve, and the picture is the wake they leave"
+section: math
+tier: play
+order: 45
+---
+import Swarm from '../../components/math/Swarm.tsx'
+
+# Swarm
+
+One particle traces a curve. A second chases the first, a third chases the
+second, and so on down a chain of ninety. Nobody is told where the curve is
+except the leader; everyone else is only ever chasing the particle in front.
+
+<Swarm client:load />
+
+The picture is not where the particles are. It is where they have **been** — the
+canvas is never cleared, only washed over with a nearly transparent coat of the
+background each frame, so old strokes fade instead of vanishing. What you are
+looking at is a few thousand frames of accumulated wake.
+
+## The chain is what makes it fan
+
+Each particle closes a fixed fraction of the gap to the one ahead of it every
+frame. That single rule, repeated down ninety links, is the whole mechanism.
+
+The lag compounds. The leader is on the curve; the first follower is a little
+behind it; the ninetieth is a long way behind and still turning into the corner
+the leader left ages ago. When the leader whips through a tight part of the
+curve, the tail is thrown wide — and because every particle draws a segment from
+where it was to where it now is, that spread is written into the picture.
+
+Turn **slack** up and the links go loose: each particle closes less of the gap
+per frame, the tail falls further behind, and the figure blurs into a broad
+smear. Turn it down and the chain tightens onto the curve until the followers
+are almost tracing it exactly.
+
+The leader is chasing too. It never sits on the curve — it eases toward the
+moving point at the same tenth-of-the-way-per-frame as everyone else, so it cuts
+its own corners. The rose you see is a slightly smaller, softer version of the
+rose in the formula. That is the sketch's look, and it is kept.
+
+## The curve underneath
+
+The leader's target is a **rose**:
+
+$$
+r = 0.9\cos(k\theta)
+$$
+
+Petals come from $k$. At $k = 3$ you get three petals, at $k = 2$ you get four —
+odd whole numbers give you $k$ petals, even ones give you $2k$, because the
+negative half of the cosine retraces petals the positive half already drew.
+
+The default is $k = 1.5$, which is not a whole number at all, and that is where
+it gets interesting. Write $k$ as a fraction $p/q$ in lowest terms. The argument
+$k\theta$ grows by $2\pi p$ exactly when $\theta$ grows by $2\pi q$ — so the
+curve cannot repeat until $\theta$ has been round $q$ full turns. At $k = 3/2$
+that is two laps before the figure closes. At $k = 9/4$ it is four.
+
+Set $k$ to a quarter value and watch: the first lap draws an open, unfinished
+shape, and the pattern only resolves once the later laps have filled in the gaps
+the first one left.
+
+## Where it came from
+
+A [p5.js](https://p5js.org/) sketch of mine from 2025, seventy-six lines, with
+every number in it hard-coded — ninety followers, one fixed ease, one fixed
+fade, one fixed $k$. Those four constants are the four controls above. The
+sketch is the special case where they happen to be 90, 0.5, 3 and 1.5.
