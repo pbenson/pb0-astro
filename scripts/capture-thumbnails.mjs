@@ -58,6 +58,9 @@ const OVERRIDES = {
   '/puzzles/nessie2': { manual: true },
   '/math/rotating-links': { skip: true },     // segments only move once configured
   '/math/bresenham': { skip: true },
+  // Bare pins until something is dropped through them, and the bell is the
+  // picture. The default batch of a hundred animates, so wait for it to land.
+  '/math/quincunx': { click: 'button:has-text("Drop")', wait: 12000 },
   // The picture is an accumulating smear, so an immediate shot catches ninety
   // scattered particles and nothing else. Eight seconds is long enough for the
   // chain to gather and the rose to come through, and short enough that the

@@ -1,0 +1,82 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Quincunx
+description: "Galton's bean machine: balls bounce down a lattice of pins and pile up binomial"
+blurb: "Drop balls through a lattice of pins and watch the binomial appear"
+section: math
+tier: play
+order: 35
+---
+import Quincunx from '../../components/math/Quincunx.tsx'
+
+# Quincunx
+
+Francis Galton built one of these out of wood and glass in 1873 to argue a point
+about heredity. Balls fall through a triangular lattice of pins. At every pin a
+ball goes left or right. At the bottom they pile up in bins.
+
+<Quincunx client:load />
+
+The gold line is not fitted to the bars. It is the exact distribution the machine
+is sampling, drawn on the same scale — so what you are watching is the bars
+converging onto a curve that was already there.
+
+## Why the middle fills up
+
+A ball that bounces right $k$ times out of $n$ rows lands in bin $k$. Nothing
+else about its journey matters — not the order of the bounces, not the path.
+
+So the question "which bin?" is really "how many rights, out of $n$?", and the
+number of routes into bin $k$ is the number of ways to choose which $k$ of the
+$n$ bounces went right:
+
+$$
+\binom{n}{k}
+$$
+
+There is exactly one route into the far-left bin: go left every single time.
+There are $n$ routes into the next one along. And there are a great many routes
+into the middle, which is the entire reason the middle fills up. The pile is not
+telling you the balls prefer the centre — it is telling you the centre is easier
+to reach.
+
+Set the rows to 4 and drop a few hundred. The bins go **1 : 4 : 6 : 4 : 1**, and
+at that size you can count the routes by hand and check.
+
+## Tilt it
+
+Turn the bias off a half and the pile slides. The peak moves to $np$ — with
+twenty rows and a one-in-four chance of going right, it settles over bin 5 — and
+the shape stays recognisably the same bell, just narrower.
+
+Narrower because the spread is
+
+$$
+\sigma = \sqrt{np(1-p)}
+$$
+
+which is largest at $p = \tfrac{1}{2}$ and shrinks toward zero at either
+extreme. Push the bias all the way to 0 or 1 and the machine stops being a
+machine: every ball takes the same route into the same bin, and the distribution
+collapses to a spike.
+
+That is worth sitting with, because the bell is often described as what you get
+"when things are random". It isn't. It is what you get when things are random
+*and roughly balanced*. A lopsided coin is exactly as random as a fair one and
+produces a much tighter pile.
+
+## Where the bell comes from
+
+The binomial is not the normal distribution, but it converges to it as the rows
+increase — de Moivre worked this out in 1733, for coin tosses, nearly a century
+before Gauss. The quincunx is that theorem you can watch: each extra row of pins
+is one more coin toss added to the sum, and the outline of the pile is the
+central limit theorem arriving one row at a time.
+
+## Where it came from
+
+A [p5.js](https://p5js.org/) sketch of mine, which drew the pins and dropped the
+balls but kept the left/right chance nailed to a half. It had a bias variable
+ready and waiting — with the comparison written backwards, so raising the chance
+of going right would have sent fewer balls right. Harmless while the number never
+moved; the first thing to fix once it became a control.
