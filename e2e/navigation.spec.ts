@@ -65,10 +65,11 @@ test.describe('Site navigation', () => {
     await expect(
       page.getByRole('heading', { name: 'Operations Research', level: 1 }),
     ).toBeVisible();
-    // Two search-order pages and the sphere method.
-    await expect(page.locator('.card-grid a')).toHaveCount(3);
+    // Two search-order pages, the sphere method and capacity expansion.
+    await expect(page.locator('.card-grid a')).toHaveCount(4);
     await expect(page.getByRole('link', { name: 'Where to Look First' })).toBeVisible();
     await expect(page.getByRole('link', { name: /Ball That Rolls Downhill/ })).toBeVisible();
+    await expect(page.getByRole('link', { name: /How Far Ahead Is Far Enough/ })).toBeVisible();
   });
 
   test('every section index renders its cards', async ({ page }) => {

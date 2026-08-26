@@ -601,3 +601,31 @@ a:hover {
      this the sticky nav is captured across the top of the card thumbnail. */
   scroll-margin-top: 72px;
 }
+
+/* Capacity expansion
+   ========================================================================== */
+
+.capex {
+  margin-bottom: var(--space-4);
+}
+
+.capex-figures {
+  scroll-margin-top: 72px;
+}
+
+.capex-panel {
+  margin: 0 0 var(--space-3);
+}
+
+.capex-panel svg {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+}
+
+.capex-panel figcaption {
+  margin-top: var(--space-1);
+  font-size: 0.8rem;
+  color: var(--ink-tertiary);
+}

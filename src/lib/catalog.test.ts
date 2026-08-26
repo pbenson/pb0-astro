@@ -117,6 +117,7 @@ describe('the real pages', () => {
       '/math/tsp-euclidean',
       '/math/tsp-probabilities',
       '/operations-research/sphere-method',
+      '/operations-research/capacity-expansion',
     ]);
     // Finance leads the work tier; section order lives in src/lib/sections.ts.
     expect(byTier(entries, 'work').map((e) => e.url)).toEqual([
@@ -126,6 +127,7 @@ describe('the real pages', () => {
       '/math/tsp-euclidean',
       '/math/tsp-probabilities',
       '/operations-research/sphere-method',
+      '/operations-research/capacity-expansion',
     ]);
   });
 
