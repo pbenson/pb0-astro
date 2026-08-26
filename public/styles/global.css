@@ -584,3 +584,20 @@ a:hover {
   background: var(--grid-teal-bg);
   color: var(--ink);
 }
+
+/* Penrose P3
+   ========================================================================== */
+
+.penrose {
+  margin-bottom: var(--space-4);
+}
+
+.penrose-figure {
+  display: block;
+  width: 100%;
+  max-width: 620px;
+  height: auto;
+  /* Same reason as the quincunx board: it sits high on the page, and without
+     this the sticky nav is captured across the top of the card thumbnail. */
+  scroll-margin-top: 72px;
+}
