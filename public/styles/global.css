@@ -558,3 +558,29 @@ a:hover {
   border-radius: var(--radius-sm);
   background: var(--paper);
 }
+
+/* Quincunx
+   ========================================================================== */
+
+.quincunx {
+  margin-bottom: var(--space-4);
+}
+
+.quincunx-board {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  /* The sticky nav is 48px tall. Without this, scrolling the board into view
+     tucks its top row of pins underneath — which an anchor jump shows a reader
+     and an element screenshot bakes into the card thumbnail. */
+  scroll-margin-top: 72px;
+}
+
+/* The chosen batch size reads as pressed, matching the overlay buttons on the
+   Ormat board rather than inventing a second selected-button look. */
+.button.is-picked {
+  border-color: var(--grid-teal);
+  background: var(--grid-teal-bg);
+  color: var(--ink);
+}
