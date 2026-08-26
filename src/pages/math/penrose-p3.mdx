@@ -1,0 +1,111 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Penrose P3
+description: "A Penrose rhombus tiling grown from an L-system, two tiles and no repeats"
+blurb: "Grow a Penrose tiling from a rewriting rule and count the tiles"
+section: math
+tier: play
+order: 15
+---
+import PenroseP3 from '../../components/math/PenroseP3.tsx'
+
+# Penrose P3
+
+Two tiles. A fat rhombus with 72° corners and a thin one with 36°. Between them
+they cover the plane completely, and no matter how far you slide the result it
+never lands on itself. It is **aperiodic** — not disordered, but never repeating.
+
+<PenroseP3 client:load />
+
+Drag the level up and the same figure refines. That is not a coincidence of the
+drawing: refinement *is* the rule.
+
+## Grown, not assembled
+
+The tiling is not laid down tile by tile. It is grown from a string, by an
+[L-system](https://en.wikipedia.org/wiki/L-system) — a rewriting rule applied
+over and over, the way you might grow a plant in software.
+
+Start with five copies of a symbol `N`, one every 72°:
+
+```
+[N]++[N]++[N]++[N]++[N]
+```
+
+That is where the five-fold symmetry comes from, and it is the *only* place it
+comes from. Then rewrite, every symbol at once, forever:
+
+```
+M → OF++PF----NF[-OF----MF]++
+N → +OF--PF[---MF--NF]+
+O → -MF++NF[+++OF++PF]-
+P → --OF++++MF[+PF++++NF]--NF
+F → (nothing)
+```
+
+`M`, `N`, `O` and `P` are the four half-tiles. `+` and `-` turn by 36°, brackets
+save and restore position, and `F` steps forward and draws. `F` rewrites to
+nothing, so the only `F`s that survive to be drawn are the ones the *last* pass
+introduced — which is why each level draws a finer figure rather than adding to
+a coarser one.
+
+At level 6 the string would be about 900,000 characters. This page never builds
+it: it walks the rules recursively and emits the geometry as it goes.
+
+## The count gives away the golden ratio
+
+Every level, count the two kinds of tile and divide.
+
+| Level | Thick | Thin | Thick ÷ thin |
+|------:|------:|-----:|-------------:|
+| 0 | 5 | 0 | — |
+| 1 | 10 | 10 | 1.0000 |
+| 2 | 35 | 25 | 1.4000 |
+| 3 | 100 | 70 | 1.4286 |
+| 4 | 285 | 185 | 1.5405 |
+| 5 | 790 | 500 | 1.5800 |
+| 6 | 2135 | 1335 | 1.5993 |
+
+It is climbing to $\varphi = \tfrac{1}{2}(1+\sqrt5) \approx 1.6180$.
+
+And $\varphi$ is irrational, which is the whole argument. If the tiling repeated
+— if some translation carried it onto itself — you could cut it into identical
+finite blocks, and the ratio of thick to thin would have to be the ratio of two
+whole numbers. It cannot be. **The tiling cannot repeat.**
+
+Those counts are computed by this page as it draws, not typed in from a book.
+
+## What the sketch had to get right
+
+The [Processing](https://processing.org/) sketch this came from drew the figure
+straight to PDF, in outline. Two things changed on the way here.
+
+It drew on the tile symbols as well as on `F`, which splits every rhombus edge
+into two collinear halves — and then spent a whole pass finding those halves and
+gluing them back together. That pass kept only the edges it managed to pair, so
+any it missed vanished from the drawing. Not drawing on the tile symbols removes
+the doubling, the repair and the losses in one go.
+
+The other was arithmetic. The sketch compared vertices with a tolerance while
+hashing them through a rounding function, so two points it called equal could
+land in different buckets — its own comment says as much, and shrugs. But a
+turtle taking unit steps at multiples of 36° never lands anywhere fuzzy: every
+vertex is an exact whole-number combination of five fixed directions, which
+collapse to four because $x^4-x^3+x^2-x+1 = 0$. Store those four integers and
+vertices compare exactly, with no tolerance anywhere. The five-fold symmetry can
+then be *checked* rather than eyeballed: rotating every vertex by 72° gives back
+the same set, exactly.
+
+## See also
+
+The [Spectre monotile](/math/spectres) does this with **one** tile instead of
+two — a question left open from Penrose's tilings in the 1970s until it was
+finally settled in 2023.
+
+## Source
+
+The rule set is from Przemysław Prusinkiewicz and Aristid Lindenmayer,
+[*The Algorithmic Beauty of Plants*](https://archive.org/details/the-algorithmic-beauty-of-plants)
+(Springer, 1990), and ships as one of
+[Processing's own examples](https://processing.org/examples/penrosetile). The
+tiling is Roger Penrose's, from 1974.
