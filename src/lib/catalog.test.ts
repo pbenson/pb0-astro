@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { buildCatalog, bySection, byTier, populatedSections, type PageModule } from './catalog';
+import {
+  buildCatalog,
+  bySection,
+  byTier,
+  onDisplay,
+  populatedSections,
+  shelved,
+  type PageModule,
+} from './catalog';
 import { SECTIONS } from './sections';
 
 const PAGES_DIR = join(process.cwd(), 'src/pages');
@@ -35,6 +43,11 @@ function frontmatter(relPath: string): Record<string, unknown> {
       value = value.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
     } else if (/^-?\d+$/.test(value as string)) {
       value = Number(value);
+    } else if (value === 'true' || value === 'false') {
+      // YAML booleans. Needed for `shelved` and `draft`, both of which the
+      // catalog checks by type — a string "true" is not a boolean and would
+      // be rejected here while Astro's own parser accepts it.
+      value = value === 'true';
     }
     fm[key] = value;
   }
@@ -86,6 +99,44 @@ describe('catalog validation', () => {
     expect(() => buildCatalog(stub({ order: 'first' }))).toThrow('order');
   });
 
+  it('defaults to not shelved', () => {
+    expect(buildCatalog(stub())[0].shelved).toBe(false);
+  });
+
+  it('marks a shelved page without removing it', () => {
+    const [entry] = buildCatalog(stub({ shelved: true }));
+    expect(entry.shelved).toBe(true);
+    expect(entry.url).toBe('/math/example');
+  });
+
+  it('rejects a non-boolean shelved', () => {
+    expect(() => buildCatalog(stub({ shelved: 'yes' }))).toThrow('shelved');
+  });
+
+  it('drops a section from the grids when every page on it is shelved', () => {
+    // An empty heading is worse than no heading: the section index would render
+    // a title over nothing.
+    const entries = buildCatalog(stub({ shelved: true }));
+    expect(populatedSections(entries).map((s) => s.id)).not.toContain('math');
+    expect(shelved(entries)).toHaveLength(1);
+  });
+
+  it('separates the shelf from the display without losing anything', () => {
+    const modules = {
+      ...stub(),
+      '../pages/math/other.mdx': {
+        url: '/math/other',
+        frontmatter: {
+          title: 'Other', blurb: 'b', section: 'math', tier: 'play', order: 998, shelved: true,
+        },
+      },
+    };
+    const entries = buildCatalog(modules);
+    expect(entries).toHaveLength(2);
+    expect(onDisplay(entries).map((e) => e.url)).toEqual(['/math/example']);
+    expect(shelved(entries).map((e) => e.url)).toEqual(['/math/other']);
+  });
+
   it('rejects duplicate order within a section', () => {
     const modules = {
       ...stub(),
@@ -113,10 +164,11 @@ describe('the real pages', () => {
   });
 
   it('groups the operations research pages as work', () => {
+    // The sphere method is on the shelf, so it is absent from the grids while
+    // still being a catalog entry — see the shelf tests below.
     expect(bySection(entries, 'operations-research').map((e) => e.url)).toEqual([
       '/math/tsp-euclidean',
       '/math/tsp-probabilities',
-      '/operations-research/sphere-method',
       '/operations-research/capacity-expansion',
     ]);
     // Finance leads the work tier; section order lives in src/lib/sections.ts.
@@ -126,8 +178,30 @@ describe('the real pages', () => {
       '/math/quantiles',
       '/math/tsp-euclidean',
       '/math/tsp-probabilities',
-      '/operations-research/sphere-method',
       '/operations-research/capacity-expansion',
+    ]);
+  });
+
+  it('keeps the shelved pages in the catalog but off every grid', () => {
+    const urls = entries.map((e) => e.url);
+    // Still catalogued, so the page is built and /shelf can list it...
+    expect(urls).toContain('/operations-research/sphere-method');
+    expect(urls).toContain('/math/flw-circles');
+
+    // ...and absent from the grids, which is the whole point.
+    const displayed = onDisplay(entries).map((e) => e.url);
+    expect(displayed).not.toContain('/operations-research/sphere-method');
+    expect(displayed).not.toContain('/math/flw-circles');
+    expect(bySection(entries, 'math').map((e) => e.url)).not.toContain('/math/flw-circles');
+    expect(byTier(entries, 'work').map((e) => e.url)).not.toContain(
+      '/operations-research/sphere-method',
+    );
+  });
+
+  it('shelves exactly the pages that ask to be shelved', () => {
+    expect(shelved(entries).map((e) => e.url).sort()).toEqual([
+      '/math/flw-circles',
+      '/operations-research/sphere-method',
     ]);
   });
 

@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CardGrid from '../components/ui/CardGrid.astro';
-import { entriesBySection, sectionsWithEntries } from '../lib/pages';
+import { entriesBySection, sectionsWithEntries, shelvedCount } from '../lib/pages';
 
 const sections = sectionsWithEntries();
+const shelved = shelvedCount();
 
 // Cherry Arbor Design is an external site, not an MDX page, so it has no
 // frontmatter to read and stays hand-authored. It sits after the work sections.
@@ -36,6 +37,13 @@ const CHERRY_ARBOR_AFTER = 'math';
         )}
       </>
     ))}
+
+    {shelved > 0 && (
+      <p class="shelf-note">
+        <a href="/shelf">The shelf</a> holds {shelved} page{shelved === 1 ? '' : 's'} that
+        are readable but not finished.
+      </p>
+    )}
   </div>
 </BaseLayout>
 
@@ -106,5 +114,15 @@ const CHERRY_ARBOR_AFTER = 'math';
     margin: 0;
     font-size: 0.85rem;
     line-height: 1.4;
+  }
+
+  /* Findable if you look for it, invisible if you do not. The front of the site
+     is the curated selection; this is the door to the back room. */
+  .shelf-note {
+    margin: 0;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    color: var(--text-muted);
   }
 </style>

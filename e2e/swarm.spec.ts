@@ -49,8 +49,12 @@ test.describe('Swarm', () => {
 
   test('pause holds the picture rather than erasing it', async ({ page }) => {
     await page.goto('/math/swarm');
-    // Let enough of a trail build that a wipe would be unmistakable.
-    await expect.poll(() => inked(page), { timeout: 6000 }).toBeGreaterThan(2000);
+    // Enough of a trail that a wipe would be unmistakable. The bar is low on
+    // purpose: the opening scatter alone inks ~1300 sampled pixels and the
+    // count then climbs only ~140 a second, so a higher threshold is a race
+    // against the poll rather than a stronger check. The assertions below are
+    // relative, which is where the real strength is.
+    await expect.poll(() => inked(page), { timeout: 6000 }).toBeGreaterThan(800);
     const before = await inked(page);
 
     await page.getByRole('button', { name: 'Pause' }).click();
@@ -68,7 +72,7 @@ test.describe('Swarm', () => {
 
   test('restart clears the surface and begins again', async ({ page }) => {
     await page.goto('/math/swarm');
-    await expect.poll(() => inked(page), { timeout: 6000 }).toBeGreaterThan(2000);
+    await expect.poll(() => inked(page), { timeout: 6000 }).toBeGreaterThan(800);
 
     await page.getByRole('button', { name: 'Pause' }).click();
     const busy = await inked(page);

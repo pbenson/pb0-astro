@@ -10,6 +10,16 @@ export interface CatalogEntry {
   tech?: string[];
   source?: string;
   paper?: string;
+  /**
+   * On the shelf: built and reachable, but kept off the card grids and listed
+   * on /shelf instead. Orthogonal to section and tier, so a shelved page keeps
+   * its own identity and can be brought back by deleting one line.
+   *
+   * Distinct from the two neighbouring states:
+   *   `draft: true`  — built and reachable, but on no list at all.
+   *   `archive/`     — outside src/pages, so it does not build.
+   */
+  shelved: boolean;
 }
 
 /** Shape of an eagerly globbed MDX page: frontmatter plus the route Astro assigns it. */
@@ -82,6 +92,10 @@ export function buildCatalog(modules: Record<string, PageModule>): CatalogEntry[
 
     const tech = Array.isArray(fm.tech) ? (fm.tech as string[]) : undefined;
 
+    if (fm.shelved !== undefined && typeof fm.shelved !== 'boolean') {
+      fail(path, `has shelved "${String(fm.shelved)}", expected true or false`);
+    }
+
     entries.push({
       url,
       title,
@@ -92,6 +106,7 @@ export function buildCatalog(modules: Record<string, PageModule>): CatalogEntry[
       tech,
       source: optionalString(fm, 'source'),
       paper: optionalString(fm, 'paper'),
+      shelved: fm.shelved === true,
     });
   }
 
@@ -102,17 +117,35 @@ export function buildCatalog(modules: Record<string, PageModule>): CatalogEntry[
   });
 }
 
+/**
+ * On display: everything the card grids show.
+ *
+ * The shelf is subtracted here rather than at each call site, so a new grid
+ * cannot forget to do it and quietly put a shelved page back on the front.
+ */
+export const onDisplay = (entries: CatalogEntry[]): CatalogEntry[] =>
+  entries.filter((e) => !e.shelved);
+
+/** Shelved entries, in the same section-then-order sequence as the catalog. */
+export const shelved = (entries: CatalogEntry[]): CatalogEntry[] =>
+  entries.filter((e) => e.shelved);
+
 export function bySection(entries: CatalogEntry[], sectionId: string): CatalogEntry[] {
   getSection(sectionId);
-  return entries.filter((e) => e.section === sectionId);
+  return onDisplay(entries).filter((e) => e.section === sectionId);
 }
 
 export function byTier(entries: CatalogEntry[], tier: Tier): CatalogEntry[] {
-  return entries.filter((e) => e.tier === tier);
+  return onDisplay(entries).filter((e) => e.tier === tier);
 }
 
-/** Sections of the given tier that actually have entries, in registry order. */
+/**
+ * Sections of the given tier that have entries on display, in registry order.
+ *
+ * A section whose every page is shelved drops out of the grids entirely rather
+ * than rendering an empty heading.
+ */
 export function populatedSections(entries: CatalogEntry[], tier?: Tier): Section[] {
-  const used = new Set(entries.map((e) => e.section));
+  const used = new Set(onDisplay(entries).map((e) => e.section));
   return SECTIONS.filter((s) => used.has(s.id) && (tier === undefined || s.tier === tier));
 }
