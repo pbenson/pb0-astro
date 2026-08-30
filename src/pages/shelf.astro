@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { shelvedBySection } from '../lib/pages';
+
+const groups = shelvedBySection();
+---
+
+<BaseLayout title="The Shelf">
+  <h1>The Shelf</h1>
+  <p class="description">
+    Pages that are built and readable but not finished enough to put on the front.
+    Some are waiting on an answer, some on a rewrite, some on me deciding what they
+    are for. Nothing here has been abandoned — that is what deleting is for.
+  </p>
+
+  {groups.length === 0 ? (
+    <p class="empty">Nothing on the shelf.</p>
+  ) : (
+    groups.map(({ section, entries }) => (
+      <section class="shelf-section">
+        <h2>{section.title}</h2>
+        <ul class="shelf-list">
+          {entries.map((entry) => (
+            <li>
+              <a href={entry.url}>{entry.title}</a>
+              <span class="shelf-blurb">{entry.blurb}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  )}
+</BaseLayout>
+
+<style>
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .description {
+    max-width: 58ch;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+  }
+
+  .empty {
+    color: var(--text-muted);
+  }
+
+  .shelf-section {
+    margin-bottom: 2rem;
+  }
+
+  /* A size below the section headings on the front. The shelf is a back room
+     and should not compete with the rooms people are meant to be in. */
+  .shelf-section h2 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    border-bottom: 1px solid var(--rule-emphasis);
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+
+  .shelf-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* One line per page: a link and, where there is room, the blurb beside it.
+     No thumbnail — the point of the shelf is that these are not on show. */
+  .shelf-list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 0.75rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .shelf-list li:last-child {
+    border-bottom: none;
+  }
+
+  .shelf-list a {
+    font-size: 0.95rem;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .shelf-list a:hover {
+    text-decoration: underline;
+  }
+
+  .shelf-blurb {
+    flex: 1 1 20ch;
+    min-width: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+</style>
